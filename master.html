@@ -1,0 +1,1478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MASTER · Aurelio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   MASTER · módulo de entrenamiento de Aurelio
+   Dirección visual: taller industrial premium.
+   Acero + amarillo de seguridad para el piso de venta,
+   azul blueprint para el escritorio del supervisor.
+   ============================================================ */
+:root{
+  --ink:#0F1114;
+  --steel:#171A1F;
+  --panel:#1E222A;
+  --panel-2:#252A33;
+  --edge:#333A45;
+  --paper:#EDE9E1;
+  --muted:#98A0AC;
+  --amber:#FFC42E;
+  --amber-deep:#E9A800;
+  --torch:#FF5A1F;
+  --blueprint:#5FD0DE;
+  --ok:#59D68A;
+  --shadow:0 18px 40px rgba(0,0,0,.45);
+  --r:14px;
+  --display:'Archivo Black','Haettenschweiler','Arial Black',system-ui,sans-serif;
+  --cond:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
+  --body:'Barlow',system-ui,-apple-system,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--ink);
+  color:var(--paper);
+  font-family:var(--body);
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),
+                   linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);
+  background-size:52px 52px;
+}
+img{max-width:100%;display:block}
+button{font-family:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--blueprint);outline-offset:3px}
+
+/* ---------- tipografía ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:11px;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--muted);
+}
+.eyebrow b{color:var(--amber);font-weight:600}
+h1,h2,h3{margin:0;font-family:var(--display);letter-spacing:-.01em;line-height:.95}
+.h-sec{font-size:clamp(28px,7vw,46px);text-transform:uppercase}
+.sub{font-family:var(--cond);font-size:clamp(16px,4vw,20px);color:var(--muted);
+  text-transform:uppercase;letter-spacing:.06em;font-weight:600}
+.mono{font-family:var(--mono)}
+
+/* ---------- utilidades industriales ---------- */
+.hazard{
+  height:8px;width:100%;
+  background:repeating-linear-gradient(-45deg,var(--amber) 0 14px,#0F1114 14px 28px);
+  opacity:.85;
+}
+.wrap{width:min(1080px,100% - 32px);margin-inline:auto;position:relative;z-index:1}
+.plate{
+  background:linear-gradient(180deg,var(--panel) 0%,var(--steel) 100%);
+  border:1px solid var(--edge);border-radius:var(--r);
+  box-shadow:var(--shadow);position:relative;overflow:hidden;
+}
+.plate::after{content:"";position:absolute;inset:0 0 auto 0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.18),transparent)}
+
+/* ---------- botones ---------- */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:10px;
+  font-family:var(--cond);font-weight:700;font-size:17px;letter-spacing:.1em;
+  text-transform:uppercase;padding:15px 26px;border-radius:10px;border:1px solid transparent;
+  cursor:pointer;background:var(--amber);color:#14110A;
+  box-shadow:0 6px 0 var(--amber-deep),0 14px 26px rgba(0,0,0,.4);
+  transition:transform .12s ease,box-shadow .12s ease,background .2s ease;
+}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--amber-deep)}
+.btn.ghost{background:transparent;color:var(--paper);border-color:var(--edge);box-shadow:none}
+.btn.ghost:hover{border-color:var(--amber);color:var(--amber)}
+.btn.small{padding:10px 16px;font-size:14px}
+.btn[disabled]{opacity:.45;cursor:not-allowed;transform:none}
+
+/* ---------- barra superior (HUD del vendedor) ---------- */
+.hud{
+  position:sticky;top:0;z-index:40;backdrop-filter:blur(10px);
+  background:rgba(15,17,20,.82);border-bottom:1px solid var(--edge);
+}
+.hud-in{display:flex;align-items:center;gap:14px;padding:10px 0}
+.hud-brand{font-family:var(--display);font-size:20px;letter-spacing:.02em}
+.hud-brand span{color:var(--amber)}
+.hud-stats{display:flex;gap:8px;margin-left:auto;align-items:center;flex-wrap:wrap}
+.chip{
+  font-family:var(--mono);font-size:12px;padding:6px 10px;border-radius:8px;
+  border:1px solid var(--edge);background:var(--panel);white-space:nowrap;
+}
+.chip b{color:var(--amber);font-weight:600}
+.chip.streak b{color:var(--torch)}
+/* medidor de torque = barra de XP */
+.torque{flex:1 1 160px;min-width:120px}
+.torque-track{height:12px;border-radius:6px;background:#0B0D10;border:1px solid var(--edge);
+  position:relative;overflow:hidden}
+.torque-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--amber-deep),var(--amber));
+  transition:width .7s cubic-bezier(.2,.9,.2,1)}
+.torque-track::after{content:"";position:absolute;inset:0;
+  background:repeating-linear-gradient(90deg,transparent 0 19px,rgba(0,0,0,.55) 19px 20px)}
+.torque-label{display:flex;justify-content:space-between;font-family:var(--mono);
+  font-size:10px;letter-spacing:.14em;color:var(--muted);margin-bottom:4px;text-transform:uppercase}
+
+/* ---------- vistas ---------- */
+.view{display:none}
+.view.active{display:block}
+
+/* ---------- INTRO / apertura ---------- */
+#view-intro{position:relative}
+.opening{
+  min-height:100svh;display:grid;place-items:center;text-align:center;
+  padding:40px 16px;position:relative;overflow:hidden;
+}
+.opening::before{
+  content:"";position:absolute;inset:-20% -20% auto -20%;height:90%;
+  background:radial-gradient(60% 60% at 50% 30%,rgba(255,196,46,.16),transparent 70%);
+  pointer-events:none;
+}
+.corp{
+  font-family:var(--cond);font-weight:600;font-size:clamp(13px,3.4vw,17px);
+  letter-spacing:.42em;text-transform:uppercase;color:var(--muted);opacity:0;
+}
+.screw-stage{height:150px;display:grid;place-items:center;margin:22px 0 6px}
+.screw{width:110px;height:110px;opacity:0}
+.wordmark{
+  font-family:var(--display);font-size:clamp(56px,17vw,132px);line-height:.86;
+  text-transform:uppercase;letter-spacing:-.02em;
+  background:linear-gradient(180deg,#FFF7DF,var(--amber) 55%,var(--amber-deep));
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  opacity:0;
+}
+.tagline{font-family:var(--cond);font-size:clamp(18px,5vw,26px);letter-spacing:.28em;
+  text-transform:uppercase;color:var(--paper);opacity:0;margin-top:6px}
+.opening .btn{opacity:0;margin-top:30px}
+.scroll-hint{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:11px;letter-spacing:.2em;color:var(--muted);opacity:0}
+
+/* ---------- ESCENAS PARALLAX ---------- */
+.scene{
+  min-height:100svh;display:grid;align-items:center;padding:70px 0;position:relative;
+}
+.scene-grid{display:grid;gap:26px;grid-template-columns:1fr;align-items:center}
+.scene-parallax{will-change:transform}
+.scene-media{
+  width:100%;border-radius:var(--r);border:1px solid var(--edge);
+  box-shadow:var(--shadow);background:var(--steel);will-change:transform,opacity;
+}
+.scene-num{font-family:var(--mono);font-size:12px;color:var(--amber);letter-spacing:.24em}
+.scene-copy p{color:var(--muted);max-width:46ch;margin:12px 0 0}
+.scene-copy h2{margin-top:8px}
+@media(min-width:820px){
+  .scene-grid{grid-template-columns:1.05fr .95fr;gap:56px}
+  .scene:nth-child(even) .scene-parallax{order:2}
+}
+
+/* ---------- MAPA DE ENTRENAMIENTO ---------- */
+.section{padding:34px 0 60px}
+.map-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:22px}
+.track{position:relative;display:grid;gap:0;justify-items:center}
+.node-link{
+  width:3px;height:44px;
+  background:repeating-linear-gradient(180deg,var(--edge) 0 7px,transparent 7px 14px);
+}
+.node-link.done{background:repeating-linear-gradient(180deg,var(--amber) 0 7px,transparent 7px 14px)}
+.node{
+  width:100%;max-width:560px;display:flex;align-items:center;gap:16px;text-align:left;
+  padding:16px 18px;border-radius:var(--r);cursor:pointer;
+  background:linear-gradient(180deg,var(--panel),var(--steel));
+  border:1px solid var(--edge);box-shadow:var(--shadow);
+  transition:border-color .2s ease,transform .15s ease;
+}
+.node:hover{transform:translateY(-2px);border-color:var(--amber)}
+.node.locked{opacity:.55;cursor:not-allowed}
+.node.locked:hover{transform:none;border-color:var(--edge)}
+.bolt{
+  width:52px;height:52px;flex:none;display:grid;place-items:center;
+  clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);
+  background:var(--panel-2);color:var(--muted);font-family:var(--mono);font-size:18px;
+  border:0;
+}
+.node.done .bolt{background:var(--amber);color:#14110A}
+.node.open .bolt{background:var(--blueprint);color:#08171B}
+.node-body{flex:1;min-width:0}
+.node-title{font-family:var(--cond);font-weight:700;font-size:20px;letter-spacing:.06em;text-transform:uppercase}
+.node-meta{font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase}
+.node-score{font-family:var(--display);font-size:19px;color:var(--amber)}
+
+/* logros + ranking */
+.cols{display:grid;gap:18px;grid-template-columns:1fr;margin-top:34px}
+@media(min-width:820px){.cols{grid-template-columns:1fr 1fr}}
+.card-pad{padding:20px}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.badge{
+  border:1px dashed var(--edge);border-radius:12px;padding:12px 8px;text-align:center;
+  background:#13161B;opacity:.38;filter:grayscale(1);
+}
+.badge.on{opacity:1;filter:none;border-style:solid;border-color:var(--amber);
+  box-shadow:0 0 0 1px rgba(255,196,46,.2) inset}
+.badge i{font-style:normal;font-size:22px;display:block}
+.badge span{font-family:var(--mono);font-size:9.5px;letter-spacing:.08em;color:var(--muted);
+  text-transform:uppercase;display:block;margin-top:6px;line-height:1.3}
+.rank-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid #23272F}
+.rank-row:last-child{border-bottom:0}
+.rank-pos{font-family:var(--display);font-size:16px;width:26px;color:var(--muted)}
+.rank-row.me{background:rgba(255,196,46,.07);border-radius:8px;padding-inline:10px}
+.rank-row.me .rank-name{color:var(--amber)}
+.rank-name{font-family:var(--cond);font-weight:600;letter-spacing:.05em;font-size:17px;flex:1}
+.rank-xp{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.stars{color:var(--amber);letter-spacing:2px;font-size:13px}
+
+/* ---------- MASTER (compañero) ---------- */
+.avatar{width:100%;height:100%;display:block}
+.master-row{display:flex;gap:14px;align-items:flex-end}
+.master-pic{width:76px;height:76px;flex:none;border-radius:50%;background:radial-gradient(circle at 50% 30%,#2A303A,#14171C);
+  border:1px solid var(--edge);overflow:hidden}
+.bubble{
+  position:relative;background:var(--panel-2);border:1px solid var(--edge);
+  border-radius:14px;padding:13px 16px;font-size:15.5px;flex:1;min-height:52px;
+}
+.bubble::before{
+  content:"";position:absolute;left:-7px;bottom:16px;width:12px;height:12px;
+  background:var(--panel-2);border-left:1px solid var(--edge);border-bottom:1px solid var(--edge);
+  transform:rotate(45deg);
+}
+.bubble .who{font-family:var(--mono);font-size:10px;letter-spacing:.2em;color:var(--amber);display:block;margin-bottom:3px}
+.master-fab{
+  position:fixed;right:14px;bottom:14px;z-index:45;width:62px;height:62px;border-radius:50%;
+  border:1px solid var(--edge);background:#181C22;box-shadow:var(--shadow);cursor:pointer;padding:4px;
+}
+
+/* ---------- QUIZ ---------- */
+.quiz-wrap{max-width:640px;margin-inline:auto;padding:22px 0 90px}
+.ticks{display:flex;gap:6px;margin:16px 0 20px}
+.tick{height:6px;flex:1;border-radius:3px;background:#20242B;border:1px solid var(--edge)}
+.tick.ok{background:var(--ok);border-color:var(--ok)}
+.tick.bad{background:var(--torch);border-color:var(--torch)}
+.tick.now{background:var(--amber);border-color:var(--amber)}
+.q-text{font-family:var(--cond);font-weight:700;font-size:clamp(22px,5.6vw,30px);
+  line-height:1.15;margin:14px 0 20px}
+.opts{display:grid;gap:10px}
+.opt{
+  display:flex;gap:14px;align-items:center;text-align:left;width:100%;
+  background:var(--panel);border:1px solid var(--edge);border-radius:12px;
+  padding:14px 16px;cursor:pointer;font-size:16px;transition:border-color .15s,background .15s,transform .1s;
+}
+.opt:hover:not(:disabled){border-color:var(--amber);transform:translateX(2px)}
+.opt .key{
+  width:34px;height:34px;flex:none;display:grid;place-items:center;font-family:var(--mono);font-size:14px;
+  clip-path:polygon(50% 0,93% 25%,93% 75%,50% 100%,7% 75%,7% 25%);background:var(--panel-2);color:var(--muted);
+}
+.opt.correct{border-color:var(--ok);background:rgba(89,214,138,.12)}
+.opt.correct .key{background:var(--ok);color:#08210F}
+.opt.wrong{border-color:var(--torch);background:rgba(255,90,31,.12)}
+.opt.wrong .key{background:var(--torch);color:#2A0C00}
+.opt:disabled{cursor:default}
+.verdict{font-family:var(--display);font-size:26px;text-transform:uppercase;margin-bottom:10px}
+.verdict.ok{color:var(--ok)}
+.verdict.bad{color:var(--torch)}
+.feedback{margin-top:18px;padding:18px;border-radius:var(--r);background:#14171C;border:1px solid var(--edge)}
+.xp-pop{font-family:var(--display);color:var(--amber);font-size:15px;letter-spacing:.04em}
+
+/* ---------- RESULTADO ---------- */
+.result{max-width:560px;margin-inline:auto;text-align:center;padding:40px 0 80px}
+.result .score{font-family:var(--display);font-size:clamp(64px,20vw,120px);line-height:.9;color:var(--amber)}
+.result .pct{font-family:var(--cond);font-size:28px;letter-spacing:.2em;color:var(--paper)}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:26px 0}
+.result-grid div{padding:14px 8px;border:1px solid var(--edge);border-radius:12px;background:var(--panel)}
+.result-grid b{display:block;font-family:var(--display);font-size:20px;color:var(--paper)}
+.result-grid span{font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--muted);text-transform:uppercase}
+#fx{position:fixed;inset:0;pointer-events:none;z-index:60;display:none}
+
+/* ---------- SUPERVISOR (mesa de planos) ---------- */
+#view-sup{background:#0A1620;min-height:100svh}
+#view-sup .plate{background:linear-gradient(180deg,#10242F,#0C1B24);border-color:#1D3D4C}
+#view-sup .eyebrow b,#view-sup .node-score{color:var(--blueprint)}
+.sup-head{border-bottom:1px solid #1D3D4C;background:rgba(10,22,32,.9);position:sticky;top:0;z-index:30;
+  backdrop-filter:blur(8px)}
+.tabs{display:flex;gap:8px;margin:20px 0;flex-wrap:wrap}
+.tab{font-family:var(--cond);letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+  padding:10px 16px;border-radius:9px;background:transparent;border:1px solid #1D3D4C;cursor:pointer}
+.tab.on{background:var(--blueprint);color:#08171B;border-color:var(--blueprint)}
+label.f{display:block;margin:14px 0 0}
+label.f span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#7FA6B4}
+input.f,textarea.f,select.f{
+  width:100%;margin-top:6px;background:#0A1A23;border:1px solid #1D3D4C;color:var(--paper);
+  border-radius:10px;padding:12px 14px;font-family:var(--body);font-size:15.5px;
+}
+textarea.f{min-height:76px;resize:vertical}
+.q-editor{border:1px solid #1D3D4C;border-radius:12px;padding:16px;margin-top:14px;background:#0B1D27}
+.q-editor h4{margin:0;font-family:var(--cond);letter-spacing:.14em;text-transform:uppercase;color:var(--blueprint)}
+.alt-row{display:flex;gap:10px;align-items:center;margin-top:8px}
+.alt-row .letter{font-family:var(--mono);width:22px;color:#7FA6B4}
+.alt-row input[type=radio]{accent-color:var(--blueprint);width:18px;height:18px}
+.stat-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+@media(min-width:720px){.stat-grid{grid-template-columns:repeat(3,1fr)}}
+.stat{padding:16px;border-radius:12px;background:#0D202B;border:1px solid #1D3D4C}
+.stat b{display:block;font-family:var(--display);font-size:30px;color:var(--blueprint);line-height:1}
+.stat span{font-family:var(--mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:#7FA6B4}
+.alert{margin-top:16px;padding:16px;border-radius:12px;background:rgba(255,90,31,.1);
+  border:1px solid rgba(255,90,31,.5)}
+.err{color:var(--torch);font-family:var(--mono);font-size:12px;margin-top:10px;min-height:16px}
+
+/* ---------- toast ---------- */
+#toast{position:fixed;left:50%;bottom:22px;transform:translate(-50%,120%);z-index:70;
+  background:var(--panel-2);border:1px solid var(--amber);border-radius:12px;padding:12px 18px;
+  box-shadow:var(--shadow);font-family:var(--cond);letter-spacing:.08em;text-transform:uppercase;
+  transition:transform .4s cubic-bezier(.2,.9,.2,1);max-width:90vw;text-align:center}
+#toast.on{transform:translate(-50%,0)}
+
+/* ---------- plan de refuerzo ---------- */
+.fix{display:flex;gap:12px;padding:13px 0;border-bottom:1px solid #23272F;text-align:left}
+.fix:last-child{border-bottom:0}
+.fix .n{font-family:var(--mono);font-size:12px;color:var(--torch);flex:none;padding-top:4px;width:16px}
+.fix .tag{font-family:var(--mono);font-size:10px;color:var(--amber);letter-spacing:.16em;text-transform:uppercase;display:block;margin-bottom:3px}
+.fix b{display:block;font-family:var(--cond);font-weight:600;font-size:17.5px;letter-spacing:.02em;line-height:1.25}
+.fix p{margin:5px 0 0;color:var(--muted);font-size:14.5px;line-height:1.45}
+.plan-foot{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* ---------- acceso ---------- */
+#view-login{min-height:100svh;display:grid;align-items:center}
+#view-login .tab.on{background:var(--amber);color:#14110A;border-color:var(--amber)}
+#view-login .tab{border-color:var(--edge)}
+#view-login input.f{background:#12151A;border-color:var(--edge)}
+#view-login label.f span{color:var(--muted)}
+.hint-line{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:14px;line-height:1.7}
+
+/* ---------- lista de vendedores ---------- */
+.vrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #163140}
+.vrow:last-child{border-bottom:0}
+.vrow .vn{flex:1;min-width:0}
+.vrow .vn b{font-family:var(--cond);font-size:17px;letter-spacing:.05em;display:block}
+.vrow .vn span{font-family:var(--mono);font-size:11px;color:#7FA6B4}
+.vrow .vx{font-family:var(--mono);font-size:12px;color:var(--blueprint);text-align:right;white-space:nowrap}
+.icon-btn{background:transparent;border:1px solid #1D3D4C;border-radius:8px;width:34px;height:34px;cursor:pointer;color:#7FA6B4}
+.icon-btn:hover{border-color:var(--torch);color:var(--torch)}
+
+/* ---------- rutas por área ---------- */
+.area-head{display:flex;align-items:center;gap:12px;margin:30px 0 16px;width:100%;max-width:560px}
+.area-head h3{font-family:var(--cond);font-weight:700;letter-spacing:.16em;text-transform:uppercase;font-size:15px;color:var(--amber)}
+.area-head .rule{flex:1;height:1px;background:var(--edge)}
+
+@media (prefers-reduced-motion:reduce){
+  *{animation-duration:.01ms !important;transition-duration:.01ms !important}
+}
+</style>
+</head>
+<body>
+<div class="hazard" aria-hidden="true"></div>
+
+<!-- ====== piezas vectoriales reutilizables ====== -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="ico-master" viewBox="0 0 120 120">
+    <path d="M14 120c0-30 22-42 46-42s46 12 46 42Z" fill="#8E4030"/>
+    <g stroke="#6B2E22" stroke-width="2" opacity=".85">
+      <path d="M32 84v36M50 80v40M70 80v40M88 84v36"/>
+      <path d="M14 96h92M14 108h92"/>
+    </g>
+    <path d="M50 66h20v16H50z" fill="#E0AE85"/>
+    <circle cx="60" cy="52" r="26" fill="#EDBB90"/>
+    <path d="M34 52q0 44 26 44t26-44q-10 14-26 14T34 52Z" fill="#6F6055"/>
+    <ellipse cx="60" cy="62" rx="13" ry="5" fill="#6F6055"/>
+    <circle cx="50" cy="48" r="3.4" fill="#20242B"/>
+    <circle cx="70" cy="48" r="3.4" fill="#20242B"/>
+    <path d="M30 44q30-34 60 0Z" fill="#FFC42E"/>
+    <rect x="26" y="41" width="68" height="9" rx="4.5" fill="#E9A800"/>
+    <rect x="54" y="24" width="12" height="9" rx="2" fill="#171A1F"/>
+  </symbol>
+  <symbol id="ico-screw" viewBox="0 0 120 120">
+    <circle cx="60" cy="60" r="52" fill="#3A414C"/>
+    <circle cx="60" cy="60" r="44" fill="#8B94A2"/>
+    <circle cx="60" cy="60" r="44" fill="none" stroke="#C9D2DE" stroke-width="2"/>
+    <g stroke="#5A6270" stroke-width="4" stroke-linecap="round">
+      <path d="M60 26v68M26 60h68"/>
+    </g>
+    <g stroke="#3A414C" stroke-width="3" opacity=".7">
+      <path d="M60 8v10M60 102v10M8 60h10M102 60h10M23 23l7 7M90 90l7 7M97 23l-7 7M30 90l-7 7"/>
+    </g>
+  </symbol>
+</svg>
+
+<!-- ==================== VISTA 1 · INTRO ==================== -->
+<section id="view-intro" class="view active">
+  <div class="opening">
+    <div class="wrap">
+      <p class="corp" id="corp">Stanley Black + Decker</p>
+      <div class="screw-stage"><svg class="screw" id="screw"><use href="#ico-screw"/></svg></div>
+      <h1 class="wordmark" id="wordmark">Master</h1>
+      <p class="tagline" id="tagline">Jugando aprendo</p>
+      <button class="btn" id="btn-start">Comenzar entrenamiento</button>
+      <p class="scroll-hint" id="hint">Baja para conocer a Master ↓</p>
+    </div>
+  </div>
+
+  <!-- 3 escenas con parallax -->
+  <section class="scene">
+    <div class="wrap scene-grid">
+      <div class="scene-parallax">
+        <img class="scene-media" alt="Herramientas del catálogo" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 560'%3E%3Crect width='800' height='560' fill='rgb(20,23,28)'/%3E%3Cpath d='M0 400 L800 240 L800 560 L0 560Z' fill='rgb(30,34,42)'/%3E%3Crect x='110' y='180' width='230' height='92' rx='28' fill='rgb(255,196,46)'/%3E%3Crect x='180' y='262' width='72' height='130' rx='18' fill='rgb(255,196,46)'/%3E%3Crect x='330' y='206' width='150' height='40' rx='14' fill='rgb(150,158,170)'/%3E%3Ccircle cx='585' cy='300' r='58' fill='none' stroke='rgb(150,158,170)' stroke-width='22'/%3E%3Crect x='570' y='150' width='30' height='120' fill='rgb(150,158,170)'/%3E%3Crect x='620' y='360' width='140' height='18' rx='9' fill='rgb(255,90,31)'/%3E%3C/svg%3E">
+      </div>
+      <div class="scene-copy">
+        <p class="scene-num">ESCENA 01</p>
+        <h2 class="h-sec">El catálogo</h2>
+        <p>Cada producto tiene tres o cuatro datos que cierran una venta. El resto es relleno. Master se queda con los que sirven en el piso.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="wrap scene-grid">
+      <div class="scene-parallax">
+        <img class="scene-media" alt="Vendedor demostrando una herramienta" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 560'%3E%3Crect width='800' height='560' fill='rgb(20,23,28)'/%3E%3Ccircle cx='400' cy='300' r='210' fill='rgb(30,34,42)'/%3E%3Ccircle cx='330' cy='190' r='54' fill='rgb(237,233,225)'/%3E%3Cpath d='M240 560c0-120 40-190 90-190s90 70 90 190Z' fill='rgb(237,233,225)'/%3E%3Crect x='400' y='300' width='150' height='34' rx='17' fill='rgb(150,158,170)' transform='rotate(-18 400 300)'/%3E%3Crect x='470' y='250' width='120' height='72' rx='24' fill='rgb(255,196,46)' transform='rotate(-18 470 250)'/%3E%3Crect x='520' y='320' width='58' height='96' rx='16' fill='rgb(255,196,46)' transform='rotate(-18 520 320)'/%3E%3C/svg%3E">
+      </div>
+      <div class="scene-copy">
+        <p class="scene-num">ESCENA 02</p>
+        <h2 class="h-sec">El piso de venta</h2>
+        <p>El cliente pregunta y hay diez segundos para responder. Entrenar en cinco preguntas es más rápido que leer un manual.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="scene">
+    <div class="wrap scene-grid">
+      <div class="scene-parallax">
+        <img class="scene-media" alt="Master acompañando al vendedor" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 560'%3E%3Crect width='800' height='560' fill='rgb(20,23,28)'/%3E%3Cpath d='M0 470 L800 470 L800 560 L0 560Z' fill='rgb(30,34,42)'/%3E%3Ccircle cx='250' cy='230' r='58' fill='rgb(237,233,225)'/%3E%3Cpath d='M160 470c0-110 40-175 90-175s90 65 90 175Z' fill='rgb(237,233,225)'/%3E%3Ccircle cx='560' cy='250' r='52' fill='rgb(237,187,144)'/%3E%3Cpath d='M508 250q0 66 52 66t52-66q-20 20-52 20t-52-20Z' fill='rgb(111,96,85)'/%3E%3Cpath d='M506 244q54-52 108 0Z' fill='rgb(255,196,46)'/%3E%3Cpath d='M470 470c0-90 40-140 90-140s90 50 90 140Z' fill='rgb(142,64,48)'/%3E%3Crect x='330' y='120' width='190' height='84' rx='18' fill='rgb(255,196,46)'/%3E%3Cpath d='M390 204 L420 240 L430 204Z' fill='rgb(255,196,46)'/%3E%3C/svg%3E">
+      </div>
+      <div class="scene-copy">
+        <p class="scene-num">ESCENA 03</p>
+        <h2 class="h-sec">Master contigo</h2>
+        <p>Te corrige, te explica el porqué y te dice qué reforzar. Tu supervisor ve dónde falla el equipo completo.</p>
+        <button class="btn" style="margin-top:24px" data-go="login">Entrar</button>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ==================== VISTA 1.5 · ACCESO ==================== -->
+<section id="view-login" class="view">
+  <div class="wrap" style="max-width:440px;padding:40px 0 70px">
+    <div class="master-row" style="margin-bottom:26px">
+      <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
+      <div class="bubble"><span class="who">Master</span>Identifícate y seguimos. Tu supervisor te entrega el usuario y la clave.</div>
+    </div>
+    <div class="tabs">
+      <button class="tab on" data-login="vend">Vendedor</button>
+      <button class="tab" data-login="sup">Supervisor</button>
+    </div>
+    <div class="plate card-pad" id="login-vend">
+      <label class="f"><span>Usuario</span><input class="f" id="l-user" autocapitalize="none" autocomplete="username" placeholder="camila"></label>
+      <label class="f"><span>Clave</span><input class="f" id="l-pass" type="password" autocomplete="current-password"></label>
+      <p class="err" id="l-err"></p>
+      <button class="btn" id="btn-login">Entrar</button>
+      <p class="hint-line">Demo: camila / 1234</p>
+    </div>
+    <div class="plate card-pad" id="login-sup" style="display:none">
+      <label class="f"><span>Clave de supervisor</span><input class="f" id="s-pass" type="password" inputmode="numeric" placeholder="••••"></label>
+      <p class="err" id="s-err"></p>
+      <button class="btn" id="btn-login-sup">Entrar al panel</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VISTA 2 · MAPA ==================== -->
+<section id="view-map" class="view">
+  <header class="hud">
+    <div class="wrap hud-in">
+      <div class="hud-brand">MASTER<span>.</span></div>
+      <div class="hud-stats">
+        <span class="chip" id="hud-user">—</span>
+        <span class="chip">Nivel <b id="hud-level">1</b></span>
+        <span class="chip streak">Racha <b id="hud-streak">x0</b></span>
+        <a class="btn ghost small" href="index.html" style="text-decoration:none">← Aurelio</a>
+        <button class="btn ghost small" id="btn-logout">Salir</button>
+      </div>
+    </div>
+    <div class="wrap" style="padding-bottom:12px">
+      <div class="torque">
+        <div class="torque-label"><span id="hud-rank-name">Aprendiz</span><span id="hud-xp">0 XP</span></div>
+        <div class="torque-track"><div class="torque-fill" id="hud-fill"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="wrap section">
+    <div class="master-row" style="margin-bottom:28px">
+      <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
+      <div class="bubble"><span class="who">Master</span><span id="master-map">Listo cuando quieras.</span></div>
+    </div>
+
+    <div class="plate card-pad" id="review-card" style="display:none;margin-bottom:24px">
+      <p class="eyebrow">Master detectó · <b id="review-count">0</b></p>
+      <div id="review-list" style="margin-top:6px"></div>
+      <div class="plan-foot" id="review-foot"></div>
+    </div>
+
+    <div class="map-head">
+      <div>
+        <p class="eyebrow">Ruta de entrenamiento · <b id="map-progress">0 de 3</b></p>
+        <h2 class="h-sec">Mapa</h2>
+      </div>
+      <p class="sub">5 preguntas por desafío</p>
+    </div>
+
+    <div class="track" id="track"></div>
+
+    <div class="cols">
+      <div class="plate card-pad">
+        <p class="eyebrow">Logros · <b id="badge-count">0/6</b></p>
+        <div class="badges" id="badges"></div>
+      </div>
+      <div class="plate card-pad">
+        <p class="eyebrow">Ranking del equipo</p>
+        <div id="rank" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VISTA 3 · QUIZ ==================== -->
+<section id="view-quiz" class="view">
+  <header class="hud">
+    <div class="wrap hud-in">
+      <button class="btn ghost small" data-go="map">← Salir</button>
+      <div class="hud-stats">
+        <span class="chip">Racha <b id="q-streak">x0</b></span>
+        <span class="chip">XP <b id="q-xp">0</b></span>
+      </div>
+    </div>
+  </header>
+  <div class="wrap quiz-wrap">
+    <p class="eyebrow">Desafío · <b id="q-cat">—</b></p>
+    <h2 class="h-sec" id="q-title">—</h2>
+    <div class="ticks" id="ticks"></div>
+    <div class="master-row" style="margin-bottom:22px">
+      <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
+      <div class="bubble"><span class="who">Master</span><span id="master-quiz">Son solo 5 preguntas.</span></div>
+    </div>
+    <p class="eyebrow" id="q-count">Pregunta 1 / 5</p>
+    <p class="q-text" id="q-text"></p>
+    <div class="opts" id="opts"></div>
+    <div class="feedback" id="feedback" style="display:none">
+      <p class="verdict" id="verdict"></p>
+      <p id="explain" style="margin:0;color:var(--muted)"></p>
+      <p class="xp-pop" id="xp-pop" style="margin:12px 0 0"></p>
+      <button class="btn" id="btn-next" style="margin-top:16px">Siguiente</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VISTA 4 · RESULTADO ==================== -->
+<section id="view-result" class="view">
+  <div class="wrap result">
+    <p class="eyebrow">Desafío completado</p>
+    <h2 class="h-sec" id="r-title" style="margin:8px 0 18px">—</h2>
+    <p class="score" id="r-score">0 / 5</p>
+    <p class="pct" id="r-pct">0%</p>
+    <div class="result-grid">
+      <div><b id="r-xp">+0</b><span>XP ganado</span></div>
+      <div><b id="r-streak">x0</b><span>Mejor racha</span></div>
+      <div><b id="r-level">1</b><span>Nivel</span></div>
+    </div>
+    <div class="master-row" style="text-align:left;margin-bottom:26px">
+      <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
+      <div class="bubble"><span class="who">Master</span><span id="master-result">—</span></div>
+    </div>
+    <div class="plate card-pad" id="r-plan" style="text-align:left;margin-bottom:22px">
+      <p class="eyebrow" id="r-plan-title">Qué reforzar</p>
+      <div id="r-plan-list" style="margin-top:6px"></div>
+    </div>
+    <div class="plan-foot" style="justify-content:center">
+      <button class="btn ghost" id="btn-retry">Repetir desafío</button>
+      <button class="btn" data-go="map">Volver al mapa</button>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== VISTA 5 · SUPERVISOR ==================== -->
+<section id="view-sup" class="view">
+  <header class="sup-head">
+    <div class="wrap hud-in">
+      <div class="hud-brand" style="font-size:17px">MODO SUPERVISOR</div>
+      <div class="hud-stats">
+        <a class="btn ghost small" href="index.html" style="text-decoration:none">← Aurelio</a>
+        <button class="btn ghost small" data-go="map">Salir</button>
+      </div>
+    </div>
+  </header>
+  <div class="wrap section">
+    <div class="tabs">
+      <button class="tab on" data-tab="crear">Crear desafío</button>
+      <button class="tab" data-tab="vend">Vendedores</button>
+      <button class="tab" data-tab="datos">Analítica</button>
+      <button class="tab" data-tab="resp">Datos</button>
+    </div>
+
+    <div id="tab-crear">
+      <div class="plate card-pad">
+        <p class="eyebrow">Nuevo desafío</p>
+        <label class="f"><span>Nombre</span><input class="f" id="c-name" placeholder="Taladros percutores"></label>
+        <label class="f"><span>Área de la ruta</span>
+          <select class="f" id="c-area">
+            <option value="Producto">Conocimiento de producto</option>
+            <option value="Ventas">Conocimiento de ventas</option>
+          </select></label>
+        <label class="f"><span>Categoría</span><input class="f" id="c-cat" placeholder="Herramienta eléctrica · KPI de piso · Atención al cliente"></label>
+        <label class="f"><span>Producto</span><input class="f" id="c-prod" placeholder="Línea 20V MAX"></label>
+        <label class="f"><span>Descripción</span><textarea class="f" id="c-desc" placeholder="Qué debe saber el vendedor al terminar este desafío."></textarea></label>
+      </div>
+      <div id="q-editors"></div>
+      <p class="err" id="c-err"></p>
+      <button class="btn" id="btn-publish" style="margin-top:6px">Publicar desafío</button>
+    </div>
+
+    <div id="tab-vend" style="display:none">
+      <div class="plate card-pad">
+        <p class="eyebrow">Nuevo acceso de vendedor</p>
+        <label class="f"><span>Nombre y apellido</span><input class="f" id="v-name" placeholder="Camila Soto"></label>
+        <label class="f"><span>Usuario</span><input class="f" id="v-user" autocapitalize="none" placeholder="camila"></label>
+        <label class="f"><span>Clave</span><input class="f" id="v-pass" placeholder="1234"></label>
+        <p class="err" id="v-err"></p>
+        <button class="btn" id="btn-add-user" style="margin-top:12px">Crear acceso</button>
+      </div>
+      <div class="plate card-pad" style="margin-top:16px">
+        <p class="eyebrow">Equipo · <b id="v-count">0</b></p>
+        <div id="v-list" style="margin-top:8px"></div>
+      </div>
+    </div>
+
+    <div id="tab-resp" style="display:none">
+      <div class="plate card-pad">
+        <p class="eyebrow">Dónde se guardan los datos</p>
+        <p style="margin:10px 0 0" id="save-where">—</p>
+        <p class="hint-line">Cada respuesta, XP y logro se guarda apenas ocurre. Puedes cerrar y volver a abrir la app sin perder nada.</p>
+      </div>
+      <div class="plate card-pad" style="margin-top:16px">
+        <p class="eyebrow">Respaldo</p>
+        <p style="margin:10px 0 14px;color:#7FA6B4">Descarga un archivo con el equipo, los desafíos y todo el historial. Sirve para no perder nada y para pasar los datos a otro equipo.</p>
+        <div class="plan-foot">
+          <button class="btn" id="btn-export">Descargar respaldo</button>
+          <button class="btn ghost" id="btn-copy">Copiar al portapapeles</button>
+        </div>
+        <label class="f" style="margin-top:20px"><span>Restaurar desde un respaldo</span>
+          <textarea class="f" id="imp-txt" placeholder="Pega aquí el contenido del archivo de respaldo"></textarea></label>
+        <p class="err" id="imp-err"></p>
+        <button class="btn ghost" id="btn-import">Restaurar</button>
+      </div>
+      <div class="plate card-pad" style="margin-top:16px">
+        <p class="eyebrow" style="color:var(--torch)">Zona de riesgo</p>
+        <p style="margin:10px 0 14px;color:#7FA6B4">Vuelve a dejar el equipo de demostración y borra el historial actual.</p>
+        <button class="btn ghost" id="btn-reset">Reiniciar con datos de demo</button>
+      </div>
+    </div>
+
+    <div id="tab-datos" style="display:none">
+      <div class="stat-grid">
+        <div class="stat"><b id="s-team">0</b><span>Vendedores</span></div>
+        <div class="stat"><b id="s-prog">0%</b><span>Progreso del equipo</span></div>
+        <div class="stat"><b id="s-avg">—</b><span>Promedio</span></div>
+        <div class="stat"><b id="s-best">—</b><span>Mejor vendedor</span></div>
+        <div class="stat"><b id="s-hard">—</b><span>Desafío más difícil</span></div>
+        <div class="stat"><b id="s-q">—</b><span>Pregunta con más errores</span></div>
+      </div>
+      <div class="alert" id="s-alert" style="display:none">
+        <p class="eyebrow" style="color:var(--torch)">Atención</p>
+        <p style="margin:6px 0 0" id="s-alert-txt"></p>
+      </div>
+      <div class="master-row" style="margin-top:20px">
+        <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
+        <div class="bubble"><span class="who">Master recomienda</span><span id="s-reco">Aún no hay intentos registrados. En cuanto el equipo entrene, aquí aparece qué reforzar.</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<button class="master-fab" id="fab" title="Hablar con Master" aria-label="Hablar con Master">
+  <svg class="avatar"><use href="#ico-master"/></svg>
+</button>
+<canvas id="fx"></canvas>
+<div id="toast" role="status"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+/* ============================================================
+   1 · CAPA DE DATOS
+   Hoy guarda en memoria (y en window.storage si existe).
+   Para Supabase, reemplaza el cuerpo de API.* por queries.
+   Tablas sugeridas:
+     profiles(id, nombre, usuario, clave_hash, rol, xp, nivel, tienda_id)
+     challenges(id, nombre, categoria, producto, descripcion, autor_id, orden)
+     questions(id, challenge_id, texto, opciones jsonb, correcta, explicacion, orden)
+     attempts(id, user_id, challenge_id, correctas, total, xp, racha, segundos, creado)
+     answers(id, attempt_id, question_id, elegida, es_correcta)
+     achievements(id, user_id, codigo, creado)
+   ============================================================ */
+const Store = {
+  mem:{}, donde:'memoria',
+  async get(k){
+    try{ if(window.storage){ const r=await window.storage.get(k,false); if(r) return JSON.parse(r.value); } }catch(e){}
+    try{ const v=localStorage.getItem(k); if(v!=null) return JSON.parse(v); }catch(e){}
+    return this.mem[k] ?? null;
+  },
+  async set(k,v){
+    this.mem[k]=v; let ok=false;
+    try{ if(window.storage){ await window.storage.set(k, JSON.stringify(v), false); ok=true; this.donde='tu cuenta de Claude'; } }catch(e){}
+    try{ localStorage.setItem(k, JSON.stringify(v)); ok=true; if(this.donde==='memoria') this.donde='este navegador'; }catch(e){}
+    if(!ok) this.donde='memoria (no persiste)';
+    return ok;
+  },
+  async wipe(){
+    for(const k of ['master:users','master:challenges','master:stats','master:seeded']){
+      this.mem[k]=null;
+      try{ if(window.storage) await window.storage.delete(k,false); }catch(e){}
+      try{ localStorage.removeItem(k); }catch(e){}
+    }
+  }
+};
+const API = {
+  getChallenges: async () => (await Store.get('master:challenges')) || SEED,
+  saveChallenges: async (list) => Store.set('master:challenges', list),
+  /* usuarios: el supervisor los crea desde su panel.
+     En Supabase esto pasa a profiles + auth; la clave nunca se guarda en claro. */
+  getUsers: async () => await Store.get('master:users'),
+  saveUsers: async (list) => Store.set('master:users', list),
+  /* estadística por pregunta, alimenta la analítica del supervisor */
+  getStats: async () => (await Store.get('master:stats')) || {},
+  saveStats: async (st) => Store.set('master:stats', st)
+};
+const SUP_PIN = '6060';   /* clave del modo supervisor */
+const EMPTY_PROGRESS = () => ({xp:0, done:{}, badges:[], bestStreak:0, repasar:[]});
+
+/* ============================================================
+   2 · CONTENIDO SEMILLA (editable desde Modo supervisor)
+   ============================================================ */
+const SEED = [
+ {id:'c1', area:'Producto', nombre:'Herramientas', categoria:'Fundamentos', producto:'Línea general',
+  descripcion:'Los datos básicos que se usan todos los días en el piso.',
+  preguntas:[
+   {t:'¿Qué indica el torque de una herramienta de atornillado?', o:['La velocidad de giro','La fuerza de rotación que entrega','El consumo de batería','El diámetro del mandril'], c:1,
+    e:'El torque es fuerza de giro y se mide en Nm o in-lbs. Más torque significa tornillos más largos o materiales más duros, no más velocidad.'},
+   {t:'Un cliente compara dos baterías de 20V: una de 2.0Ah y otra de 5.0Ah. ¿Qué cambia?', o:['La potencia entregada','La autonomía de trabajo','La velocidad máxima','El tipo de motor'], c:1,
+    e:'El voltaje define la potencia; los amperios-hora definen cuánto dura la carga. La de 5.0Ah trabaja más tiempo, no pega más fuerte.'},
+   {t:'¿Cuál es la ventaja real de un motor sin escobillas (brushless)?', o:['Pesa siempre menos','Más autonomía y menos mantención','Sirve para perforar concreto','No necesita carga'], c:1,
+    e:'Sin escobillas hay menos fricción: mejor aprovechamiento de la batería, menos calor y menos piezas de desgaste. Es el argumento para el usuario intensivo.'},
+   {t:'Un mandril de 13 mm frente a uno de 10 mm permite…', o:['Girar más rápido','Usar brocas de mayor diámetro','Trabajar sin cable','Duplicar el torque'], c:1,
+    e:'El mandril es la capacidad máxima de vástago que puede sujetar. 13 mm abre el rango de brocas y de trabajos posibles.'},
+   {t:'Un usuario ocasional duda entre dos marcas. ¿Qué argumento cierra mejor?', o:['Que la caja es más grande','Que la batería sirve para toda la plataforma de herramientas','Que tiene más accesorios de regalo','Que es la más vendida'], c:1,
+    e:'La plataforma de batería compartida es valor a futuro: la próxima herramienta le sale más barata. Ese es el gancho para volver a la tienda.'}
+  ]},
+ {id:'c2', area:'Producto', nombre:'Taladros', categoria:'Herramienta eléctrica', producto:'Taladros percutores',
+  descripcion:'Diferencias, embrague, brocas y recomendación al cliente.',
+  preguntas:[
+   {t:'¿Qué diferencia a un taladro percutor de un atornillador/taladro común?', o:['Gira más rápido','Suma un golpeteo frontal para albañilería','Usa puntas hexagonales','No necesita mandril'], c:1,
+    e:'La percusión agrega miles de golpes por minuto en el eje de la broca. Es lo que permite entrar en ladrillo y concreto.'},
+   {t:'El collar numerado (embrague) del taladro sirve para…', o:['Elegir la velocidad','Limitar el torque y no pasar el tornillo','Bloquear el gatillo','Cambiar el giro'], c:1,
+    e:'El embrague corta la fuerza al llegar al número elegido. Evita hundir el tornillo en madera blanda o romper la cabeza.'},
+   {t:'Para perforar una muralla de concreto, la broca correcta es…', o:['HSS para metal','Con punta de widia (metal duro)','De pala para madera','Broca escalonada'], c:1,
+    e:'El concreto se pulveriza, no se corta: necesita punta de widia. Una broca de acero rápido se quema en los primeros centímetros.'},
+   {t:'La velocidad 1 del selector mecánico entrega…', o:['Más RPM y menos torque','Más torque y menos RPM','Lo mismo que la 2','Solo giro inverso'], c:1,
+    e:'Velocidad 1: torque para atornillar y brocas grandes. Velocidad 2: RPM para perforar rápido en diámetros chicos.'},
+   {t:'Un cliente quiere colgar repisas en concreto. ¿Qué le llevas?', o:['Solo el taladro','Percutor, broca de widia y tarugos','Atornillador y puntas','Taladro de banco'], c:1,
+    e:'Vender la solución completa evita que vuelva frustrado y sube las unidades por boleta. La broca y el tarugo son el complemento natural.'}
+  ]},
+ {id:'c3', area:'Producto', nombre:'Impact drivers', categoria:'Herramienta eléctrica', producto:'Atornilladores de impacto',
+  descripcion:'Cuándo sí, cuándo no y cómo argumentarlo.',
+  preguntas:[
+   {t:'¿Cuál es la diferencia principal de un impact driver?', o:['Percute hacia adelante como el percutor','Entrega impactos rotacionales y mucho más torque','Solo funciona con cable','Sirve para perforar concreto'], c:1,
+    e:'El impacto es rotacional, no frontal. Por eso entrega torque muy alto sin que la muñeca reciba el contragolpe.'},
+   {t:'¿Qué encastre usa?', o:['Mandril de 13 mm','Hexagonal de 1/4"','SDS Plus','Rosca 1/2"'], c:1,
+    e:'Encastre hexagonal de 1/4" de cambio rápido. Por eso siempre se vende junto a un set de puntas compatibles.'},
+   {t:'¿En qué caso NO conviene recomendarlo?', o:['Tornillos largos en madera','Terrazas y estructuras','Trabajos de precisión o tornillos delicados','Montaje de tabiquería'], c:2,
+    e:'El impacto no tiene embrague fino: en herrajes o tornillos pequeños puede pasarse. Ahí conviene un atornillador con collar de torque.'},
+   {t:'El beneficio que más se nota para el usuario es…', o:['Que suena más fuerte','Menos esfuerzo de muñeca y tornillos largos sin pretaladrar','Que pesa más','Que reemplaza al percutor'], c:1,
+    e:'Es el argumento de venta que funciona: menos cansancio y más rendimiento en jornadas largas.'},
+   {t:'¿Cuál es el mejor combo para subir el ticket?', o:['Impact solo','Impact + set de puntas + segunda batería','Dos impacts','Impact + broca de widia'], c:1,
+    e:'Puntas y batería extra son consumo real e inmediato. Es el combo con mejor tasa de aceptación.'}
+  ]},
+ {id:'c4', area:'Ventas', nombre:'Indicadores', categoria:'KPI de piso', producto:'Gestión comercial',
+  descripcion:'Los números con los que te miden y cómo moverlos.',
+  preguntas:[
+   {t:'¿Qué es el UPT?', o:['Utilidad por tienda','Unidades por transacción','Unidades por turno','Precio unitario promedio'], c:1,
+    e:'UPT = unidades vendidas ÷ número de boletas. Mide si estás vendiendo el complemento o solo lo que el cliente vino a buscar.'},
+   {t:'¿Cómo se calcula el ticket promedio?', o:['Venta total ÷ número de boletas','Venta total ÷ unidades','Boletas ÷ visitas','Meta ÷ días del mes'], c:0,
+    e:'Sube de dos formas: más unidades por boleta (UPT) o productos de mayor valor. Son dos conversaciones distintas con el cliente.'},
+   {t:'Tu tienda tiene mucho tráfico y pocas boletas. ¿Qué indicador está bajo?', o:['El UPT','La conversión','El ticket promedio','El margen'], c:1,
+    e:'Conversión = boletas ÷ visitas. Cuando está baja, el problema es el abordaje y la atención, no el precio.'},
+   {t:'Vendiste 40 unidades en 25 boletas. ¿Cuál es tu UPT?', o:['0,6','1,6','2,5','15'], c:1,
+    e:'40 ÷ 25 = 1,6 unidades por boleta. Es el número que más rápido se mueve ofreciendo un complemento en cada venta.'},
+   {t:'Tienes un producto estancado hace tres meses. ¿Qué haces primero?', o:['Pedir descuento de inmediato','Moverlo a un punto de alto tráfico y ofrecerlo como complemento','Devolverlo a bodega','Esperar a la campaña'], c:1,
+    e:'Primero exhibición y ofrecimiento activo: la mayoría de los estancados no se venden porque nadie los muestra. El descuento quema margen y es el último recurso.'}
+  ]},
+ {id:'c5', area:'Ventas', nombre:'Técnica de venta', categoria:'Atención al cliente', producto:'Piso de venta',
+  descripcion:'Cómo se pregunta, se argumenta y se cierra.',
+  preguntas:[
+   {t:'¿Para qué sirve hablar de beneficios y no solo de características?', o:['Para hacer la explicación más larga','Para traducir el dato técnico en lo que el cliente gana','Para justificar el precio de lista','Para evitar preguntas'], c:1,
+    e:'"Motor brushless" es característica. "Te dura más la batería y no le haces mantención" es beneficio. El cliente compra el resultado, no la ficha técnica.'},
+   {t:'¿Qué es el parafraseo?', o:['Repetir el precio dos veces','Decir con tus palabras lo que el cliente te dijo para confirmar que entendiste','Recitar la ficha del producto','Cerrar con una pregunta de sí o no'], c:1,
+    e:'"Entonces necesitas perforar concreto y hoy no tienes taladro, ¿es así?" Confirma la necesidad, el cliente se siente escuchado y te deja el pie para recomendar.'},
+   {t:'El cliente dice "está muy caro". ¿Qué haces primero?', o:['Ofrecer descuento','Preguntar con qué lo está comparando','Mostrar el más barato','Repetir las características'], c:1,
+    e:'Casi siempre es percepción de valor, no de precio. Si no indagas, terminas bajando el precio en vez de subir el valor.'},
+   {t:'¿Cuál de estas es una pregunta abierta?', o:['¿Se lo envuelvo?','¿Para qué trabajo lo necesita?','¿Lo lleva hoy?','¿Tiene taladro?'], c:1,
+    e:'Las abiertas entregan información para recomendar. Las cerradas sirven al final, para confirmar y cerrar.'},
+   {t:'¿Cuándo conviene ofrecer el complemento?', o:['Al saludar','Cuando el cliente ya decidió el producto principal','Solo si lo pide','Al pasar por caja, sin explicar'], c:1,
+    e:'Antes de la decisión distrae; después se percibe como parte de la solución. Ahí es donde sube el UPT sin presionar.'}
+  ]}
+];
+
+/* ---------- equipo de demostración ----------
+   Cinco vendedores con historial cargado: sirve para mostrar el panel
+   con datos reales. Se pueden borrar o reemplazar desde Modo supervisor. */
+function buildProgress(scores, repasar, bestStreak){
+  let xp=0; const done={};
+  Object.entries(scores).forEach(([cid,ok])=>{
+    xp += 500 + ok*100 + (ok===5 ? 200 : 0);
+    done[cid]={correctas:ok, pct:ok*20, segundos:70+Math.round(Math.random()*50)};
+  });
+  const badges=[];
+  if(Object.keys(done).length) badges.push('first');
+  if(Object.values(done).some(d=>d.correctas===5)) badges.push('perfect');
+  if(bestStreak>=5) badges.push('streak5');
+  if(['c1','c2','c3'].every(c=>done[c])) badges.push('tools');
+  if(['c4','c5'].every(c=>done[c])) badges.push('sales');
+  if(xp>=5000) badges.push('master');
+  return {xp, done, badges, bestStreak, repasar};
+}
+const DEMO_USERS = () => ([
+ {id:'u1', nombre:'Camila Soto', usuario:'camila', clave:'1234', rol:'vendedor',
+  progreso:buildProgress({c1:5,c2:5,c3:4,c4:5,c5:4}, [{c:'c3',q:2},{c:'c5',q:2}], 5)},
+ {id:'u2', nombre:'Nicolás Vera', usuario:'nicolas', clave:'1234', rol:'vendedor',
+  progreso:buildProgress({c1:5,c2:4,c3:3,c4:4}, [{c:'c2',q:2},{c:'c3',q:2},{c:'c4',q:3}], 4)},
+ {id:'u3', nombre:'Ignacio Rojas', usuario:'ignacio', clave:'1234', rol:'vendedor',
+  progreso:buildProgress({c1:4,c2:3,c4:4}, [{c:'c1',q:3},{c:'c2',q:2},{c:'c4',q:3}], 3)},
+ {id:'u4', nombre:'Paula Muñoz', usuario:'paula', clave:'1234', rol:'vendedor',
+  progreso:buildProgress({c1:5,c4:3}, [{c:'c4',q:0},{c:'c4',q:4}], 5)},
+ {id:'u5', nombre:'Diego Cárdenas', usuario:'diego', clave:'1234', rol:'vendedor',
+  progreso:buildProgress({c1:3}, [{c:'c1',q:1},{c:'c1',q:3}], 2)}
+]);
+/* histórico de respuestas del equipo: alimenta la analítica */
+const DEMO_STATS = () => ({
+ c1:{0:{ok:5,fail:0},1:{ok:4,fail:1},2:{ok:5,fail:0},3:{ok:3,fail:2},4:{ok:4,fail:1}},
+ c2:{0:{ok:3,fail:0},1:{ok:2,fail:1},2:{ok:1,fail:3},3:{ok:3,fail:0},4:{ok:3,fail:0}},
+ c3:{0:{ok:2,fail:0},1:{ok:2,fail:0},2:{ok:1,fail:2},3:{ok:2,fail:0},4:{ok:2,fail:1}},
+ c4:{0:{ok:4,fail:0},1:{ok:3,fail:1},2:{ok:3,fail:1},3:{ok:2,fail:2},4:{ok:3,fail:1}},
+ c5:{0:{ok:2,fail:0},1:{ok:2,fail:0},2:{ok:1,fail:2},3:{ok:2,fail:0},4:{ok:2,fail:0}}
+});
+
+/* ============================================================
+   3 · NIVELES, LOGROS Y FRASES DE MASTER
+   ============================================================ */
+const LEVELS=[
+  {xp:0,    n:'Aprendiz'},
+  {xp:600,  n:'Conocedor'},
+  {xp:1500, n:'Especialista'},
+  {xp:3000, n:'Experto'},
+  {xp:5000, n:'Master'}
+];
+const BADGES=[
+  {id:'first', i:'🏆', t:'Primera victoria'},
+  {id:'streak5', i:'🔥', t:'Racha de 5'},
+  {id:'speed', i:'⚡', t:'Velocidad'},
+  {id:'perfect', i:'🎯', t:'100%'},
+  {id:'tools', i:'🧠', t:'Experto en herramientas'},
+  {id:'sales', i:'💬', t:'Piso de venta'},
+  {id:'master', i:'👑', t:'Master'}
+];
+const SAY={
+  intro:['Veamos cuánto sabes. Son solo 5 preguntas.','Sin apuro. Lee la pregunta completa antes de elegir.','Esta ronda vale XP. Concéntrate.'],
+  ok:['Exacto. Esa es la característica que hay que explicarle al cliente.','Bien. Con ese dato ya puedes rebatir una objeción.','Correcto, y esa pregunta no es fácil.','Vas fino. Sigue así.'],
+  bad:['Casi. Lee la explicación, esa se pregunta mucho en el piso.','No era esa. Pasa seguido, quédate con el porqué.','Falló, pero ahora te la sabes.'],
+  tip:['Si un cliente pregunta por potencia, habla de torque; si pregunta por duración, habla de amperios-hora.','La segunda batería es el accesorio que menos se ofrece y más se necesita.','Cuando dudes, pregunta para qué material lo va a usar. Ahí está la venta.']
+};
+
+/* ============================================================
+   4 · ESTADO Y RENDER
+   ============================================================ */
+let CH=[], USERS=[], STATS={}, ME=null, P={xp:0,done:{},badges:[],bestStreak:0};
+/* sesión abierta en la portada de Aurelio */
+let SESION=null;
+try{ SESION=JSON.parse(localStorage.getItem('aurelio:sesion')||'null'); }catch(e){}
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const levelOf = xp => { let l=1; LEVELS.forEach((L,i)=>{ if(xp>=L.xp) l=i+1; }); return l; };
+
+function toast(msg){
+  const t=$('#toast'); t.textContent=msg; t.classList.add('on');
+  clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2600);
+}
+function nav(id){
+  if((id==='map'||id==='quiz'||id==='result') && !ME) id='login';
+  $$('.view').forEach(v=>v.classList.remove('active'));
+  $('#view-'+id).classList.add('active');
+  window.scrollTo(0,0);
+  if(window.ScrollTrigger) ScrollTrigger.refresh();
+  if(id==='map') renderMap();
+  if(id==='sup'){ renderUsers(); renderAnalytics(); }
+}
+function renderHUD(){
+  const lv=levelOf(P.xp), cur=LEVELS[lv-1], next=LEVELS[lv]||{xp:cur.xp};
+  const pct = next.xp>cur.xp ? Math.min(100,((P.xp-cur.xp)/(next.xp-cur.xp))*100) : 100;
+  $('#hud-level').textContent=lv;
+  $('#hud-rank-name').textContent=cur.n;
+  $('#hud-xp').textContent=P.xp+' XP';
+  $('#hud-fill').style.width=pct+'%';
+  $('#hud-streak').textContent='x'+P.bestStreak;
+  if(ME) $('#hud-user').textContent=ME.nombre.split(' ')[0];
+}
+function renderMap(){
+  renderHUD();
+  const track=$('#track'); track.innerHTML='';
+  const areas=[...new Set(CH.map(c=>c.area||'Producto'))];
+  areas.forEach(area=>{
+    const list=CH.filter(c=>(c.area||'Producto')===area);
+    track.insertAdjacentHTML('beforeend',
+      `<div class="area-head"><h3>${area==='Ventas'?'Conocimiento de ventas':'Conocimiento de producto'}</h3><span class="rule"></span></div>`);
+    list.forEach((c,i)=>{
+      const done=!!P.done[c.id];
+      const open=i===0 || !!P.done[list[i-1].id];
+      if(i>0){ const l=document.createElement('div'); l.className='node-link'+(P.done[list[i-1].id]?' done':''); track.appendChild(l); }
+      const b=document.createElement('button');
+      b.className='node'+(done?' done':'')+(!open?' locked':(done?'':' open'));
+      b.disabled=!open;
+      b.innerHTML=`<span class="bolt">${done?'✓':(open?'▶':'🔒')}</span>
+        <span class="node-body">
+          <span class="node-title">${c.nombre}</span>
+          <span class="node-meta">${c.categoria} · 5 preguntas</span>
+        </span>
+        ${done?`<span class="node-score">${P.done[c.id].correctas}/5</span>`:''}`;
+      b.onclick=()=>{ if(open) startQuiz(c); };
+      track.appendChild(b);
+    });
+  });
+  $('#map-progress').textContent=`${Object.keys(P.done).length} de ${CH.length}`;
+
+  const bg=$('#badges'); bg.innerHTML='';
+  BADGES.forEach(b=>{
+    const on=P.badges.includes(b.id);
+    bg.insertAdjacentHTML('beforeend',`<div class="badge${on?' on':''}"><i>${b.i}</i><span>${b.t}</span></div>`);
+  });
+  $('#badge-count').textContent=`${P.badges.length}/${BADGES.length}`;
+  renderReview();
+
+  const list=USERS.filter(u=>u.rol==='vendedor')
+    .map(u=>({n:u.nombre, xp:u.progreso.xp, me:ME && u.id===ME.id}))
+    .sort((a,b)=>b.xp-a.xp);
+  $('#rank').innerHTML=list.map((r,i)=>`
+    <div class="rank-row${r.me?' me':''}">
+      <span class="rank-pos">${i+1}</span>
+      <span class="rank-name">${r.me?'Tú · '+r.n.split(' ')[0]:r.n}</span>
+      <span class="stars">${i<3?'★'.repeat(3-i):''}</span>
+      <span class="rank-xp">${r.xp} XP</span>
+    </div>`).join('');
+
+  const pend=CH.length-Object.keys(P.done).length;
+  const nombre=ME?ME.nombre.split(' ')[0]:'';
+  $('#master-map').textContent = pend===0
+    ? 'Completaste toda la ruta. Pídele a tu supervisor que publique un desafío nuevo.'
+    : (Object.keys(P.done).length===0
+        ? `¡Hola ${nombre}! Soy Master. ¿Listo para poner a prueba tus conocimientos?`
+        : `Te quedan ${pend} desafío${pend>1?'s':''}. El siguiente ya está desbloqueado.`);
+}
+const pick = a => a[Math.floor(Math.random()*a.length)];
+
+/* ============================================================
+   5 · QUIZ
+   ============================================================ */
+let Q={ch:null,i:0,ok:0,streak:0,best:0,xp:0,t0:0,answered:false};
+function startQuiz(ch){
+  Q={ch,i:0,ok:0,streak:0,best:0,xp:0,t0:Date.now(),answered:false};
+  $('#q-cat').textContent=ch.categoria;
+  $('#q-title').textContent=ch.nombre;
+  $('#master-quiz').textContent=pick(SAY.intro);
+  nav('quiz'); renderQ();
+}
+function renderQ(){
+  const q=Q.ch.preguntas[Q.i];
+  $('#ticks').innerHTML=Q.ch.preguntas.map((_,i)=>
+    `<span class="tick${i<Q.i?(Q.marks&&Q.marks[i]?'ok':'bad'):(i===Q.i?' now':'')}"></span>`).join('');
+  $('#q-count').textContent=`Pregunta ${Q.i+1} / 5`;
+  $('#q-text').textContent=q.t;
+  $('#q-streak').textContent='x'+Q.streak;
+  $('#q-xp').textContent=Q.xp;
+  $('#feedback').style.display='none';
+  const box=$('#opts'); box.innerHTML='';
+  q.o.forEach((op,i)=>{
+    const b=document.createElement('button');
+    b.className='opt';
+    b.innerHTML=`<span class="key">${'ABCD'[i]}</span><span>${op}</span>`;
+    b.onclick=()=>answer(i,b);
+    box.appendChild(b);
+  });
+  if(window.gsap) gsap.fromTo('#opts .opt',{opacity:0,y:14},{opacity:1,y:0,stagger:.06,duration:.35,ease:'power2.out'});
+}
+function answer(i,btn){
+  if(Q.answered) return; Q.answered=true;
+  const q=Q.ch.preguntas[Q.i], good=i===q.c;
+  Q.marks=Q.marks||{}; Q.marks[Q.i]=good;
+  $$('#opts .opt').forEach((b,k)=>{
+    b.disabled=true;
+    if(k===q.c) b.classList.add('correct');
+    if(k===i && !good) b.classList.add('wrong');
+  });
+  STATS[Q.ch.id]=STATS[Q.ch.id]||{};
+  const st=STATS[Q.ch.id][Q.i]=STATS[Q.ch.id][Q.i]||{ok:0,fail:0};
+  good ? st.ok++ : st.fail++;
+  if(good){
+    Q.ok++; Q.streak++; Q.best=Math.max(Q.best,Q.streak); Q.xp+=100;
+    $('#verdict').textContent='¡Correcto! 🔥'; $('#verdict').className='verdict ok';
+    $('#xp-pop').textContent=`+100 XP · Racha x${Q.streak}`;
+    $('#master-quiz').textContent=pick(SAY.ok);
+  }else{
+    Q.streak=0;
+    $('#verdict').textContent='Casi.'; $('#verdict').className='verdict bad';
+    $('#xp-pop').textContent='Racha reiniciada';
+    $('#master-quiz').textContent=pick(SAY.bad);
+  }
+  $('#explain').textContent=q.e;
+  $('#q-streak').textContent='x'+Q.streak;
+  $('#q-xp').textContent=Q.xp;
+  $('#btn-next').textContent = Q.i===4 ? 'Ver resultado' : 'Siguiente';
+  const fb=$('#feedback'); fb.style.display='block';
+  if(window.gsap) gsap.fromTo(fb,{opacity:0,y:10},{opacity:1,y:0,duration:.3});
+  fb.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('#btn-next').onclick=()=>{
+  Q.answered=false;
+  if(Q.i===4) return finish();
+  Q.i++;
+  if(Q.i===4 && Q.ok===4) $('#master-quiz').textContent='Te falta una para una racha perfecta.';
+  renderQ();
+};
+async function finish(){
+  const secs=Math.round((Date.now()-Q.t0)/1000);
+  const bonus=500 + (Q.ok===5?200:0);
+  const total=Q.xp+bonus;
+  const prevLevel=levelOf(P.xp);
+  P.xp+=total;
+  P.bestStreak=Math.max(P.bestStreak,Q.best);
+  /* memoria de errores: se suman los fallos de esta ronda y se limpian los ya corregidos */
+  P.repasar = (P.repasar||[]).filter(r => !(r.c===Q.ch.id && Q.marks[r.q]===true));
+  Q.ch.preguntas.forEach((q,i)=>{
+    if(Q.marks[i]===false && !P.repasar.some(r=>r.c===Q.ch.id && r.q===i)) P.repasar.push({c:Q.ch.id,q:i});
+  });
+
+  const prev=P.done[Q.ch.id];
+  if(!prev || prev.correctas<Q.ok) P.done[Q.ch.id]={correctas:Q.ok,pct:Q.ok*20,segundos:secs};
+  const win=[];
+  const add=id=>{ if(!P.badges.includes(id)){ P.badges.push(id); win.push(BADGES.find(b=>b.id===id).t); } };
+  add('first');
+  if(Q.best>=5) add('streak5');
+  if(secs<=75) add('speed');
+  if(Q.ok===5) add('perfect');
+  if(CH.filter(c=>(c.area||'Producto')==='Producto').every(c=>P.done[c.id])) add('tools');
+  if(CH.filter(c=>c.area==='Ventas').length && CH.filter(c=>c.area==='Ventas').every(c=>P.done[c.id])) add('sales');
+  if(levelOf(P.xp)>=5) add('master');
+  if(ME){ ME.progreso=P; await API.saveUsers(USERS); }
+  await API.saveStats(STATS);
+
+  $('#r-title').textContent=Q.ch.nombre;
+  $('#r-score').textContent=`${Q.ok} / 5`;
+  $('#r-pct').textContent=`${Q.ok*20}%`;
+  $('#r-xp').textContent=`+${total}`;
+  $('#r-streak').textContent='x'+Q.best;
+  $('#r-level').textContent=levelOf(P.xp);
+  renderPlan();
+  $('#master-result').textContent = Q.ok===5
+    ? '¡Ronda perfecta! Ese nivel es el que quiero ver en el piso de venta.'
+    : Q.ok>=3 ? `Buen resultado. Te quedaron ${5-Q.ok} punto${5-Q.ok>1?'s':''} por afirmar, están abajo.`
+              : 'Vamos de nuevo. Abajo te dejo exactamente qué repasar antes de repetir.';
+  nav('result');
+  if(window.gsap) gsap.fromTo('#view-result .result > *',{opacity:0,y:18},{opacity:1,y:0,stagger:.07,duration:.5,ease:'power2.out'});
+  if(levelOf(P.xp)>prevLevel) setTimeout(()=>toast(`Nivel ${levelOf(P.xp)} · ${LEVELS[levelOf(P.xp)-1].n}`),700);
+  win.forEach((t,k)=>setTimeout(()=>toast('Logro desbloqueado · '+t),1400+k*1600));
+  if(Q.ok===5) fireworks();
+}
+
+/* ---- qué mejorar: se arma con las preguntas falladas de la ronda ---- */
+function renderPlan(){
+  const falladas=Q.ch.preguntas.map((q,i)=>({q,i})).filter(x=>Q.marks[x.i]===false);
+  const box=$('#r-plan-list');
+  if(!falladas.length){
+    $('#r-plan-title').textContent='Lo que dominas';
+    box.innerHTML=`<div class="fix"><span class="n" style="color:var(--ok)">✓</span><div>
+      <span class="tag">${Q.ch.nombre}</span>
+      <b>Respondiste las 5 correctas.</b>
+      <p>Este contenido ya lo puedes usar frente a un cliente. El siguiente desafío quedó desbloqueado.</p></div></div>`;
+    return;
+  }
+  $('#r-plan-title').textContent=`Qué reforzar · ${falladas.length} de 5`;
+  box.innerHTML=falladas.map(x=>`
+    <div class="fix">
+      <span class="n">${x.i+1}</span>
+      <div>
+        <span class="tag">${Q.ch.nombre}</span>
+        <b>${x.q.t}</b>
+        <p><b style="color:var(--paper);font-family:var(--body);font-size:14.5px;display:inline">Respuesta: ${x.q.o[x.q.c]}.</b> ${x.q.e}</p>
+      </div>
+    </div>`).join('');
+}
+
+/* ---- lo pendiente vuelve a aparecer en el mapa hasta que lo corrija ---- */
+function renderReview(){
+  const card=$('#review-card');
+  const items=(P.repasar||[]).map(r=>{
+    const c=CH.find(x=>x.id===r.c);
+    return c && c.preguntas[r.q] ? {c, q:c.preguntas[r.q], i:r.q} : null;
+  }).filter(Boolean);
+  if(!items.length){ card.style.display='none'; return; }
+  card.style.display='block';
+  $('#review-count').textContent=`${items.length} punto${items.length>1?'s':''} por reforzar`;
+  $('#review-list').innerHTML=items.slice(0,4).map(it=>`
+    <div class="fix">
+      <span class="n">!</span>
+      <div><span class="tag">${it.c.nombre}</span><b>${it.q.t}</b><p>${it.q.e}</p></div>
+    </div>`).join('');
+  const ids=[...new Set(items.map(i=>i.c.id))];
+  $('#review-foot').innerHTML=ids.map(id=>{
+    const c=CH.find(x=>x.id===id);
+    return `<button class="btn ghost small" data-retry="${id}">Repetir ${c.nombre}</button>`;
+  }).join('');
+  $$('#review-foot [data-retry]').forEach(b=>b.onclick=()=>startQuiz(CH.find(c=>c.id===b.dataset.retry)));
+}
+
+/* ---- celebración de ronda perfecta ---- */
+function fireworks(){
+  const c=$('#fx'), x=c.getContext('2d');
+  c.style.display='block'; c.width=innerWidth; c.height=innerHeight;
+  const cols=['#FFC42E','#FF5A1F','#5FD0DE','#EDE9E1'], parts=[];
+  const burst=()=>{
+    const bx=innerWidth*(.2+Math.random()*.6), by=innerHeight*(.2+Math.random()*.35), col=pick(cols);
+    for(let i=0;i<48;i++){
+      const a=Math.random()*Math.PI*2, s=1+Math.random()*5;
+      parts.push({x:bx,y:by,vx:Math.cos(a)*s,vy:Math.sin(a)*s,l:1,c:col});
+    }
+  };
+  let n=0; const iv=setInterval(()=>{ burst(); if(++n>4) clearInterval(iv); },420); burst();
+  (function loop(){
+    x.clearRect(0,0,c.width,c.height);
+    parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=.06; p.l-=.012;
+      x.globalAlpha=Math.max(p.l,0); x.fillStyle=p.c; x.fillRect(p.x,p.y,3,3); });
+    for(let i=parts.length-1;i>=0;i--) if(parts[i].l<=0) parts.splice(i,1);
+    if(parts.length||n<=4) requestAnimationFrame(loop); else c.style.display='none';
+  })();
+}
+
+/* ============================================================
+   6 · MODO SUPERVISOR
+   ============================================================ */
+function buildEditors(){
+  const box=$('#q-editors'); box.innerHTML='';
+  for(let i=0;i<5;i++){
+    box.insertAdjacentHTML('beforeend',`
+      <div class="q-editor" data-q="${i}">
+        <h4>Pregunta ${i+1} de 5</h4>
+        <label class="f"><span>Enunciado</span><input class="f q-t" placeholder="¿Qué característica diferencia este producto?"></label>
+        <p class="eyebrow" style="margin-top:14px">Alternativas · marca la correcta</p>
+        ${'ABCD'.split('').map((L,k)=>`
+          <div class="alt-row">
+            <input type="radio" name="ok${i}" value="${k}"${k===0?' checked':''}>
+            <span class="letter">${L}</span>
+            <input class="f q-o" placeholder="Alternativa ${L}">
+          </div>`).join('')}
+        <label class="f"><span>Explicación que dará Master</span><textarea class="f q-e" placeholder="Esta característica permite…"></textarea></label>
+      </div>`);
+  }
+}
+$('#btn-publish').onclick=async ()=>{
+  const err=$('#c-err'); err.textContent='';
+  const nombre=$('#c-name').value.trim();
+  if(!nombre) return err.textContent='Falta el nombre del desafío.';
+  const preguntas=[];
+  const eds=$$('#q-editors .q-editor');
+  for(let i=0;i<5;i++){
+    const ed=eds[i];
+    const t=ed.querySelector('.q-t').value.trim();
+    const o=Array.from(ed.querySelectorAll('.q-o')).map(x=>x.value.trim());
+    const e=ed.querySelector('.q-e').value.trim();
+    const c=+ed.querySelector(`input[name=ok${i}]:checked`).value;
+    if(!t) return err.textContent=`Falta el enunciado de la pregunta ${i+1}.`;
+    if(o.some(v=>!v)) return err.textContent=`Faltan alternativas en la pregunta ${i+1}.`;
+    preguntas.push({t,o,c,e:e||'Sin explicación cargada todavía.'});
+  }
+  CH.push({
+    id:'c'+Date.now(), nombre,
+    area:$('#c-area').value,
+    categoria:$('#c-cat').value.trim()||'Sin categoría',
+    producto:$('#c-prod').value.trim()||'—',
+    descripcion:$('#c-desc').value.trim()||'',
+    preguntas
+  });
+  await API.saveChallenges(CH);
+  ['#c-name','#c-cat','#c-prod','#c-desc'].forEach(s=>$(s).value='');
+  buildEditors();
+  toast('Desafío publicado');
+  renderAnalytics();
+};
+$$('[data-tab]').forEach(t=>t.onclick=()=>{
+  $$('[data-tab]').forEach(x=>x.classList.remove('on')); t.classList.add('on');
+  const k=t.dataset.tab;
+  $('#tab-crear').style.display = k==='crear'?'block':'none';
+  $('#tab-vend').style.display  = k==='vend' ?'block':'none';
+  $('#tab-datos').style.display = k==='datos'?'block':'none';
+  $('#tab-resp').style.display  = k==='resp' ?'block':'none';
+  if(k==='vend') renderUsers();
+  if(k==='datos') renderAnalytics();
+  if(k==='resp') $('#save-where').textContent='Guardando en: '+Store.donde+'.';
+});
+
+/* ---- alta y baja de vendedores ---- */
+$('#btn-add-user').onclick=async ()=>{
+  const err=$('#v-err'); err.textContent='';
+  const nombre=$('#v-name').value.trim();
+  const usuario=$('#v-user').value.trim().toLowerCase();
+  const clave=$('#v-pass').value.trim();
+  if(!nombre) return err.textContent='Falta el nombre.';
+  if(!usuario) return err.textContent='Falta el usuario.';
+  if(clave.length<4) return err.textContent='La clave debe tener al menos 4 caracteres.';
+  if(USERS.some(u=>u.usuario===usuario)) return err.textContent='Ese usuario ya existe. Elige otro.';
+  USERS.push({id:'u'+Date.now(), nombre, usuario, clave, rol:'vendedor', progreso:EMPTY_PROGRESS()});
+  await API.saveUsers(USERS);
+  $('#v-name').value=$('#v-user').value=$('#v-pass').value='';
+  renderUsers(); renderAnalytics();
+  toast('Acceso creado para '+nombre.split(' ')[0]);
+};
+function renderUsers(){
+  const vend=USERS.filter(u=>u.rol==='vendedor');
+  $('#v-count').textContent=vend.length+(vend.length===1?' vendedor':' vendedores');
+  $('#v-list').innerHTML = vend.length ? vend.map(u=>`
+    <div class="vrow">
+      <span class="vn"><b>${u.nombre}</b><span>${u.usuario} · clave ${u.clave}</span></span>
+      <span class="vx">${u.progreso.xp} XP<br>Nivel ${levelOf(u.progreso.xp)} · ${Object.keys(u.progreso.done).length}/${CH.length}</span>
+      <button class="icon-btn" data-del="${u.id}" title="Eliminar acceso">✕</button>
+    </div>`).join('')
+    : '<p style="color:#7FA6B4;margin:8px 0 0">Todavía no hay vendedores. Crea el primer acceso arriba.</p>';
+  /* borrado en dos toques: el primero arma, el segundo confirma */
+  $$('#v-list [data-del]').forEach(b=>b.onclick=async ()=>{
+    const u=USERS.find(x=>x.id===b.dataset.del);
+    if(!b.dataset.armed){
+      b.dataset.armed='1'; b.textContent='✓'; b.style.borderColor='var(--torch)'; b.style.color='var(--torch)';
+      toast(`Toca de nuevo para eliminar a ${u.nombre.split(' ')[0]}`);
+      setTimeout(()=>{ if(b.isConnected){ delete b.dataset.armed; b.textContent='✕'; b.style.borderColor=''; b.style.color=''; } },4000);
+      return;
+    }
+    USERS=USERS.filter(x=>x.id!==u.id);
+    await API.saveUsers(USERS);
+    renderUsers(); renderAnalytics();
+    toast('Acceso eliminado');
+  });
+}
+
+/* ---- analítica con datos reales de los intentos ---- */
+function renderAnalytics(){
+  const vend=USERS.filter(u=>u.rol==='vendedor');
+  $('#s-team').textContent=vend.length;
+  const totalPos=vend.length*CH.length;
+  const hechos=vend.reduce((a,u)=>a+Object.keys(u.progreso.done).length,0);
+  $('#s-prog').textContent=(totalPos?Math.round(hechos/totalPos*100):0)+'%';
+
+  let notas=[];
+  vend.forEach(u=>{ const d=Object.values(u.progreso.done); if(d.length) notas.push(d.reduce((a,x)=>a+x.correctas,0)/d.length); });
+  $('#s-avg').textContent = notas.length ? (notas.reduce((a,b)=>a+b,0)/notas.length).toFixed(1)+' / 5' : 'Sin datos';
+
+  const mejor=[...vend].sort((a,b)=>b.progreso.xp-a.progreso.xp)[0];
+  $('#s-best').textContent = mejor && mejor.progreso.xp ? mejor.nombre.split(' ')[0] : 'Sin datos';
+
+  let peorCh=null, peorQ=null;
+  Object.entries(STATS).forEach(([cid,qs])=>{
+    const ch=CH.find(c=>c.id===cid); if(!ch) return;
+    let ok=0, fail=0;
+    Object.entries(qs).forEach(([qi,v])=>{
+      ok+=v.ok; fail+=v.fail;
+      const tot=v.ok+v.fail, tasa=tot?v.fail/tot:0;
+      if(tot>=3 && (!peorQ || tasa>peorQ.tasa)) peorQ={ch, qi:+qi, tasa, tot};
+    });
+    const tot=ok+fail, tasa=tot?fail/tot:0;
+    if(tot>=5 && (!peorCh || tasa>peorCh.tasa)) peorCh={ch, tasa};
+  });
+  $('#s-hard').textContent = peorCh ? peorCh.ch.nombre : 'Sin datos';
+  $('#s-q').textContent    = peorQ  ? 'Pregunta '+(peorQ.qi+1) : 'Sin datos';
+
+  const al=$('#s-alert');
+  if(peorQ && peorQ.tasa>=.4){
+    al.style.display='block';
+    $('#s-alert-txt').textContent=`El ${Math.round(peorQ.tasa*100)}% de los intentos falla la pregunta ${peorQ.qi+1} de ${peorQ.ch.nombre}: ${peorQ.ch.preguntas[peorQ.qi].t}`;
+    $('#s-reco').textContent=`Refuerza este punto en la próxima reunión de piso: ${peorQ.ch.preguntas[peorQ.qi].e}`;
+  }else{
+    al.style.display='none';
+    $('#s-reco').textContent = peorQ
+      ? 'El equipo va bien: ninguna pregunta pasa el 40% de error.'
+      : 'Aún no hay intentos registrados. En cuanto el equipo entrene, aquí aparece qué reforzar.';
+  }
+}
+
+/* ---- respaldo, restauración y reinicio ---- */
+const dump = () => JSON.stringify({app:'MASTER', v:1, fecha:new Date().toISOString(),
+  usuarios:USERS, desafios:CH, estadistica:STATS}, null, 2);
+
+$('#btn-export').onclick=()=>{
+  try{
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(new Blob([dump()],{type:'application/json'}));
+    a.download='master-respaldo-'+new Date().toISOString().slice(0,10)+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    toast('Respaldo descargado');
+  }catch(e){
+    $('#imp-txt').value=dump();
+    toast('No se pudo descargar. Copia el texto de abajo.');
+  }
+};
+$('#btn-copy').onclick=async ()=>{
+  try{ await navigator.clipboard.writeText(dump()); toast('Respaldo copiado'); }
+  catch(e){ $('#imp-txt').value=dump(); toast('Copia manualmente el texto de abajo'); }
+};
+$('#btn-import').onclick=async ()=>{
+  const err=$('#imp-err'); err.textContent='';
+  try{
+    const d=JSON.parse($('#imp-txt').value);
+    if(!d.usuarios || !d.desafios) throw 0;
+    USERS=d.usuarios; CH=d.desafios; STATS=d.estadistica||{};
+    USERS.forEach(u=>u.progreso=u.progreso||EMPTY_PROGRESS());
+    await API.saveUsers(USERS); await API.saveChallenges(CH); await API.saveStats(STATS);
+    $('#imp-txt').value='';
+    renderUsers(); renderAnalytics();
+    toast('Respaldo restaurado');
+  }catch(e){ err.textContent='El texto no corresponde a un respaldo válido de MASTER.'; }
+};
+$('#btn-reset').onclick=async function(){
+  if(!this.dataset.armed){
+    this.dataset.armed='1'; this.textContent='Toca de nuevo para confirmar';
+    setTimeout(()=>{ delete this.dataset.armed; this.textContent='Reiniciar con datos de demo'; },4000);
+    return;
+  }
+  delete this.dataset.armed; this.textContent='Reiniciar con datos de demo';
+  await Store.wipe();
+  CH=SEED; USERS=DEMO_USERS(); STATS=DEMO_STATS(); ME=null;
+  await API.saveChallenges(CH); await API.saveUsers(USERS); await API.saveStats(STATS);
+  await Store.set('master:seeded', true);
+  renderUsers(); renderAnalytics();
+  toast('Datos de demostración restaurados');
+};
+
+/* ============================================================
+   7 · NAVEGACIÓN Y COMPAÑERO
+   ============================================================ */
+$$('[data-go]').forEach(b=>b.onclick=()=>nav(b.dataset.go));
+$('#btn-start').onclick=()=>{
+  if(SESION && SESION.rol==='supervisor') return nav('sup');
+  if(ME) return nav('map');
+  nav('login');
+};
+
+/* ---- acceso: vendedor con usuario y clave, supervisor con PIN ---- */
+$$('[data-login]').forEach(t=>t.onclick=()=>{
+  $$('[data-login]').forEach(x=>x.classList.remove('on')); t.classList.add('on');
+  const v=t.dataset.login==='vend';
+  $('#login-vend').style.display=v?'block':'none';
+  $('#login-sup').style.display=v?'none':'block';
+});
+async function loginVendedor(){
+  const err=$('#l-err'); err.textContent='';
+  const u=$('#l-user').value.trim().toLowerCase(), c=$('#l-pass').value;
+  const found=USERS.find(x=>x.usuario===u && x.clave===c && x.rol==='vendedor');
+  if(!found) return err.textContent='Usuario o clave incorrectos.';
+  ME=found; P=found.progreso;
+  $('#l-user').value=$('#l-pass').value='';
+  nav('map');
+  toast('Hola, '+ME.nombre.split(' ')[0]);
+}
+$('#btn-login').onclick=loginVendedor;
+$('#l-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') loginVendedor(); });
+function loginSupervisor(){
+  const err=$('#s-err'); err.textContent='';
+  if($('#s-pass').value.trim()!==SUP_PIN) return err.textContent='Clave incorrecta.';
+  $('#s-pass').value='';
+  nav('sup');
+}
+$('#btn-login-sup').onclick=loginSupervisor;
+$('#s-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') loginSupervisor(); });
+$('#btn-logout').onclick=()=>{
+  ME=null; P=EMPTY_PROGRESS();
+  try{ localStorage.removeItem('aurelio:sesion'); }catch(e){}
+  location.href='index.html';
+};
+$('#btn-retry').onclick=()=>startQuiz(Q.ch);
+$('#fab').onclick=()=>{ toast(pick(SAY.tip)); };
+
+/* ============================================================
+   8 · ANIMACIÓN: APERTURA + PARALLAX (GSAP + ScrollTrigger)
+   ============================================================ */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+if(window.gsap){
+  gsap.registerPlugin(ScrollTrigger);
+
+  if(REDUCED){
+    gsap.set('#corp,#screw,#wordmark,#tagline,#btn-start,#hint',{opacity:1});
+    gsap.set('.scene-media',{opacity:1,scale:1});
+  }else{
+    const tl=gsap.timeline({defaults:{ease:'power2.out'}});
+    tl.fromTo('#corp',{opacity:0,letterSpacing:'1em'},{opacity:1,letterSpacing:'.42em',duration:1.2})
+      .fromTo('#screw',{opacity:0,y:-180,rotation:-720,scale:.4},{opacity:1,y:0,rotation:0,scale:1,duration:1.3},'-=.35')
+      .to('#screw',{rotation:200,scale:.15,opacity:0,duration:.65,ease:'power2.in'},'+=.25')
+      .fromTo('#wordmark',{opacity:0,scale:1.4,filter:'blur(16px)'},{opacity:1,scale:1,filter:'blur(0px)',duration:.85},'-=.4')
+      .fromTo('#tagline',{opacity:0,y:16},{opacity:1,y:0,duration:.5},'-=.15')
+      .fromTo('#btn-start',{opacity:0,y:18},{opacity:1,y:0,duration:.5},'-=.2')
+      .fromTo('#hint',{opacity:0},{opacity:.9,duration:.6},'-=.1');
+
+    gsap.utils.toArray('.scene').forEach(scene=>{
+      const media=scene.querySelector('.scene-media');
+      const layer=scene.querySelector('.scene-parallax');
+
+      /* escala 0.7 → 1.2 y opacidad 0 → 1 en 600px de scroll, ease power2.out */
+      gsap.fromTo(media,
+        {scale:.7, autoAlpha:0},
+        {scale:1.2, autoAlpha:1, ease:'power2.out',
+         scrollTrigger:{trigger:scene, start:'top 82%', end:'+=600', scrub:.6}});
+
+      /* la imagen baja un 20% del recorrido: se mueve 20% más lento que el scroll */
+      const range=()=> (window.innerHeight + scene.offsetHeight) * .2;
+      gsap.fromTo(layer,
+        {y:()=>-range()/2},
+        {y:()=>range()/2, ease:'none',
+         scrollTrigger:{trigger:scene, start:'top bottom', end:'bottom top', scrub:true, invalidateOnRefresh:true}});
+
+      gsap.from(scene.querySelector('.scene-copy'),
+        {opacity:0, y:26, duration:.7, ease:'power2.out',
+         scrollTrigger:{trigger:scene, start:'top 65%'}});
+    });
+  }
+}
+
+/* ============================================================
+   9 · ARRANQUE
+   ============================================================ */
+(async function init(){
+  CH    = await API.getChallenges();
+  USERS = await API.getUsers();
+  STATS = await API.getStats();
+  const sembrado = await Store.get('master:seeded');
+  if(!sembrado && !USERS){                    /* primera apertura: carga la demo */
+    CH=SEED; USERS=DEMO_USERS(); STATS=DEMO_STATS();
+    await API.saveChallenges(CH); await API.saveUsers(USERS); await API.saveStats(STATS);
+    await Store.set('master:seeded', true);
+  }
+  await Store.set('master:seeded', true);   /* además detecta dónde se está guardando */
+  USERS = USERS || [];
+  USERS.forEach(u=>{ u.progreso=u.progreso||EMPTY_PROGRESS(); u.progreso.repasar=u.progreso.repasar||[]; });
+  buildEditors();
+  renderUsers();
+  renderAnalytics();
+  if(SESION && SESION.rol==='vendedor'){
+    const u=USERS.find(x=>x.id===SESION.id);
+    if(u){ ME=u; P=u.progreso; }
+  }
+})();
+</script>
+</body>
+</html>

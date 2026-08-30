@@ -365,6 +365,35 @@ textarea.f{min-height:76px;resize:vertical}
 @media (prefers-reduced-motion:reduce){
   *{animation-duration:.01ms !important;transition-duration:.01ms !important}
 }
+
+/* ============ Conóceme por dentro ============ */
+.pz-tablero{position:relative;border-radius:16px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.12);background:#070D10;aspect-ratio:16/9;margin:18px 0 12px}
+.pz-escenario{position:absolute;inset:0;transform:scale(1);
+  transition:transform .8s cubic-bezier(.2,.75,.25,1)}
+.pz-cuadro{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;display:block}
+.pz-video{z-index:2;opacity:0;transition:opacity .35s ease;pointer-events:none;background:transparent}
+.pz-tablero.rodando .pz-video{opacity:1}
+.pz-punto{position:absolute;z-index:3;width:32px;height:32px;transform:translate(-50%,-50%);
+  border-radius:50%;border:0;background:none;padding:0;cursor:pointer;transition:opacity .35s ease}
+.pz-tablero.rodando .pz-punto,.pz-tablero.acercado .pz-punto{opacity:0;pointer-events:none}
+.pz-punto::before{content:"";position:absolute;inset:10px;border-radius:50%;
+  background:#3FC97C;box-shadow:0 0 12px rgba(63,201,124,.9)}
+.pz-punto::after{content:"";position:absolute;inset:0;border-radius:50%;
+  border:1.5px solid rgba(63,201,124,.7);animation:pzLatir 2s ease-out infinite}
+.pz-punto.visto::before{background:rgba(255,255,255,.45);box-shadow:none}
+.pz-punto.visto::after{animation:none;border-color:rgba(255,255,255,.18)}
+@keyframes pzLatir{0%{transform:scale(.45);opacity:.9}100%{transform:scale(1);opacity:0}}
+.pz-ficha{position:absolute;z-index:4;left:12px;right:12px;bottom:12px;padding:14px 16px;
+  border-radius:12px;background:rgba(7,13,16,.94);border:1px solid rgba(63,201,124,.35);
+  border-left:4px solid #3FC97C;opacity:0;transform:translateY(10px);pointer-events:none;
+  transition:opacity .4s ease,transform .4s ease}
+.pz-tablero.acercado .pz-ficha{opacity:1;transform:translateY(0);pointer-events:auto}
+.pz-ficha h4{margin:0;font-size:1rem}
+.pz-ficha p{margin:6px 0 0;font-size:.92rem;line-height:1.45;opacity:.75}
+.pz-fila{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.pz-cuenta{font-size:.82rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6}
+.pz-cuenta.completo{color:#3FC97C;opacity:1}
 </style>
 </head>
 <body>
@@ -539,6 +568,46 @@ textarea.f{min-height:76px;resize:vertical}
 </section>
 
 <!-- ==================== VISTA 3 · QUIZ ==================== -->
+<section id="view-pieza" class="view">
+  <header class="hud">
+    <div class="wrap hud-in">
+      <button class="btn ghost small" data-go="map">← Salir</button>
+      <div class="hud-stats">
+        <span class="chip" id="pz-cuenta">0 de 5 piezas</span>
+      </div>
+    </div>
+  </header>
+  <div class="wrap quiz-wrap">
+    <p class="eyebrow">Producto · <b id="pz-cat">—</b></p>
+    <h2 class="h-sec" id="pz-title">—</h2>
+
+    <div class="master-row" style="margin:18px 0 0">
+      <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
+      <div class="bubble"><span class="who">Master</span><span id="master-pieza">Toca las piezas verdes. Cuando las veas todas, te tomo la prueba.</span></div>
+    </div>
+
+    <div class="pz-tablero" id="pz-tablero">
+      <div class="pz-escenario" id="pz-escenario">
+        <img class="pz-cuadro" src="portada/fijo.webp" alt="Taladro atornillador Reviva">
+        <video class="pz-cuadro pz-video" id="pz-video" src="portada/video.mp4" muted playsinline preload="none"></video>
+      </div>
+      <div class="pz-ficha" id="pz-ficha">
+        <h4 id="pz-ficha-t"></h4>
+        <p id="pz-ficha-d"></p>
+      </div>
+    </div>
+
+    <div class="pz-fila">
+      <span class="pz-cuenta" id="pz-pista">Toca los puntos verdes</span>
+      <span style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn ghost small" id="pz-cerrar" style="display:none">← Volver al taladro</button>
+        <button class="btn ghost small" id="pz-despiece">Ver despiece</button>
+        <button class="btn small" id="pz-ir" style="display:none">Ir al quiz →</button>
+      </span>
+    </div>
+  </div>
+</section>
+
 <section id="view-quiz" class="view">
   <header class="hud">
     <div class="wrap hud-in">
@@ -755,6 +824,32 @@ const EMPTY_PROGRESS = () => ({xp:0, done:{}, badges:[], bestStreak:0, repasar:[
    2 · CONTENIDO SEMILLA (editable desde Modo supervisor)
    ============================================================ */
 const SEED = [
+ {id:'p1', area:'Producto', nombre:'Conóceme por dentro', categoria:'Taladro Reviva', producto:'Taladro atornillador Reviva',
+  descripcion:'Explora las cinco piezas del taladro y después demuestra que te quedó.',
+  piezas:[
+   {x:62, y:27, t:'Mandril sin llave',
+    d:'Cambia la broca con una mano, sin herramientas. Es lo primero que conviene hacerle probar al cliente en el mesón: se convence solo.'},
+   {x:43, y:26, t:'Motor y electrónica',
+    d:'Motor de alta eficiencia con control electrónico. Entrega más fuerza sin exigir de más la batería, y calienta menos en jornada larga.'},
+   {x:51, y:39, t:'Gatillo de velocidad variable',
+    d:'Mientras más lo presionas, más revoluciones. Deja partir lento para no pasarse de fuerza en material delgado ni arruinar la cabeza del tornillo.'},
+   {x:46, y:54, t:'Mango con goma antideslizante',
+    d:'Baja la vibración y el cansancio. Es el argumento para el cliente que la usa todo el día, que no compra por ficha técnica sino por comodidad.'},
+   {x:48, y:79, t:'Batería de litio 20V',
+    d:'Intercambiable con el resto de la línea. Aquí está la venta cruzada: si ya tiene otra herramienta, la batería le sirve y la próxima le sale más barata.'}
+  ],
+  preguntas:[
+   {t:'Un cliente pregunta por qué le conviene el mandril sin llave. ¿Qué le dices?', o:['Que aprieta la broca con más fuerza que uno normal','Que cambia la broca con una mano y sin herramientas','Que sirve para brocas más largas','Que dura más porque es de metal'], c:1,
+    e:'La gracia es la rapidez: cambia la broca con una mano, sin andar buscando la llave. Hazlo delante del cliente y se vende solo.'},
+   {t:'¿Para qué sirve el gatillo de velocidad variable?', o:['Para que la batería dure más','Para cambiar el sentido de giro','Para partir lento y no pasarse de fuerza en material delgado','Para bloquear la herramienta cuando no se usa'], c:2,
+    e:'Mientras más lo presionas, más revoluciones. Eso permite empezar suave y no arruinar el material ni la cabeza del tornillo.'},
+   {t:'Te toca subir el ticket promedio con este taladro. ¿Cuál es el mejor gancho?', o:['Que la batería le sirve para el resto de la línea','Que viene con maletín','Que tiene garantía','Que es la más liviana'], c:0,
+    e:'Si el cliente ya tiene o piensa comprar otra herramienta de la línea, la batería compartida arrastra la segunda venta. Ese es el argumento que vuelve a traerlo a la tienda.'},
+   {t:'Entra un maestro que trabaja jornada completa. ¿Qué le destacas primero?', o:['El color de la carcasa','El mango antideslizante, que baja vibración y cansancio','Que es de una marca conocida','Que tiene luz LED'], c:1,
+    e:'A quien la usa todo el día le pesa el cansancio antes que la ficha técnica. Ahí el mango y la vibración valen más que cualquier número.'},
+   {t:'¿Qué le aporta al usuario el control electrónico del motor?', o:['Que la herramienta pese menos','Más fuerza sin exigir de más la batería','Que perfore concreto sin percutor','Que no necesite carga'], c:1,
+    e:'El control electrónico administra la entrega de potencia: rinde más por carga y calienta menos. Es el argumento para el usuario intensivo.'}
+  ]},
  {id:'c1', area:'Producto', nombre:'Herramientas', categoria:'Fundamentos', producto:'Línea general',
   descripcion:'Los datos básicos que se usan todos los días en el piso.',
   preguntas:[
@@ -908,7 +1003,7 @@ function toast(msg){
   clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('on'),2600);
 }
 function nav(id){
-  if((id==='map'||id==='quiz'||id==='result') && !ME) id='login';
+  if((id==='map'||id==='quiz'||id==='result'||id==='pieza') && !ME) id='login';
   $$('.view').forEach(v=>v.classList.remove('active'));
   $('#view-'+id).classList.add('active');
   window.scrollTo(0,0);
@@ -936,18 +1031,21 @@ function renderMap(){
       `<div class="area-head"><h3>${area==='Ventas'?'Conocimiento de ventas':'Conocimiento de producto'}</h3><span class="rule"></span></div>`);
     list.forEach((c,i)=>{
       const done=!!P.done[c.id];
-      const open=i===0 || !!P.done[list[i-1].id];
-      if(i>0){ const l=document.createElement('div'); l.className='node-link'+(P.done[list[i-1].id]?' done':''); track.appendChild(l); }
+      /* los capítulos con piezas quedan siempre abiertos; la cadena la siguen formando los demás */
+      const cadena=list.slice(0,i).filter(x=>!x.piezas);
+      const previo=cadena[cadena.length-1];
+      const open = !!c.piezas || !previo || !!P.done[previo.id];
+      if(i>0){ const l=document.createElement('div'); l.className='node-link'+((list[i-1].piezas||P.done[list[i-1].id])?' done':''); track.appendChild(l); }
       const b=document.createElement('button');
       b.className='node'+(done?' done':'')+(!open?' locked':(done?'':' open'));
       b.disabled=!open;
       b.innerHTML=`<span class="bolt">${done?'✓':(open?'▶':'🔒')}</span>
         <span class="node-body">
           <span class="node-title">${c.nombre}</span>
-          <span class="node-meta">${c.categoria} · 5 preguntas</span>
+          <span class="node-meta">${c.categoria} · ${c.piezas ? c.piezas.length+' piezas + 5 preguntas' : '5 preguntas'}</span>
         </span>
         ${done?`<span class="node-score">${P.done[c.id].correctas}/5</span>`:''}`;
-      b.onclick=()=>{ if(open) startQuiz(c); };
+      b.onclick=()=>{ if(open) (c.piezas ? startPiezas(c) : startQuiz(c)); };
       track.appendChild(b);
     });
   });
@@ -1452,8 +1550,96 @@ if(window.gsap){
 /* ============================================================
    9 · ARRANQUE
    ============================================================ */
+/* ============================================================
+   Conóceme por dentro · exploración de piezas
+   ============================================================ */
+let PZ=null;
+
+function startPiezas(ch){
+  PZ={ch, vistas:0};
+  const esc=$('#pz-escenario'), tab=$('#pz-tablero');
+  esc.querySelectorAll('.pz-punto').forEach(p=>p.remove());
+  ch.piezas.forEach((pz,i)=>{
+    const b=document.createElement('button');
+    b.className='pz-punto';
+    b.style.left=pz.x+'%'; b.style.top=pz.y+'%';
+    b.setAttribute('aria-label', pz.t);
+    b.onclick=()=>abrirPieza(pz,b);
+    esc.appendChild(b);
+  });
+  $('#pz-cat').textContent=ch.categoria;
+  $('#pz-title').textContent=ch.nombre;
+  $('#master-pieza').textContent='Toca las piezas verdes. Cuando las veas todas, te tomo la prueba.';
+  $('#pz-ir').style.display='none';
+  $('#pz-cuenta').textContent='0 de '+ch.piezas.length+' piezas';
+  $('#pz-cuenta').classList.remove('completo');
+  cerrarPieza();
+  tab.classList.remove('rodando');
+  nav('pieza');
+}
+
+function abrirPieza(pz,b){
+  if(!b.classList.contains('visto')){
+    b.classList.add('visto');
+    PZ.vistas++;
+    const total=PZ.ch.piezas.length;
+    const c=$('#pz-cuenta');
+    c.textContent=PZ.vistas+' de '+total+' piezas';
+    if(PZ.vistas===total){
+      c.classList.add('completo');
+      $('#pz-ir').style.display='';
+      $('#master-pieza').textContent='Ya las viste todas. Vamos al quiz y lo dejamos anotado.';
+    }
+  }
+  $('#pz-ficha-t').textContent=pz.t;
+  $('#pz-ficha-d').textContent=pz.d;
+  const esc=$('#pz-escenario');
+  esc.style.transformOrigin=pz.x+'% '+pz.y+'%';
+  esc.style.transform='scale(2.8)';
+  $('#pz-tablero').classList.add('acercado');
+  $('#pz-cerrar').style.display='';
+  $('#pz-pista').textContent='Pieza '+PZ.vistas+' de '+PZ.ch.piezas.length;
+}
+
+function cerrarPieza(){
+  const esc=$('#pz-escenario');
+  esc.style.transformOrigin='50% 50%';
+  esc.style.transform='scale(1)';
+  $('#pz-tablero').classList.remove('acercado');
+  const cerrar=$('#pz-cerrar'); if(cerrar) cerrar.style.display='none';
+  const pista=$('#pz-pista'); if(pista) pista.textContent='Toca los puntos verdes';
+}
+
+$('#pz-cerrar').onclick = cerrarPieza;
+$('#pz-ir').onclick = () => { if(PZ) startQuiz(PZ.ch); };
+
+$('#pz-despiece').onclick = () => {
+  const v=$('#pz-video'), tab=$('#pz-tablero');
+  cerrarPieza();
+  tab.classList.add('rodando');
+  try{ v.currentTime=0; v.play(); }catch(e){}
+};
+$('#pz-video').addEventListener('ended', () => {
+  $('#pz-tablero').classList.remove('rodando');
+});
+$('#pz-video').addEventListener('error', () => {
+  $('#pz-tablero').classList.remove('rodando');
+  toast('No se pudo cargar el despiece');
+});
+
 (async function init(){
   CH    = await API.getChallenges();
+  /* migración: incorpora capítulos nuevos del código sin borrar el progreso guardado */
+  if(Array.isArray(CH)){
+    const faltan = SEED.filter(s => !CH.some(c => c.id === s.id));
+    if(faltan.length){
+      faltan.forEach(s => {
+        const pos = CH.findIndex(c => (c.area||'Producto') === (s.area||'Producto'));
+        if(s.piezas && pos >= 0) CH.splice(pos, 0, s); else CH.push(s);
+      });
+      await API.saveChallenges(CH);
+    }
+  }
   USERS = await API.getUsers();
   STATS = await API.getStats();
   const sembrado = await Store.get('master:seeded');

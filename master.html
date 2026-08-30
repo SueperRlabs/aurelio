@@ -1617,7 +1617,11 @@ $('#pz-despiece').onclick = () => {
   const v=$('#pz-video'), tab=$('#pz-tablero');
   cerrarPieza();
   tab.classList.add('rodando');
-  try{ v.currentTime=0; v.play(); }catch(e){}
+  /* el clic del usuario habilita el audio: se puede reproducir sin silenciar */
+  v.muted = false;
+  v.currentTime = 0;
+  const p = v.play();
+  if(p && p.catch) p.catch(()=>{ v.muted = true; v.play().catch(()=>{}); });
 };
 $('#pz-video').addEventListener('ended', () => {
   $('#pz-tablero').classList.remove('rodando');

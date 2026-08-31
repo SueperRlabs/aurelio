@@ -143,6 +143,10 @@
   </div>
   <div id="syncMsg"></div>
   <div id="solL" style="margin-top:10px"></div>
+  <hr style="border:0;border-top:1px solid var(--line);margin:12px 0">
+  <button class="btn" onclick="publicarMalla()">Publicar malla al equipo</button>
+  <p class="hint">Sube la semana que tengas en pantalla para que cada vendedor vea su turno.</p>
+  <div id="pubMsg"></div>
 </div>
 
 <div class="card">
@@ -265,6 +269,59 @@ async function traerEquipo(){
       (SOLICITUDES.length?' y '+SOLICITUDES.length+' día(s) libre(s) pedido(s) para esta semana.'
                          :'. Sin días libres pedidos esta semana.')+'</div>');
   }catch(e){msgSync('<div class="msg err">No se pudo traer: '+esc(String(e.message).slice(0,180))+'</div>');}
+}
+
+/* Sube la malla de la semana a la tabla turnos, que es lo que ve el vendedor.
+   Actualiza las filas que ya existen en vez de borrarlas, para no romper las
+   solicitudes de cambio que apunten a esos turnos. */
+async function publicarMalla(){
+  const out=document.getElementById('pubMsg')||document.getElementById('genOut');
+  const poner=html=>{if(out)out.innerHTML=html;};
+
+  if(!TIENDA){poner('<div class="msg err">Primero conecta y trae el equipo de una tienda.</div>');return;}
+  const eq=PERSONAS.filter(p=>p.uuid && MALLA[p.id] && Object.keys(MALLA[p.id]).length);
+  if(!eq.length){poner('<div class="msg err">No hay malla generada para publicar.</div>');return;}
+
+  const dias=diasDeSemana(LUNES);
+  const val=validarMalla(CFG,eq,dias,MALLA);
+  const aviso=val.errores
+    ? 'La malla tiene '+val.errores+' problema(s) de cumplimiento.\n\n'
+    : '';
+  if(!confirm(aviso+'Vas a publicar la semana del '+rotuloSemana(LUNES)+
+      ' para '+eq.length+' persona(s) en '+TIENDA.nombre+'.\n\n'+
+      'Esto reemplaza los turnos que ya estén cargados de esa semana. ¿Continuar?')) return;
+
+  poner('<div class="msg info">Publicando…</div>');
+  try{
+    const previos=await sb('turnos?select=id,empleado_id,fecha&tienda_id=eq.'+TIENDA.id+
+      '&fecha=gte.'+dias[0]+'&fecha=lte.'+dias[6]) || [];
+    const yaEsta={};
+    previos.forEach(t=>{yaEsta[t.empleado_id+'|'+t.fecha]=t.id;});
+
+    const nuevos=[]; const cambios=[];
+    eq.forEach(p=>{
+      dias.forEach(f=>{
+        const t=MALLA[p.id][f]; if(!t) return;
+        const fila={tienda_id:TIENDA.id, empleado_id:p.uuid, fecha:f,
+          entrada:t.libre?null:(t.entrada||null),
+          salida: t.libre?null:(t.salida||null),
+          libre:!!t.libre};
+        const k=p.uuid+'|'+f;
+        if(yaEsta[k]) cambios.push({id:yaEsta[k], fila}); else nuevos.push(fila);
+      });
+    });
+
+    if(nuevos.length) await sb('turnos',{method:'POST',body:nuevos,prefer:'return=minimal'});
+    for(const c of cambios)
+      await sb('turnos?id=eq.'+c.id,{method:'PATCH',body:c.fila,prefer:'return=minimal'});
+
+    poner('<div class="msg ok">Publicada la semana del '+rotuloSemana(LUNES)+': '+
+      nuevos.length+' turno(s) nuevo(s) y '+cambios.length+' actualizado(s). '+
+      'El equipo ya la puede ver.</div>');
+  }catch(e){
+    poner('<div class="msg err">No se pudo publicar: '+esc(String(e.message).slice(0,200))+
+      '</div><p class="hint">No se subió nada a medias salvo lo que alcanzó a crearse. Revisa y vuelve a publicar.</p>');
+  }
 }
 
 function pedidosDe(uuid){

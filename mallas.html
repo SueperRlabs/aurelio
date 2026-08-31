@@ -135,6 +135,17 @@
 </div>
 
 <div class="card">
+  <div class="card-h">Tienda<span>Trae el equipo y los días libres ya aprobados</span></div>
+  <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+    <button class="btn sec" onclick="cargarTiendas()">Conectar</button>
+    <select id="sbTienda" style="display:none;margin-bottom:0;flex:1;min-width:160px"></select>
+    <button class="btn" id="btnTraer" onclick="traerEquipo()" style="display:none">Traer equipo</button>
+  </div>
+  <div id="syncMsg"></div>
+  <div id="solL" style="margin-top:10px"></div>
+</div>
+
+<div class="card">
   <div class="card-h">Equipo<span>Horas de contrato y domingos libres que ya lleva este mes</span></div>
   <div id="eqL"></div>
   <button class="btn sec" onclick="addP()">Agregar persona</button>
@@ -193,6 +204,88 @@
 </div>
 
 <script>
+/* ══════ CONEXIÓN CON LA BASE ══════ */
+const SB_URL='https://kasmvouglukwhbptieib.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imthc212b3VnbHVrd2hicHRpZWliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjA5MTMsImV4cCI6MjEwMTI5NjkxM30.JqpXIUCDoMi5WHcQkMn6OkcxkYVPTiKz9A2nDoCjQNQ';
+let TIENDA=null;
+let SOLICITUDES=[];
+
+async function sb(path,o={}){
+  const r=await fetch(SB_URL+'/rest/v1/'+path,{method:o.method||'GET',
+    headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',
+      Prefer:o.prefer||'return=representation'},
+    body:o.body?JSON.stringify(o.body):undefined});
+  const t=await r.text();
+  if(!r.ok)throw new Error(t||('Error '+r.status));
+  return t?JSON.parse(t):null;
+}
+
+function msgSync(html){const e=document.getElementById('syncMsg');if(e)e.innerHTML=html;}
+
+async function cargarTiendas(){
+  const sel=document.getElementById('sbTienda');
+  msgSync('<div class="msg info">Buscando tiendas…</div>');
+  try{
+    const ts=await sb('tiendas?select=id,nombre&order=nombre');
+    if(!ts||!ts.length){msgSync('<div class="msg err">No hay tiendas cargadas en la base.</div>');return;}
+    sel.innerHTML=ts.map(t=>'<option value="'+t.id+'">'+esc(t.nombre)+'</option>').join('');
+    sel.style.display='';
+    document.getElementById('btnTraer').style.display='';
+    msgSync('<div class="msg ok">'+ts.length+' tienda(s). Elige una y trae el equipo.</div>');
+  }catch(e){msgSync('<div class="msg err">No se pudo conectar: '+esc(String(e.message).slice(0,160))+'</div>');}
+}
+
+async function traerEquipo(){
+  const sel=document.getElementById('sbTienda');
+  const tid=sel&&sel.value;
+  if(!tid){msgSync('<div class="msg err">Primero elige una tienda.</div>');return;}
+  msgSync('<div class="msg info">Trayendo equipo y solicitudes…</div>');
+  try{
+    const emps=await sb('empleados?select=id,nombre,rol,horas_contrato,activo'+
+      '&tienda_id=eq.'+tid+'&activo=is.true&order=nombre');
+    if(!emps||!emps.length){msgSync('<div class="msg err">Esa tienda no tiene personas activas.</div>');return;}
+
+    const dias=diasDeSemana(LUNES);
+    SOLICITUDES=await sb('solicitudes_dia?select=empleado_id,fecha,motivo'+
+      '&tienda_id=eq.'+tid+'&estado=eq.aprobada'+
+      '&fecha=gte.'+dias[0]+'&fecha=lte.'+dias[6]) || [];
+
+    const previos={};
+    PERSONAS.forEach(p=>{if(p.uuid)previos[p.uuid]=p;});
+
+    TIENDA={id:tid,nombre:sel.options[sel.selectedIndex].text};
+    PERSONAS=emps.map((e,i)=>({id:'p'+(i+1),uuid:e.id,nombre:e.nombre,
+      horasContrato:Number(e.horas_contrato)||42,
+      domingosPrevios:(previos[e.id]||{}).domingosPrevios||0}));
+    nid=PERSONAS.length+1;
+    MALLA={};
+    renderEq();renderTurnos();renderSolicitudes();autoguardar();
+
+    msgSync('<div class="msg ok">'+PERSONAS.length+' persona(s) cargada(s)'+
+      (SOLICITUDES.length?' y '+SOLICITUDES.length+' día(s) libre(s) pedido(s) para esta semana.'
+                         :'. Sin días libres pedidos esta semana.')+'</div>');
+  }catch(e){msgSync('<div class="msg err">No se pudo traer: '+esc(String(e.message).slice(0,180))+'</div>');}
+}
+
+function pedidosDe(uuid){
+  if(!uuid)return[];
+  const dias=diasDeSemana(LUNES);
+  return SOLICITUDES.filter(s=>s.empleado_id===uuid)
+                    .map(s=>dias.indexOf(s.fecha)).filter(i=>i>=0);
+}
+
+function renderSolicitudes(){
+  const el=document.getElementById('solL');if(!el)return;
+  if(!SOLICITUDES.length){el.innerHTML='<p class="hint">Sin días libres pedidos para esta semana.</p>';return;}
+  const dias=diasDeSemana(LUNES);
+  el.innerHTML=SOLICITUDES.map(s=>{
+    const p=PERSONAS.find(x=>x.uuid===s.empleado_id);
+    const di=dias.indexOf(s.fecha);
+    return '<div class="row"><b>'+esc(p?p.nombre:'—')+'</b> pide libre el '+
+      (di>=0?DIAS[di]:'')+' '+esc(s.fecha)+
+      (s.motivo?' <span class="hint">— '+esc(s.motivo)+'</span>':'')+'</div>';}).join('');
+}
+
 /* ══════ LÓGICA ══════ */
 const DIAS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 const MESES=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
@@ -420,6 +513,13 @@ function generarMalla(cfg,personas,horario,dot,dias,semanaIdx){
     const abiertos=[0,1,2,3,4,5,6].filter(i=>!horario[i].cerrado);
     const libresNecesarios=abiertos.length-plan.dias;
     const libres=new Set();
+    /* los días libres aprobados mandan: van primero y no se negocian */
+    const pedidos=(p.pedidos||[]).filter(i=>!horario[i].cerrado);
+    pedidos.forEach(i=>libres.add(i));
+    if(pedidos.length>libresNecesarios)
+      notas.push({nivel:'aviso',
+        texto:esc(p.nombre||'Sin nombre')+' pidió '+pedidos.length+' día(s) libre(s) y le corresponden '+libresNecesarios+'.',
+        detalle:'Se respetan igual, pero queda bajo sus horas de contrato.'});
     /* si no le toca domingo, ese ya es uno de sus días libres */
     if(domAbierto && !trabajanDom.includes(p.id)) libres.add(domIdx);
     let k=0;
@@ -679,6 +779,7 @@ function irAValidar(){
 function generar(){
   leerCfg();leerEq();leerHor();
   const eq=PERSONAS.filter(p=>p.nombre);
+  eq.forEach(p=>{p.pedidos=pedidosDe(p.uuid);});
   const out=document.getElementById('genOut');
   if(!eq.length){out.innerHTML='<div class="msg info">Ponle nombre al menos a una persona del equipo.</div>';return;}
   const dot={base:+document.getElementById('dBase').value||1,

@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi turno · Aurelio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow:ital,wght@0,400;0,500;0,600;1,400&family=Barlow+Semi+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --fondo:#14120F; --panel:#1E1B17; --linea:rgba(241,236,227,.13);
+  --naranja:#F26B21; --verde:#3FC97C; --amarillo:#F5C518; --rojo:#E4614C;
+  --hueso:#F1ECE3; --humo:rgba(241,236,227,.6);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--fondo);color:var(--hueso);font-family:'Barlow',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;min-height:100svh;padding-bottom:48px}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+input,select,textarea{font:inherit;width:100%;padding:12px 14px;border-radius:10px;
+  background:#0E0C0A;border:1px solid var(--linea);color:var(--hueso)}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--naranja);outline-offset:1px}
+label{display:block;font-family:'Barlow Semi Condensed',sans-serif;font-size:.76rem;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--humo);margin:0 0 6px}
+.wrap{max-width:620px;margin:0 auto;padding:0 clamp(14px,4vw,22px)}
+
+.tope{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 0 14px;border-bottom:1px solid var(--linea);margin-bottom:20px}
+.marca{display:flex;align-items:baseline;gap:9px}
+.marca b{font-family:'Archivo Black',sans-serif;font-size:1.02rem}
+.marca span{font-size:.82rem;color:var(--humo)}
+.salir{font-family:'Barlow Semi Condensed',sans-serif;font-size:.74rem;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--humo);border:1px solid var(--linea);
+  border-radius:999px;padding:7px 14px}
+
+h1{font-family:'Archivo Black',sans-serif;font-size:clamp(1.5rem,6vw,2rem);line-height:1.08}
+.sub{margin-top:7px;color:var(--humo);font-size:.96rem}
+.card{background:var(--panel);border:1px solid var(--linea);border-radius:14px;
+  padding:18px;margin-top:16px}
+.card h2{font-family:'Archivo Black',sans-serif;font-size:1rem;margin-bottom:4px}
+.card .pie{font-size:.85rem;color:var(--humo);margin-bottom:14px}
+.campo{margin-bottom:14px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  font-family:'Archivo Black',sans-serif;font-size:.86rem;background:var(--naranja);
+  color:#160B03;border-radius:999px;padding:13px 22px;transition:transform .15s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn:disabled{opacity:.5;cursor:default;transform:none}
+.btn.sec{background:transparent;color:var(--hueso);border:1px solid var(--linea);
+  font-family:'Barlow Semi Condensed',sans-serif;letter-spacing:.12em;text-transform:uppercase;font-size:.78rem}
+.btn.chico{padding:9px 15px;font-size:.78rem}
+.btn.ancho{width:100%}
+
+.msg{border-radius:10px;padding:11px 14px;font-size:.9rem;line-height:1.4;margin-top:12px}
+.msg.ok{background:rgba(63,201,124,.14);border:1px solid rgba(63,201,124,.4)}
+.msg.err{background:rgba(228,97,76,.14);border:1px solid rgba(228,97,76,.42)}
+.msg.info{background:rgba(241,236,227,.07);border:1px solid var(--linea);color:var(--humo)}
+
+/* semana */
+.semana{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px}
+.semana b{font-family:'Barlow Semi Condensed',sans-serif;font-size:.9rem;letter-spacing:.06em;
+  text-transform:uppercase}
+.flecha{border:1px solid var(--linea);border-radius:999px;width:38px;height:38px;
+  display:grid;place-items:center;font-size:1.05rem;color:var(--humo);flex:none}
+.flecha:hover{color:var(--hueso)}
+
+.dia{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:12px;
+  background:var(--panel);border:1px solid var(--linea);margin-top:9px;
+  border-left:4px solid var(--acento,var(--linea))}
+.dia .fecha{flex:none;width:52px;text-align:center}
+.dia .fecha b{display:block;font-family:'Archivo Black',sans-serif;font-size:1.15rem;line-height:1}
+.dia .fecha span{font-family:'Barlow Semi Condensed',sans-serif;font-size:.72rem;
+  letter-spacing:.12em;text-transform:uppercase;color:var(--humo)}
+.dia .info{flex:1;min-width:0}
+.dia .horario{font-size:1.02rem;font-weight:600}
+.dia .nota{font-size:.82rem;color:var(--humo);margin-top:2px}
+.dia.hoy{box-shadow:0 0 0 1px var(--naranja) inset}
+
+.etq{display:inline-block;font-family:'Barlow Semi Condensed',sans-serif;font-size:.7rem;
+  letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:999px;
+  border:1px solid currentColor;margin-top:5px}
+.etq.pend{color:var(--amarillo)}
+.etq.ok{color:var(--verde)}
+.etq.no{color:var(--rojo)}
+
+.oculto{display:none}
+.sol{padding:13px 15px;border-radius:11px;background:var(--panel);
+  border:1px solid var(--linea);margin-top:9px;font-size:.92rem;line-height:1.4}
+.sol .cab{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.hint{font-size:.83rem;color:var(--humo);line-height:1.45;margin-top:8px}
+.fila{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="tope">
+    <div class="marca"><b>MI TURNO</b><span id="quien"></span></div>
+    <button class="salir oculto" id="btnSalir">Salir</button>
+  </div>
+
+  <!-- ═══ INGRESO ═══ -->
+  <section id="v-ingreso">
+    <h1>Entra a ver tu horario</h1>
+    <p class="sub">Elige tu tienda, tu nombre y pon tu PIN.</p>
+    <div class="card">
+      <div class="campo"><label>Tienda</label><select id="inTienda"></select></div>
+      <div class="campo"><label>Tu nombre</label><select id="inPersona"><option>—</option></select></div>
+      <div class="campo"><label>PIN</label><input id="inPin" type="password" inputmode="numeric" autocomplete="off" placeholder="••••"></div>
+      <button class="btn ancho" id="btnEntrar">Entrar</button>
+      <div id="msgIngreso"></div>
+    </div>
+  </section>
+
+  <!-- ═══ MI SEMANA ═══ -->
+  <section id="v-semana" class="oculto">
+    <div class="semana">
+      <button class="flecha" id="antes" aria-label="Semana anterior">‹</button>
+      <b id="rotulo">—</b>
+      <button class="flecha" id="despues" aria-label="Semana siguiente">›</button>
+    </div>
+    <div id="dias"></div>
+    <div id="msgSemana"></div>
+
+    <div class="fila">
+      <button class="btn sec" id="btnHoy">Ir a esta semana</button>
+      <button class="btn chico" id="btnPedirDia">Pedir día libre</button>
+    </div>
+
+    <!-- pedir día libre -->
+    <div class="card oculto" id="formDia">
+      <h2>Pedir un día libre</h2>
+      <p class="pie">Pídelo con tiempo: el supervisor lo considera cuando arma la malla.</p>
+      <div class="campo"><label>Qué día</label><input type="date" id="diaFecha"></div>
+      <div class="campo"><label>Motivo (opcional)</label><input id="diaMotivo" maxlength="140" placeholder="Trámite, examen, tema familiar…"></div>
+      <div class="campo"><label>Tu PIN</label><input id="diaPin" type="password" inputmode="numeric" placeholder="••••"></div>
+      <div class="fila">
+        <button class="btn" id="btnEnviarDia">Enviar solicitud</button>
+        <button class="btn sec" id="btnCerrarDia">Cancelar</button>
+      </div>
+      <div id="msgDia"></div>
+    </div>
+
+    <!-- pedir cambio de turno -->
+    <div class="card oculto" id="formCambio">
+      <h2>Pedir cambio de turno</h2>
+      <p class="pie" id="cambioQue">—</p>
+      <div class="campo"><label>Quién te reemplaza (opcional)</label><select id="camRep"></select></div>
+      <div class="campo"><label>Motivo (opcional)</label><input id="camMotivo" maxlength="140"></div>
+      <div class="campo"><label>Tu PIN</label><input id="camPin" type="password" inputmode="numeric" placeholder="••••"></div>
+      <div class="fila">
+        <button class="btn" id="btnEnviarCambio">Enviar solicitud</button>
+        <button class="btn sec" id="btnCerrarCambio">Cancelar</button>
+      </div>
+      <div id="msgCambio"></div>
+    </div>
+
+    <h2 style="font-family:'Archivo Black',sans-serif;font-size:1rem;margin-top:28px">Mis solicitudes</h2>
+    <div id="misSol"></div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+const SB_URL='https://kasmvouglukwhbptieib.supabase.co';
+const SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imthc212b3VnbHVrd2hicHRpZWliIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU3MjA5MTMsImV4cCI6MjEwMTI5NjkxM30.JqpXIUCDoMi5WHcQkMn6OkcxkYVPTiKz9A2nDoCjQNQ';
+const CLAVE='miturno:sesion';
+const DIAS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const MESES=['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+
+let YO=null, LUNES=null, TURNOS=[], SOL_CAMBIO=[], SOL_DIA=[], COMPAS=[], TURNO_SEL=null;
+
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const poner=(id,cls,txt)=>{const e=$(id);if(e)e.innerHTML=txt?'<div class="msg '+cls+'">'+txt+'</div>':'';};
+
+async function sb(path,o){
+  o=o||{};
+  const r=await fetch(SB_URL+'/rest/v1/'+path,{method:o.method||'GET',
+    headers:{apikey:SB_KEY,Authorization:'Bearer '+SB_KEY,'Content-Type':'application/json',
+      Prefer:o.prefer||'return=representation'},
+    body:o.body?JSON.stringify(o.body):undefined});
+  const t=await r.text();
+  if(!r.ok)throw new Error(t||('Error '+r.status));
+  return t?JSON.parse(t):null;
+}
+
+/* ── fechas ── */
+function clave(d){const x=d||new Date();
+  return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0');}
+function desdeClave(s){const p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);}
+function lunesDe(d){const x=new Date(d);const g=(x.getDay()+6)%7;x.setDate(x.getDate()-g);return clave(x);}
+function semana(l){const a=[];const b=desdeClave(l);
+  for(let i=0;i<7;i++){const x=new Date(b);x.setDate(b.getDate()+i);a.push(clave(x));}return a;}
+function rotulo(l){const d=semana(l);const a=desdeClave(d[0]),b=desdeClave(d[6]);
+  return a.getDate()+' '+MESES[a.getMonth()]+' — '+b.getDate()+' '+MESES[b.getMonth()];}
+function corta(f){const d=desdeClave(f);return d.getDate()+' '+MESES[d.getMonth()];}
+
+/* ── ingreso ── */
+async function iniciar(){
+  try{
+    const ts=await sb('tiendas?select=id,nombre&order=nombre');
+    if(!ts||!ts.length){poner('#msgIngreso','err','No hay tiendas cargadas.');return;}
+    $('#inTienda').innerHTML=ts.map(t=>'<option value="'+t.id+'">'+esc(t.nombre)+'</option>').join('');
+    await cargarPersonas();
+  }catch(e){poner('#msgIngreso','err','No se pudo conectar. Revisa tu internet.');}
+}
+
+async function cargarPersonas(){
+  const tid=$('#inTienda').value;
+  try{
+    const ps=await sb('empleados?select=id,nombre&tienda_id=eq.'+tid+'&activo=is.true&order=nombre');
+    $('#inPersona').innerHTML=(ps&&ps.length)
+      ? ps.map(p=>'<option value="'+p.id+'">'+esc(p.nombre)+'</option>').join('')
+      : '<option value="">Sin personas activas</option>';
+  }catch(e){poner('#msgIngreso','err','No se pudo cargar el equipo.');}
+}
+
+async function entrar(){
+  const tid=$('#inTienda').value, pid=$('#inPersona').value, pin=$('#inPin').value.trim();
+  if(!pid){poner('#msgIngreso','err','Elige tu nombre.');return;}
+  if(!pin){poner('#msgIngreso','err','Escribe tu PIN.');return;}
+  poner('#msgIngreso','info','Comprobando…');
+  try{
+    /* el PIN se comprueba en el servidor: nunca se descarga al teléfono */
+    const r=await sb('empleados?select=id,nombre,tienda_id&id=eq.'+pid+'&pin=eq.'+encodeURIComponent(pin));
+    if(!r||!r.length){poner('#msgIngreso','err','PIN incorrecto.');return;}
+    const t=$('#inTienda');
+    YO={id:r[0].id, nombre:r[0].nombre, tienda_id:tid, tienda:t.options[t.selectedIndex].text};
+    localStorage.setItem(CLAVE,JSON.stringify(YO));
+    abrirSemana();
+  }catch(e){poner('#msgIngreso','err','No se pudo entrar. Intenta de nuevo.');}
+}
+
+function salir(){
+  localStorage.removeItem(CLAVE); YO=null;
+  $('#v-semana').classList.add('oculto');
+  $('#v-ingreso').classList.remove('oculto');
+  $('#btnSalir').classList.add('oculto');
+  $('#quien').textContent='';
+  $('#inPin').value='';
+  poner('#msgIngreso','','');
+}
+
+/* ── semana ── */
+function abrirSemana(){
+  $('#v-ingreso').classList.add('oculto');
+  $('#v-semana').classList.remove('oculto');
+  $('#btnSalir').classList.remove('oculto');
+  $('#quien').textContent=YO.nombre+' · '+YO.tienda;
+  LUNES=LUNES||lunesDe(new Date());
+  cargar();
+}
+
+async function cargar(){
+  $('#rotulo').textContent=rotulo(LUNES);
+  poner('#msgSemana','info','Cargando tu semana…');
+  const d=semana(LUNES);
+  try{
+    TURNOS=await sb('turnos?select=id,fecha,entrada,salida,libre&empleado_id=eq.'+YO.id+
+      '&fecha=gte.'+d[0]+'&fecha=lte.'+d[6]+'&order=fecha') || [];
+    SOL_CAMBIO=await sb('solicitudes_cambio?select=id,turno_id,estado,motivo,empleado_reemplazo_id'+
+      '&empleado_solicitante_id=eq.'+YO.id) || [];
+    SOL_DIA=await sb('solicitudes_dia?select=id,fecha,motivo,estado,nota_super'+
+      '&empleado_id=eq.'+YO.id+'&order=fecha.desc&limit=25') || [];
+    if(!COMPAS.length){
+      COMPAS=await sb('empleados?select=id,nombre&tienda_id=eq.'+YO.tienda_id+
+        '&activo=is.true&id=neq.'+YO.id+'&order=nombre') || [];
+    }
+    poner('#msgSemana','','');
+    pintarDias(); pintarSolicitudes();
+  }catch(e){poner('#msgSemana','err','No se pudo cargar. Revisa tu internet y reintenta.');}
+}
+
+function turnoDe(f){return TURNOS.find(t=>t.fecha===f)||null;}
+function solDeTurno(id){return SOL_CAMBIO.find(s=>s.turno_id===id&&s.estado==='pendiente')||null;}
+function solDeDia(f){return SOL_DIA.find(s=>s.fecha===f&&s.estado==='pendiente')||null;}
+
+function pintarDias(){
+  const hoy=clave(), d=semana(LUNES);
+  $('#dias').innerHTML=d.map((f,i)=>{
+    const t=turnoDe(f), n=desdeClave(f).getDate();
+    const futuro=f>hoy;
+    let acento='var(--linea)', horario, nota='';
+
+    if(!t){ horario='Sin turno publicado'; nota='El supervisor aún no publica este día.'; }
+    else if(t.libre){ horario='Libre'; acento='var(--verde)'; }
+    else { horario=(t.entrada||'—')+' a '+(t.salida||'—'); acento='var(--naranja)'; }
+
+    const pedido=solDeDia(f);
+    if(pedido) nota='Pediste este día libre — pendiente.';
+    const sol=t?solDeTurno(t.id):null;
+    if(sol) nota='Pediste cambiar este turno — pendiente.';
+
+    let boton='';
+    if(t && !t.libre && futuro && !sol)
+      boton='<button class="btn sec chico" data-turno="'+t.id+'" data-fecha="'+f+'">Pedir cambio</button>';
+
+    return '<div class="dia'+(f===hoy?' hoy':'')+'" style="--acento:'+acento+'">'+
+      '<div class="fecha"><b>'+n+'</b><span>'+DIAS[i]+'</span></div>'+
+      '<div class="info"><div class="horario">'+esc(horario)+'</div>'+
+      (nota?'<div class="nota">'+esc(nota)+'</div>':'')+'</div>'+
+      boton+'</div>';
+  }).join('');
+
+  document.querySelectorAll('[data-turno]').forEach(b=>{
+    b.addEventListener('click',()=>abrirCambio(b.getAttribute('data-turno'),b.getAttribute('data-fecha')));
+  });
+}
+
+function etiqueta(e){
+  const c=e==='aprobada'?'ok':e==='rechazada'?'no':'pend';
+  return '<span class="etq '+c+'">'+esc(e)+'</span>';
+}
+
+function pintarSolicitudes(){
+  const partes=[];
+  SOL_DIA.forEach(s=>{
+    partes.push('<div class="sol"><div class="cab"><b>Día libre · '+corta(s.fecha)+'</b>'+etiqueta(s.estado)+'</div>'+
+      (s.motivo?'<div class="hint">'+esc(s.motivo)+'</div>':'')+
+      (s.nota_super?'<div class="hint">Supervisor: '+esc(s.nota_super)+'</div>':'')+'</div>');
+  });
+  SOL_CAMBIO.forEach(s=>{
+    const t=TURNOS.find(x=>x.id===s.turno_id);
+    partes.push('<div class="sol"><div class="cab"><b>Cambio de turno'+(t?' · '+corta(t.fecha):'')+'</b>'+
+      etiqueta(s.estado)+'</div>'+(s.motivo?'<div class="hint">'+esc(s.motivo)+'</div>':'')+'</div>');
+  });
+  $('#misSol').innerHTML=partes.length?partes.join(''):'<p class="hint">Todavía no has pedido nada.</p>';
+}
+
+/* ── pedir día libre ── */
+function abrirDia(){
+  const m=new Date(); m.setDate(m.getDate()+1);
+  const f=$('#diaFecha');
+  f.min=clave(m); f.value=clave(m);
+  $('#diaMotivo').value=''; $('#diaPin').value='';
+  poner('#msgDia','','');
+  $('#formDia').classList.remove('oculto');
+  $('#formDia').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function enviarDia(){
+  const fecha=$('#diaFecha').value, motivo=$('#diaMotivo').value.trim(), pin=$('#diaPin').value.trim();
+  if(!fecha){poner('#msgDia','err','Elige el día.');return;}
+  if(fecha<=clave()){poner('#msgDia','err','Solo puedes pedir días a futuro.');return;}
+  if(!pin){poner('#msgDia','err','Escribe tu PIN.');return;}
+  poner('#msgDia','info','Enviando…');
+  try{
+    const ok=await sb('empleados?select=id&id=eq.'+YO.id+'&pin=eq.'+encodeURIComponent(pin));
+    if(!ok||!ok.length){poner('#msgDia','err','PIN incorrecto.');return;}
+    await sb('solicitudes_dia',{method:'POST',prefer:'return=minimal',
+      body:{tienda_id:YO.tienda_id,empleado_id:YO.id,fecha,motivo:motivo||null,estado:'pendiente'}});
+    $('#formDia').classList.add('oculto');
+    await cargar();
+    poner('#msgSemana','ok','Solicitud enviada. Queda pendiente de que la vea tu supervisor.');
+  }catch(e){
+    const t=String(e.message||'');
+    poner('#msgDia','err', t.indexOf('solicitudes_dia_unica')>=0
+      ? 'Ya tienes una solicitud pendiente para ese día.'
+      : 'No se pudo enviar. Intenta de nuevo.');
+  }
+}
+
+/* ── pedir cambio de turno ── */
+function abrirCambio(tid,fecha){
+  TURNO_SEL=TURNOS.find(t=>t.id===tid)||null;
+  if(!TURNO_SEL)return;
+  $('#cambioQue').textContent='Turno del '+corta(fecha)+', de '+
+    (TURNO_SEL.entrada||'—')+' a '+(TURNO_SEL.salida||'—')+'.';
+  $('#camRep').innerHTML='<option value="">Nadie por ahora</option>'+
+    COMPAS.map(c=>'<option value="'+c.id+'">'+esc(c.nombre)+'</option>').join('');
+  $('#camMotivo').value=''; $('#camPin').value='';
+  poner('#msgCambio','','');
+  $('#formCambio').classList.remove('oculto');
+  $('#formCambio').scrollIntoView({behavior:'smooth',block:'center'});
+}
+
+async function enviarCambio(){
+  if(!TURNO_SEL){poner('#msgCambio','err','Vuelve a elegir el turno.');return;}
+  const pin=$('#camPin').value.trim();
+  if(TURNO_SEL.fecha<=clave()){poner('#msgCambio','err','Solo puedes pedir cambio de turnos futuros.');return;}
+  if(!pin){poner('#msgCambio','err','Escribe tu PIN.');return;}
+  poner('#msgCambio','info','Enviando…');
+  try{
+    const ok=await sb('empleados?select=id&id=eq.'+YO.id+'&pin=eq.'+encodeURIComponent(pin));
+    if(!ok||!ok.length){poner('#msgCambio','err','PIN incorrecto.');return;}
+    await sb('solicitudes_cambio',{method:'POST',prefer:'return=minimal',
+      body:{turno_id:TURNO_SEL.id, empleado_solicitante_id:YO.id,
+            empleado_reemplazo_id:$('#camRep').value||null,
+            motivo:$('#camMotivo').value.trim()||null, estado:'pendiente'}});
+    $('#formCambio').classList.add('oculto');
+    await cargar();
+    poner('#msgSemana','ok','Solicitud enviada. Queda pendiente de aprobación.');
+  }catch(e){poner('#msgCambio','err','No se pudo enviar. Intenta de nuevo.');}
+}
+
+/* ── eventos ── */
+$('#inTienda').addEventListener('change',cargarPersonas);
+$('#btnEntrar').addEventListener('click',entrar);
+$('#inPin').addEventListener('keydown',e=>{if(e.key==='Enter')entrar();});
+$('#btnSalir').addEventListener('click',salir);
+$('#antes').addEventListener('click',()=>{const d=desdeClave(LUNES);d.setDate(d.getDate()-7);LUNES=clave(d);cargar();});
+$('#despues').addEventListener('click',()=>{const d=desdeClave(LUNES);d.setDate(d.getDate()+7);LUNES=clave(d);cargar();});
+$('#btnHoy').addEventListener('click',()=>{LUNES=lunesDe(new Date());cargar();});
+$('#btnPedirDia').addEventListener('click',abrirDia);
+$('#btnEnviarDia').addEventListener('click',enviarDia);
+$('#btnCerrarDia').addEventListener('click',()=>$('#formDia').classList.add('oculto'));
+$('#btnEnviarCambio').addEventListener('click',enviarCambio);
+$('#btnCerrarCambio').addEventListener('click',()=>$('#formCambio').classList.add('oculto'));
+
+/* ── arranque ── */
+(async function(){
+  await iniciar();
+  try{
+    const g=JSON.parse(localStorage.getItem(CLAVE)||'null');
+    if(g&&g.id){YO=g;abrirSemana();}
+  }catch(e){}
+})();
+})();
+</script>
+</body>
+</html>

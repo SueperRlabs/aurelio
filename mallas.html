@@ -150,6 +150,13 @@
 </div>
 
 <div class="card">
+  <div class="card-h">Solicitudes del equipo<span>Días libres pedidos y cambios de turno</span></div>
+  <button class="btn sec" onclick="revisarSolicitudes()">Revisar solicitudes</button>
+  <div id="panMsg"></div>
+  <div id="panL" style="margin-top:10px"></div>
+</div>
+
+<div class="card">
   <div class="card-h">Equipo<span>Horas de contrato y domingos libres que ya lleva este mes</span></div>
   <div id="eqL"></div>
   <button class="btn sec" onclick="addP()">Agregar persona</button>
@@ -329,6 +336,148 @@ function pedidosDe(uuid){
   const dias=diasDeSemana(LUNES);
   return SOLICITUDES.filter(s=>s.empleado_id===uuid)
                     .map(s=>dias.indexOf(s.fecha)).filter(i=>i>=0);
+}
+
+/* ══════ APROBAR SOLICITUDES DEL EQUIPO ══════ */
+let PEND_DIA=[], PEND_CAM=[], TURNOS_CAM={}, NOMBRES={}, PIN_SUP='';
+
+async function revisarSolicitudes(){
+  if(!TIENDA){msgPanel('<div class="msg err">Primero conecta y trae el equipo de una tienda.</div>');return;}
+  msgPanel('<div class="msg info">Buscando solicitudes…</div>');
+  try{
+    const emps=await sb('empleados?select=id,nombre&tienda_id=eq.'+TIENDA.id) || [];
+    NOMBRES={}; emps.forEach(e=>{NOMBRES[e.id]=e.nombre;});
+
+    PEND_DIA=await sb('solicitudes_dia?select=id,empleado_id,fecha,motivo'+
+      '&tienda_id=eq.'+TIENDA.id+'&estado=eq.pendiente&order=fecha') || [];
+
+    /* las de cambio cuelgan de un turno, así que hay que ir a buscar el turno */
+    const todas=await sb('solicitudes_cambio?select=id,turno_id,empleado_solicitante_id,'+
+      'empleado_reemplazo_id,motivo&estado=eq.pendiente&limit=200') || [];
+    TURNOS_CAM={}; PEND_CAM=[];
+    if(todas.length){
+      const ids=todas.map(s=>s.turno_id).filter(Boolean);
+      const ts=ids.length ? (await sb('turnos?select=id,fecha,entrada,salida,libre,tienda_id,empleado_id'+
+        '&id=in.('+ids.join(',')+')') || []) : [];
+      ts.forEach(t=>{TURNOS_CAM[t.id]=t;});
+      PEND_CAM=todas.filter(s=>{
+        const t=TURNOS_CAM[s.turno_id];
+        return t && t.tienda_id===TIENDA.id;
+      });
+    }
+    pintarPendientes();
+  }catch(e){msgPanel('<div class="msg err">No se pudo cargar: '+esc(String(e.message).slice(0,180))+'</div>');}
+}
+
+function msgPanel(html){const e=document.getElementById('panMsg');if(e)e.innerHTML=html;}
+function nombreDe(id){return NOMBRES[id]||'—';}
+
+function pintarPendientes(){
+  const el=document.getElementById('panL');
+  const total=PEND_DIA.length+PEND_CAM.length;
+  if(!total){
+    el.innerHTML='<p class="hint">Nada pendiente por resolver.</p>';
+    msgPanel(''); return;
+  }
+  let html='';
+
+  PEND_DIA.forEach(s=>{
+    html+='<div class="row" style="display:block">'+
+      '<b>'+esc(nombreDe(s.empleado_id))+'</b> pide libre el <b>'+esc(s.fecha)+'</b>'+
+      (s.motivo?'<div class="hint">'+esc(s.motivo)+'</div>':'')+
+      '<div id="rd-'+esc(s.id)+'"></div>'+
+      '<div style="display:flex;gap:8px;margin-top:8px">'+
+        '<button class="btn" onclick="resolverDia(\''+esc(s.id)+'\',true)">Aprobar</button>'+
+        '<button class="btn sec" onclick="resolverDia(\''+esc(s.id)+'\',false)">Rechazar</button>'+
+      '</div></div>';
+  });
+
+  PEND_CAM.forEach(s=>{
+    const t=TURNOS_CAM[s.turno_id];
+    const rep=s.empleado_reemplazo_id;
+    const choca=rep && Object.values(TURNOS_CAM).some(x=>x.empleado_id===rep&&x.fecha===t.fecha&&!x.libre);
+    html+='<div class="row" style="display:block">'+
+      '<b>'+esc(nombreDe(s.empleado_solicitante_id))+'</b> pide cambiar el turno del <b>'+esc(t.fecha)+'</b>'+
+      ' ('+esc(t.entrada||'—')+' a '+esc(t.salida||'—')+')'+
+      (s.motivo?'<div class="hint">'+esc(s.motivo)+'</div>':'')+
+      '<div class="hint">'+(rep
+        ? 'Propone a '+esc(nombreDe(rep))+'.'
+        : 'Sin reemplazo: al aprobar, el turno queda vacante para que lo asignes.')+'</div>'+
+      (choca?'<div class="msg err">'+esc(nombreDe(rep))+' ya tiene turno ese día.</div>':'')+
+      '<div id="rc-'+esc(s.id)+'"></div>'+
+      '<div style="display:flex;gap:8px;margin-top:8px">'+
+        '<button class="btn" '+(choca?'disabled ':'')+'onclick="resolverCambio(\''+esc(s.id)+'\',true)">Aprobar</button>'+
+        '<button class="btn sec" onclick="resolverCambio(\''+esc(s.id)+'\',false)">Rechazar</button>'+
+      '</div></div>';
+  });
+
+  el.innerHTML=html;
+  msgPanel('<div class="msg info">'+total+' solicitud(es) por resolver.</div>');
+}
+
+async function pinOk(){
+  if(PIN_SUP) return true;
+  const p=prompt('PIN de supervisor:');
+  if(!p) return false;
+  try{
+    const r=await sb('tiendas?select=id&id=eq.'+TIENDA.id+'&pin_supervisor=eq.'+encodeURIComponent(p.trim()));
+    if(r&&r.length){PIN_SUP=p.trim();return true;}
+    alert('PIN incorrecto.');return false;
+  }catch(e){alert('No se pudo comprobar el PIN.');return false;}
+}
+
+async function resolverDia(id,aprobar){
+  if(!await pinOk())return;
+  const c=document.getElementById('rd-'+id);
+  c.innerHTML='<div class="msg info">Guardando…</div>';
+  try{
+    await sb('solicitudes_dia?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',
+      body:{estado:aprobar?'aprobada':'rechazada', resuelto_en:new Date().toISOString()}});
+    await refrescarAprobadas();
+    await revisarSolicitudes();
+    msgPanel('<div class="msg ok">Solicitud '+(aprobar?'aprobada':'rechazada')+
+      (aprobar?'. Si cae en esta semana, el generador ya la va a respetar.':'.')+'</div>');
+  }catch(e){c.innerHTML='<div class="msg err">No se pudo guardar: '+esc(String(e.message).slice(0,160))+'</div>';}
+}
+
+async function resolverCambio(id,aprobar){
+  if(!await pinOk())return;
+  const s=PEND_CAM.find(x=>x.id===id); if(!s)return;
+  const t=TURNOS_CAM[s.turno_id];
+  const c=document.getElementById('rc-'+id);
+  if(aprobar&&!t){c.innerHTML='<div class="msg err">Ese turno ya no existe. Rechaza la solicitud.</div>';return;}
+  c.innerHTML='<div class="msg info">Guardando…</div>';
+  try{
+    if(aprobar){
+      if(s.empleado_reemplazo_id){
+        /* si el reemplazo tenía ese día como libre, ese registro estorba */
+        const libre=await sb('turnos?select=id&empleado_id=eq.'+s.empleado_reemplazo_id+
+          '&fecha=eq.'+t.fecha+'&libre=is.true');
+        if(libre&&libre.length)
+          await sb('turnos?id=eq.'+libre[0].id,{method:'DELETE',prefer:'return=minimal'});
+        await sb('turnos?id=eq.'+t.id,{method:'PATCH',prefer:'return=minimal',
+          body:{empleado_id:s.empleado_reemplazo_id, vacante:false}});
+      }else{
+        await sb('turnos?id=eq.'+t.id,{method:'PATCH',prefer:'return=minimal',body:{vacante:true}});
+      }
+    }
+    await sb('solicitudes_cambio?id=eq.'+id,{method:'PATCH',prefer:'return=minimal',
+      body:{estado:aprobar?'aprobado':'rechazado', fecha_resolucion:new Date().toISOString()}});
+    await revisarSolicitudes();
+    msgPanel('<div class="msg ok">Cambio '+(aprobar?'aprobado':'rechazado')+'.</div>');
+  }catch(e){c.innerHTML='<div class="msg err">No se pudo guardar: '+esc(String(e.message).slice(0,160))+'</div>';}
+}
+
+/* vuelve a leer los días libres aprobados de la semana en pantalla */
+async function refrescarAprobadas(){
+  if(!TIENDA)return;
+  const d=diasDeSemana(LUNES);
+  try{
+    SOLICITUDES=await sb('solicitudes_dia?select=empleado_id,fecha,motivo'+
+      '&tienda_id=eq.'+TIENDA.id+'&estado=eq.aprobada'+
+      '&fecha=gte.'+d[0]+'&fecha=lte.'+d[6]) || [];
+    renderSolicitudes();
+  }catch(e){}
 }
 
 function renderSolicitudes(){

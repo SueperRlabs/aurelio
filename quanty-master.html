@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>QUANTY MASTER · El conocimiento es poder</title>
+<style>
+:root{--q-bg:#05070c;--q-panel:#0d121b;--q-cyan:#62e7ff;--q-blue:#278dff;--q-gold:#d7ad59;--q-gold2:#8f6a2e;--q-ivory:#f4efe5;--q-muted:#9ba8b7}
+*{box-sizing:border-box}html,body{margin:0;height:100%;background:var(--q-bg);color:var(--q-ivory);font-family:Inter,Segoe UI,Arial,sans-serif;overflow:hidden}
+#gate{position:fixed;inset:0;z-index:20;display:grid;place-items:center;overflow:hidden;background:
+radial-gradient(circle at 50% 42%,rgba(38,143,255,.20),transparent 22%),
+radial-gradient(circle at 50% 68%,rgba(215,173,89,.12),transparent 28%),
+linear-gradient(180deg,#080b12 0%,#05070c 65%,#090b0d 100%);transition:opacity .8s ease,visibility .8s ease}
+#gate.hide{opacity:0;visibility:hidden;pointer-events:none}
+#gate:before{content:"";position:absolute;inset:0;background:
+linear-gradient(90deg,transparent 0 8%,rgba(255,255,255,.02) 8.2% 8.5%,transparent 8.7% 91.3%,rgba(255,255,255,.02) 91.5% 91.8%,transparent 92%),
+radial-gradient(ellipse at 50% 100%,rgba(144,105,46,.20),transparent 55%);pointer-events:none}
+.q-columns{position:absolute;inset:0;pointer-events:none;opacity:.72}.column{position:absolute;top:-4%;bottom:-8%;width:11%;border-left:1px solid rgba(215,173,89,.19);border-right:1px solid rgba(215,173,89,.13);background:linear-gradient(90deg,rgba(255,255,255,.035),rgba(255,255,255,.008) 45%,rgba(215,173,89,.035));filter:drop-shadow(0 12px 40px #000)}
+.column:before,.column:after{content:"";position:absolute;left:-16%;width:132%;height:32px;border:1px solid rgba(215,173,89,.18);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.012))}.column:before{top:4%}.column:after{bottom:4%}.column.a{left:5%}.column.b{left:18%;width:7%;opacity:.38}.column.c{right:5%}.column.d{right:18%;width:7%;opacity:.38}
+.gate-inner{position:relative;z-index:3;width:min(1100px,92vw);height:min(780px,91vh);display:grid;grid-template-columns:.92fr 1.08fr;align-items:center;gap:4vw}
+.copy{padding:20px}.kicker{font-size:11px;letter-spacing:.32em;color:var(--q-gold);text-transform:uppercase;margin-bottom:18px}.brand{font-family:Georgia,Times New Roman,serif;font-size:clamp(54px,8vw,112px);line-height:.82;letter-spacing:-.045em;margin:0;text-transform:uppercase}.brand span{display:block;font-size:.37em;letter-spacing:.38em;color:var(--q-cyan);margin:20px 0 0 6px}.motto{font-family:Georgia,serif;font-size:clamp(17px,2.1vw,27px);letter-spacing:.08em;color:#e8dcc4;margin:34px 0 8px}.sub{font-size:12px;letter-spacing:.23em;text-transform:uppercase;color:var(--q-muted);margin-bottom:30px}.enter{appearance:none;border:1px solid rgba(98,231,255,.48);background:linear-gradient(135deg,rgba(24,77,107,.92),rgba(18,24,35,.94) 55%,rgba(115,83,32,.70));color:white;border-radius:999px;padding:15px 26px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 0 1px rgba(215,173,89,.18) inset,0 14px 50px rgba(0,0,0,.45),0 0 34px rgba(39,141,255,.13);transition:.22s}.enter:hover{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(215,173,89,.30) inset,0 18px 55px rgba(0,0,0,.55),0 0 46px rgba(98,231,255,.22)}.enter:disabled{opacity:.55;cursor:wait}.safe{margin-top:14px;color:#758392;font-size:11px}
+.core-stage{position:relative;height:min(70vh,660px);display:grid;place-items:center;perspective:900px}.halo{position:absolute;width:min(42vw,450px);aspect-ratio:1;border-radius:50%;border:1px solid rgba(98,231,255,.25);box-shadow:0 0 80px rgba(39,141,255,.16),inset 0 0 70px rgba(215,173,89,.08);animation:breathe 4.8s ease-in-out infinite}.halo:before,.halo:after{content:"";position:absolute;inset:8%;border-radius:50%;border:1px dashed rgba(215,173,89,.22);animation:spin 18s linear infinite}.halo:after{inset:18%;border-color:rgba(98,231,255,.24);animation-direction:reverse;animation-duration:13s}.orb{position:absolute;width:min(18vw,185px);aspect-ratio:1;border-radius:50%;display:grid;place-items:center;font-family:Georgia,serif;font-weight:700;font-size:clamp(38px,5vw,76px);color:#effcff;background:radial-gradient(circle at 37% 30%,#e8fbff 0 4%,#7be9ff 8%,#226dbe 32%,#101a33 58%,#090b13 76%);border:1px solid rgba(255,255,255,.42);box-shadow:inset -24px -28px 55px rgba(0,0,0,.48),inset 12px 15px 45px rgba(255,255,255,.15),0 0 35px rgba(98,231,255,.65),0 0 110px rgba(39,141,255,.32);animation:float 4.5s ease-in-out infinite}.orb:after{content:"";position:absolute;inset:17%;border-radius:50%;border:1px solid rgba(215,173,89,.43);box-shadow:0 0 22px rgba(215,173,89,.18)}
+.hand{position:absolute;width:min(36vw,390px);height:min(35vh,280px);bottom:5%;left:3%;transform:rotate(-9deg);filter:drop-shadow(0 24px 32px rgba(0,0,0,.55))}.palm{position:absolute;width:46%;height:36%;left:34%;bottom:9%;border-radius:48% 42% 34% 50%;background:linear-gradient(145deg,#dbe2e5,#73808b 22%,#151b22 47%,#9eabb2 68%,#252b34);border:1px solid #859199;box-shadow:inset 8px 9px 18px rgba(255,255,255,.22),inset -10px -12px 22px #05070b}.finger{position:absolute;height:28px;border-radius:22px;background:linear-gradient(180deg,#c6d0d5,#59636c 42%,#11161c 48%,#73808b);border:1px solid #74818a;transform-origin:left center;box-shadow:inset 4px 3px 8px rgba(255,255,255,.18)}.f1{width:47%;left:48%;top:31%;transform:rotate(-20deg)}.f2{width:44%;left:48%;top:43%;transform:rotate(-8deg)}.f3{width:40%;left:47%;top:55%;transform:rotate(3deg)}.thumb{width:32%;left:25%;top:28%;transform:rotate(-48deg)}.wrist{position:absolute;width:30%;height:27%;left:12%;bottom:3%;border-radius:16px;background:linear-gradient(130deg,#10151c,#7d8991 45%,#181e25 56%,#59666f);border:1px solid #65717a}.qmark{position:absolute;left:31%;bottom:20%;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;color:var(--q-cyan);border:1px solid rgba(98,231,255,.6);box-shadow:0 0 18px rgba(98,231,255,.5);font-family:Georgia,serif;font-weight:700}
+.petals{position:absolute;inset:0;overflow:hidden;pointer-events:none}.petal{position:absolute;top:-8%;width:9px;height:18px;border-radius:70% 18% 70% 18%;background:linear-gradient(145deg,#8e2239,#d56a69);opacity:.62;animation:fall linear infinite}.petal:nth-child(1){left:11%;animation-duration:11s}.petal:nth-child(2){left:25%;animation-duration:14s;animation-delay:-7s}.petal:nth-child(3){left:40%;animation-duration:12s;animation-delay:-3s}.petal:nth-child(4){left:54%;animation-duration:17s;animation-delay:-9s}.petal:nth-child(5){left:66%;animation-duration:13s;animation-delay:-4s}.petal:nth-child(6){left:79%;animation-duration:15s;animation-delay:-12s}.petal:nth-child(7){left:90%;animation-duration:10s;animation-delay:-5s}
+#masterFrame{position:fixed;inset:0;width:100%;height:100%;border:0;opacity:0;visibility:hidden;background:#05070c;transition:opacity .65s ease;z-index:10}#masterFrame.on{opacity:1;visibility:visible}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes float{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-10px) scale(1.025)}}@keyframes breathe{0%,100%{transform:scale(.985);opacity:.82}50%{transform:scale(1.02);opacity:1}}@keyframes fall{0%{transform:translate3d(0,-10vh,0) rotate(0)}100%{transform:translate3d(110px,115vh,0) rotate(620deg)}}
+@media(max-width:760px){.gate-inner{grid-template-columns:1fr;text-align:center;height:auto}.core-stage{position:absolute;inset:0;opacity:.27;pointer-events:none}.copy{position:relative;z-index:4}.brand span{margin-left:0}.safe{display:none}}
+</style>
+</head>
+<body>
+<section id="gate" aria-label="Entrada QUANTY MASTER">
+  <div class="q-columns"><i class="column a"></i><i class="column b"></i><i class="column c"></i><i class="column d"></i></div>
+  <div class="petals"><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i></div>
+  <div class="gate-inner">
+    <div class="copy">
+      <div class="kicker">QUANTY OS · TRAINING CORE</div>
+      <h1 class="brand">QUANTY<span>MASTER</span></h1>
+      <div class="motto">EL CONOCIMIENTO ES PODER</div>
+      <div class="sub">TRAIN · LEARN · EVOLVE</div>
+      <button class="enter" id="enterBtn">Entrar a QUANTY MASTER</button>
+      <div class="safe">La versión MASTER original permanece intacta.</div>
+    </div>
+    <div class="core-stage" aria-hidden="true">
+      <div class="halo"></div><div class="orb">Q</div>
+      <div class="hand"><i class="finger f1"></i><i class="finger f2"></i><i class="finger f3"></i><i class="finger thumb"></i><i class="palm"></i><i class="wrist"></i><i class="qmark">Q</i></div>
+    </div>
+  </div>
+</section>
+<iframe id="masterFrame" src="master.html" title="QUANTY MASTER"></iframe>
+<script>
+const frame=document.getElementById('masterFrame');
+const gate=document.getElementById('gate');
+const enterBtn=document.getElementById('enterBtn');
+let frameReady=false, wantsEnter=false;
+
+const skin=`
+:root{--ink:#05070c!important;--steel:#0b1018!important;--panel:#0e1520!important;--panel-2:#111b28!important;--edge:rgba(205,170,98,.27)!important;--paper:#f4efe5!important;--muted:#99a7b7!important;--amber:#d7ad59!important;--amber-deep:#8f6a2e!important;--torch:#8c6bff!important;--blueprint:#62e7ff!important;--ok:#5de0bd!important;--shadow:0 20px 55px rgba(0,0,0,.48)!important;--r:16px!important}
+html,body{background:#05070c!important;color:var(--paper)!important}
+body{background-image:radial-gradient(circle at 50% 7%,rgba(39,141,255,.14),transparent 30%),radial-gradient(circle at 15% 70%,rgba(215,173,89,.08),transparent 25%),linear-gradient(180deg,#080b12 0%,#05070c 60%,#090b10 100%)!important;background-attachment:fixed!important}
+body:before{opacity:.28!important;background-image:linear-gradient(rgba(215,173,89,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(98,231,255,.025) 1px,transparent 1px)!important;background-size:68px 68px!important}
+.hazard{height:3px!important;background:linear-gradient(90deg,transparent,#d7ad59 22%,#62e7ff 50%,#d7ad59 78%,transparent)!important;opacity:.85!important}
+.plate{background:linear-gradient(145deg,rgba(18,24,35,.94),rgba(8,12,19,.96))!important;border-color:rgba(215,173,89,.25)!important;box-shadow:0 20px 50px rgba(0,0,0,.46),inset 0 1px rgba(255,255,255,.04)!important}
+.plate:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.14;background:repeating-linear-gradient(115deg,transparent 0 48px,rgba(255,255,255,.035) 49px,transparent 50px 93px)}
+.plate:after{background:linear-gradient(90deg,transparent,rgba(215,173,89,.62),rgba(98,231,255,.42),transparent)!important}
+.btn{background:linear-gradient(135deg,#d7ad59,#a77b34)!important;color:#0b0c0f!important;border:1px solid rgba(255,240,196,.35)!important;box-shadow:0 5px 0 #765321,0 12px 28px rgba(0,0,0,.38),0 0 28px rgba(215,173,89,.10)!important;border-radius:999px!important}
+.btn.ghost{background:rgba(10,15,24,.58)!important;color:#eaf8ff!important;border-color:rgba(98,231,255,.26)!important;box-shadow:none!important}.btn.ghost:hover{color:#62e7ff!important;border-color:#62e7ff!important}
+.hud,.sup-head{background:rgba(5,8,13,.86)!important;border-bottom:1px solid rgba(215,173,89,.23)!important;backdrop-filter:blur(16px)!important}.hud-brand{font-family:Georgia,serif!important;letter-spacing:.12em!important;color:#f4efe5!important}.hud-brand span{color:#62e7ff!important}
+.chip{background:rgba(13,20,31,.86)!important;border-color:rgba(98,231,255,.16)!important}.chip b{color:#62e7ff!important}.chip.streak b{color:#d7ad59!important}
+.torque-track{background:#080b10!important;border-color:rgba(215,173,89,.25)!important;height:10px!important}.torque-fill{background:linear-gradient(90deg,#278dff,#62e7ff 50%,#d7ad59)!important;box-shadow:0 0 22px rgba(98,231,255,.34)!important}
+.eyebrow{color:#8391a3!important}.eyebrow b,.scene-num{color:#d7ad59!important}.h-sec{font-family:Georgia,'Times New Roman',serif!important;letter-spacing:.015em!important}.sub{color:#9ba8b7!important}
+.master-pic{position:relative!important;border:1px solid rgba(98,231,255,.34)!important;background:radial-gradient(circle at 38% 30%,#eafcff 0 5%,#74e8ff 8%,#256fbd 30%,#10182c 59%,#080b10 76%)!important;box-shadow:0 0 24px rgba(98,231,255,.26),inset -10px -12px 20px rgba(0,0,0,.35)!important}.master-pic svg{display:none!important}.master-pic:after{content:'Q';position:absolute;inset:0;display:grid;place-items:center;font-family:Georgia,serif;font-size:29px;color:white;text-shadow:0 0 14px #62e7ff}
+.bubble{background:linear-gradient(135deg,rgba(14,22,34,.95),rgba(9,13,20,.96))!important;border-color:rgba(215,173,89,.20)!important}.bubble:before{background:#0d151f!important;border-color:rgba(215,173,89,.20)!important}.bubble .who{color:#62e7ff!important}
+.area-head h3{font-family:Georgia,serif!important;color:#eadfc8!important;letter-spacing:.04em!important}.rule{background:linear-gradient(90deg,rgba(215,173,89,.44),transparent)!important}
+.node{background:linear-gradient(145deg,rgba(16,23,34,.97),rgba(7,11,18,.97))!important;border-color:rgba(215,173,89,.20)!important;border-radius:18px!important;box-shadow:0 15px 38px rgba(0,0,0,.36)!important}.node:hover{border-color:#62e7ff!important;box-shadow:0 16px 42px rgba(0,0,0,.45),0 0 32px rgba(98,231,255,.10)!important}.node.done{border-color:rgba(215,173,89,.55)!important}.node.open{border-color:rgba(98,231,255,.40)!important}.bolt{clip-path:none!important;border-radius:50%!important;background:radial-gradient(circle at 35% 30%,#e8fbff,#3c9bd4 25%,#152036 58%,#090c12 76%)!important;border:1px solid rgba(98,231,255,.32)!important;box-shadow:0 0 18px rgba(98,231,255,.18)!important;color:#fff!important}.node.done .bolt{background:radial-gradient(circle at 35% 30%,#fff2ca,#d7ad59 32%,#59401f 72%)!important;color:#080a0d!important}.node-title{font-family:Georgia,serif!important;letter-spacing:.045em!important}.node-score{color:#d7ad59!important}
+.badge{background:linear-gradient(145deg,#0e151f,#090d13)!important;border-color:rgba(215,173,89,.16)!important}.badge.on{border-color:#d7ad59!important;box-shadow:0 0 0 1px rgba(215,173,89,.16) inset,0 0 28px rgba(215,173,89,.08)!important}.rank-row.me{background:linear-gradient(90deg,rgba(39,141,255,.11),rgba(215,173,89,.08))!important}.rank-row.me .rank-name,.stars{color:#d7ad59!important}
+#view-quiz{min-height:100vh;background:radial-gradient(circle at 50% 28%,rgba(39,141,255,.14),transparent 31%),radial-gradient(circle at 50% 85%,rgba(215,173,89,.09),transparent 30%)}.quiz-wrap{max-width:760px!important}.q-text{font-family:Georgia,serif!important;font-size:clamp(25px,4.8vw,40px)!important;line-height:1.16!important;text-align:center!important;margin:30px auto!important;max-width:18ch!important}.opts{display:grid!important;gap:12px!important}.opt{background:linear-gradient(145deg,rgba(17,24,35,.97),rgba(8,12,19,.97))!important;border:1px solid rgba(215,173,89,.18)!important;border-radius:16px!important;box-shadow:0 10px 28px rgba(0,0,0,.24)!important}.opt:hover{border-color:#62e7ff!important;transform:translateY(-1px)!important}.opt .key{border-color:rgba(98,231,255,.28)!important;color:#62e7ff!important}.opt.correct{border-color:#5de0bd!important;box-shadow:0 0 32px rgba(93,224,189,.11)!important}.opt.wrong{border-color:#a96d76!important}.ticks .tick.ok{background:linear-gradient(90deg,#62e7ff,#d7ad59)!important}.ticks .tick.now{border-color:#62e7ff!important;box-shadow:0 0 14px rgba(98,231,255,.25)!important}
+.feedback{position:relative!important;background:linear-gradient(145deg,rgba(15,23,35,.98),rgba(8,12,19,.98))!important;border:1px solid rgba(215,173,89,.30)!important;border-radius:20px!important;padding:24px!important;box-shadow:0 20px 54px rgba(0,0,0,.42),0 0 45px rgba(39,141,255,.08)!important}.feedback:before{content:'QUANTY MASTER';display:block;font-family:monospace;font-size:10px;letter-spacing:.24em;color:#62e7ff;margin-bottom:10px}.verdict{font-family:Georgia,serif!important;letter-spacing:.08em!important;text-transform:uppercase!important}.verdict.ok{color:#d7ad59!important}.verdict.bad{color:#d7a8af!important}.xp-pop{color:#62e7ff!important;font-weight:700!important}
+#view-result{background:radial-gradient(circle at 50% 25%,rgba(39,141,255,.15),transparent 30%),radial-gradient(circle at 50% 75%,rgba(215,173,89,.10),transparent 34%)}.result{max-width:760px!important}.score,.pct{font-family:Georgia,serif!important}.result-grid>div{background:linear-gradient(145deg,rgba(17,24,35,.96),rgba(8,12,19,.96))!important;border-color:rgba(215,173,89,.18)!important}.result-grid b{color:#d7ad59!important}
+.tabs{border-color:rgba(215,173,89,.20)!important}.tab{color:#94a3b3!important}.tab.on{color:#62e7ff!important;border-color:#62e7ff!important;background:linear-gradient(180deg,rgba(39,141,255,.10),transparent)!important}.stat,.q-editor,.vrow{background:linear-gradient(145deg,rgba(15,22,32,.96),rgba(8,12,19,.96))!important;border-color:rgba(215,173,89,.16)!important}.stat b{color:#d7ad59!important}
+input.f,textarea.f,select.f{background:#080d14!important;border-color:rgba(215,173,89,.18)!important;color:#f4efe5!important}input.f:focus,textarea.f:focus,select.f:focus{border-color:#62e7ff!important;box-shadow:0 0 0 3px rgba(98,231,255,.08)!important}
+.quanty-petals{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden}.qpetal{position:absolute;top:-6vh;width:7px;height:14px;border-radius:70% 15% 70% 15%;background:linear-gradient(145deg,#7f2338,#cc6667);opacity:.24;animation:qfall linear infinite}.qpetal:nth-child(1){left:8%;animation-duration:16s}.qpetal:nth-child(2){left:22%;animation-duration:19s;animation-delay:-7s}.qpetal:nth-child(3){left:39%;animation-duration:21s;animation-delay:-13s}.qpetal:nth-child(4){left:55%;animation-duration:17s;animation-delay:-4s}.qpetal:nth-child(5){left:71%;animation-duration:20s;animation-delay:-10s}.qpetal:nth-child(6){left:89%;animation-duration:18s;animation-delay:-6s}@keyframes qfall{to{transform:translate3d(80px,112vh,0) rotate(620deg)}}
+.quanty-protocol{font-family:monospace;letter-spacing:.19em;color:#d7ad59;text-align:center;text-transform:uppercase;font-size:11px;margin:-8px 0 28px}.quanty-burst:after{content:'';position:fixed;z-index:9998;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 53%,rgba(98,231,255,.20),transparent 18%),radial-gradient(circle at 50% 53%,rgba(215,173,89,.12),transparent 31%);animation:qburst .85s ease-out both}@keyframes qburst{0%{opacity:0;transform:scale(.92)}35%{opacity:1}100%{opacity:0;transform:scale(1.08)}}
+`;
+
+function textSkin(doc){
+  doc.querySelectorAll('.hud-brand').forEach(el=>{el.innerHTML='QUANTY <span>MASTER</span>'});
+  doc.querySelectorAll('.bubble .who').forEach(el=>el.textContent='QUANTY');
+  doc.querySelectorAll('a[href="index.html"]').forEach(a=>{a.textContent='← QUANTY OS';a.target='_top'});
+  doc.querySelectorAll('.eyebrow').forEach(el=>{
+    const t=el.childNodes[0]?.nodeValue||'';
+    if(t.includes('Ranking del equipo')) el.childNodes[0].nodeValue='SALÓN DE HONOR';
+    if(t.includes('Logros')) el.childNodes[0].nodeValue='INSIGNIAS · ';
+    if(t.includes('Master detectó')) el.childNodes[0].nodeValue='QUANTY detectó · ';
+    if(t.includes('Desafío completado')) el.childNodes[0].nodeValue='PROTOCOLO COMPLETADO';
+  });
+  const sup=doc.querySelector('#view-sup .hud-brand'); if(sup) sup.textContent='QUANTY COMMAND';
+}
+
+function enhanceStates(doc){
+  const v=doc.getElementById('verdict');
+  if(v && v.textContent){
+    if(v.classList.contains('ok') && !v.dataset.quanty){v.textContent='CORRECTO · CONOCIMIENTO ADQUIRIDO';v.dataset.quanty='1';pulse(doc)}
+    if(v.classList.contains('bad') && !v.dataset.quanty){v.textContent='RESPUESTA INCORRECTA · CONOCIMIENTO INCORPORADO';v.dataset.quanty='1';}
+  }
+  const result=doc.getElementById('view-result');
+  if(result && result.classList.contains('active')){
+    const eyebrow=result.querySelector('.result > .eyebrow'); if(eyebrow) eyebrow.textContent='PROTOCOLO COMPLETADO';
+    if(!result.querySelector('.quanty-protocol')){
+      const title=result.querySelector('#r-title');
+      if(title){const p=doc.createElement('p');p.className='quanty-protocol';p.textContent='DISCIPLINA · CONOCIMIENTO · RESULTADOS';title.insertAdjacentElement('afterend',p);pulse(doc)}
+    }
+  }
+}
+function pulse(doc){doc.body.classList.remove('quanty-burst');void doc.body.offsetWidth;doc.body.classList.add('quanty-burst');setTimeout(()=>doc.body.classList.remove('quanty-burst'),900)}
+
+function installSkin(){
+  const doc=frame.contentDocument;if(!doc) return;
+  if(!doc.getElementById('quanty-skin')){const s=doc.createElement('style');s.id='quanty-skin';s.textContent=skin;doc.head.appendChild(s)}
+  if(!doc.querySelector('.quanty-petals')){const p=doc.createElement('div');p.className='quanty-petals';p.innerHTML='<i class="qpetal"></i><i class="qpetal"></i><i class="qpetal"></i><i class="qpetal"></i><i class="qpetal"></i><i class="qpetal"></i>';doc.body.appendChild(p)}
+  textSkin(doc);enhanceStates(doc);
+  const mo=new MutationObserver(()=>{textSkin(doc);enhanceStates(doc)});mo.observe(doc.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['class','style']});
+  const logout=doc.getElementById('btn-logout'); if(logout) logout.addEventListener('click',()=>setTimeout(()=>top.location.href='index.html',20),{capture:true});
+}
+function openMaster(){
+  if(!frameReady)return;
+  installSkin();
+  const doc=frame.contentDocument;
+  enterBtn.textContent='Activando núcleo…'; enterBtn.disabled=true;
+  setTimeout(()=>{const b=doc.getElementById('btn-start');if(b)b.click();},520);
+  setTimeout(()=>{frame.classList.add('on');gate.classList.add('hide');},850);
+}
+frame.addEventListener('load',()=>{
+  frameReady=true;
+  try{installSkin()}catch(e){console.warn(e)}
+  if(wantsEnter)openMaster();
+});
+enterBtn.addEventListener('click',()=>{wantsEnter=true;openMaster()});
+</script>
+</body>
+</html>

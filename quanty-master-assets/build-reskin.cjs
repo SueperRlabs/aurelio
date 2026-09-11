@@ -1,0 +1,28 @@
+/* Builds a parallel document. The original inline application JS is untouched. */
+const fs=require('node:fs'),path=require('node:path');
+const root=path.resolve(__dirname,'..');
+let html=fs.readFileSync(path.join(root,'master.html'),'utf8');
+const scriptAt=html.indexOf('<script src=');
+let markup=html.slice(0,scriptAt),logic=html.slice(scriptAt);
+markup=markup.replace('<title>MASTER · Aurelio</title>','<title>QUANTY MASTER · El conocimiento es poder</title>');
+markup=markup.replace('</head>','<link rel="stylesheet" href="quanty-master-assets/roman.css">\n</head>');
+markup=markup.replace('<body>','<body class="quanty-roman" data-quanty-view="intro"><div class="roman-environment" aria-hidden="true"></div>');
+markup=markup.replace('<div class="opening">','<div class="opening"><img class="approved-cover" src="quanty-master-assets/cover.webp" alt="QUANTY MASTER. Estatua de mármol, arquitectura romana y una mano robótica que sostiene el núcleo Q. El conocimiento es poder." fetchpriority="high">');
+markup=markup.replace('id="corp">Stanley Black + Decker','id="corp">DISCIPLINA · CONOCIMIENTO · RESULTADOS');
+markup=markup.replace('id="wordmark">Master','id="wordmark"><span>QUANTY</span> MASTER');
+markup=markup.replace('id="tagline">Jugando aprendo','id="tagline">EL CONOCIMIENTO ES PODER');
+markup=markup.replace('<button class="btn" id="btn-start">','<p class="roman-motto">TRAIN · LEARN · EVOLVE</p><button class="btn" id="btn-start">');
+markup=markup.replace('Baja para conocer a Master ↓','Explora el conocimiento ↓');
+markup=markup.replaceAll('>Master</span>','>QUANTY</span>').replaceAll('>Master recomienda</span>','>QUANTY recomienda</span>');
+markup=markup.replace('MASTER<span>.</span>','<span>QUANTY</span> MASTER');
+markup=markup.replaceAll('← Aurelio','← Inicio');
+markup=markup.replace('Master detectó','QUANTY detectó').replace('Logros ·','INSIGNIAS ·').replace('Ranking del equipo','SALÓN DE HONOR').replace('>Mapa</h2>','>Entrenamiento</h2>');
+markup=markup.replace('Desafío completado','PROTOCOLO COMPLETADO').replace('MODO SUPERVISOR','QUANTY COMMAND');
+markup=markup.replace('id="r-pct">0%</p>','id="r-pct">0%</p><p class="result-motto">DISCIPLINA · CONOCIMIENTO · RESULTADOS</p>');
+markup=markup.replaceAll('Hablar con Master','Consejo de QUANTY').replaceAll('Master contigo','QUANTY contigo').replaceAll('Master se queda','QUANTY se queda');
+markup=markup.replace('<canvas id="fx"></canvas>','<canvas id="fx"></canvas><div id="roman-petals" aria-hidden="true"></div>');
+html=markup+logic.replace('</body>','<script src="quanty-master-assets/roman.js"></script>\n</body>');
+fs.writeFileSync(path.join(root,'quanty-master-roman.html'),html);
+const inline=s=>[...s.matchAll(/<script>([\s\S]*?)<\/script>/g)].map(m=>m[1]);
+if(JSON.stringify(inline(html))!==JSON.stringify(inline(fs.readFileSync(path.join(root,'master.html'),'utf8'))))throw Error('Application script changed');
+console.log('Parallel HTML created; original application scripts byte-identical.');

@@ -6,7 +6,7 @@ Versión visual paralela de `master.html`. Entrada: **`quanty-master-roman.html`
 
 Descarga esta rama completa desde GitHub (Code → Download ZIP), descomprímela y abre `quanty-master-roman.html`. Conserva las carpetas `quanty-master-assets` y `portada` junto al HTML. Para un entorno equivalente a GitHub Pages, sirve la carpeta con cualquier servidor estático local.
 
-La publicación actual de `master.html` no cambia. Esta rama no publica automáticamente una dirección nueva en GitHub Pages: requiere integrar sus archivos nuevos en la rama publicada. No se ha sustituido la prueba anterior `quanty-master.html`.
+La publicación actual de `master.html` no cambia. La nueva entrada independiente es `https://sueperrlabs.github.io/aurelio/quanty-master-roman.html`. No se ha sustituido la prueba anterior `quanty-master.html`.
 
 ## Qué cambió
 
@@ -50,4 +50,10 @@ Colores y diseño: `roman.css`, comenzando por las variables de `:root`. Efectos
 - Inspección visual de portada en navegador Chromium y prueba del botón hacia el login.
 - Recursos visuales locales cargados; sin desbordamiento horizontal en la resolución desktop inspeccionada.
 
-**Pendiente:** recorrido autenticado completo de vendedor y supervisor, exploración de piezas, quiz, persistencia, exportación/importación y revisión visual del interior con datos; el acceso seguro de prueba no se completó. No se han comprobado físicamente Safari, Firefox, móvil ni un Mac 2012. La preservación del código no sustituye esas pruebas: esta entrega es una rama de revisión, no una certificación de regresión completa.
+- Acceso seguro supervisor completado; apertura de Crear desafío, Vendedores (5 filas), Analítica y Datos comprobada. Sin alterar usuarios ni respaldos.
+- Acceso seguro vendedor completado; interior, ranking e insignias inspeccionados con datos demo.
+- Quiz Herramientas completo: una respuesta incorrecta y cuatro correctas, feedback y explicación, racha x4, resultado 4/5 (80%), +900 XP y total actualizado de 5400 a 6300 XP. Volver al mapa conserva el mejor resultado previo 5/5, conforme a la lógica original.
+- Cinco puntos de producto comprobados; contador 5/5 y desbloqueo de Ir al quiz. Video local de despiece cargado (readyState 4, sin error).
+- Portada móvil inspeccionada en un marco de 390 × 844 px; botón principal visible. Ajustado título de panel para evitar desbordamiento desktop.
+
+**Límites de comprobación:** pruebas realizadas en Chromium sobre copia local con datos demo, no sobre datos de producción. No se han ejecutado restauración/reinicio destructivos ni altas/bajas de usuarios. No se han comprobado físicamente Safari, Firefox ni un Mac 2012. No se afirma una certificación exhaustiva de todos los navegadores y combinaciones.

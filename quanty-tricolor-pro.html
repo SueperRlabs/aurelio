@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0F1114">
+<title>QUANTY MASTER · Tricolor</title>
+<style>html,body{margin:0;background:#0F1114;color:#EDE9E1;font-family:system-ui,sans-serif}.loading{min-height:100svh;display:grid;place-items:center;text-align:center;padding:24px}.loading b{display:block;font-size:26px;letter-spacing:.08em}.loading span{display:block;color:#98A0AC;margin-top:8px}</style>
+</head>
+<body>
+<div class="loading" id="loading"><div><b>QUANTY MASTER</b><span>Cargando entrenamiento Tricolor…</span></div></div>
+<script>
+(async()=>{
+  const seed = [
+    {id:'c1',area:'Producto',nombre:'Diagnóstico',categoria:'Superficies',producto:'Soluciones Tricolor',descripcion:'Antes de recomendar, entiende qué necesita realmente el cliente.',preguntas:[
+      {t:'Un cliente dice “quiero pintar una pared”. ¿Cuál debería ser tu primera acción?',o:['Ofrecer la pintura más vendida','Preguntar dónde está la superficie, de qué material es y en qué estado se encuentra','Preguntar solo cuántos metros cuadrados son','Mostrar todos los colores disponibles'],c:1,e:'Una recomendación profesional parte por diagnosticar superficie, ubicación y estado. Sin eso, cualquier producto sería una apuesta.'},
+      {t:'Una pared presenta humedad visible. ¿Qué corresponde hacer antes de recomendar una terminación?',o:['Pintar encima para sellarla','Identificar y resolver la causa de humedad y preparar la superficie','Aplicar más manos de pintura','Elegir un color oscuro'],c:1,e:'La pintura no reemplaza la solución de la causa de humedad. Primero se corrige el origen y luego se prepara la superficie.'},
+      {t:'Para recomendar una solución exterior, ¿qué dato es especialmente importante?',o:['Si combinará con los muebles','La exposición a sol, lluvia y condiciones ambientales','La edad del cliente','La marca de la brocha'],c:1,e:'Exterior exige considerar exposición ambiental. Eso cambia la solución y la preparación que corresponde recomendar.'},
+      {t:'Si la superficie ya está pintada, ¿qué deberías revisar?',o:['Solo el color anterior','Adherencia, suciedad, grietas, descascaramiento y estado general','Únicamente el tamaño del muro','Nada, porque ya tiene pintura'],c:1,e:'El estado del recubrimiento existente determina la preparación necesaria antes de una nueva aplicación.'},
+      {t:'¿Qué demuestra una buena recomendación?',o:['Ofrecer siempre el producto de mayor precio','Relacionar necesidad, superficie, preparación y solución adecuada','Hablar mucho de la marca','Cerrar rápido sin hacer preguntas'],c:1,e:'Una buena recomendación conecta el problema real del cliente con una solución técnicamente coherente.'}
+    ]},
+    {id:'c2',area:'Producto',nombre:'Interior y exterior',categoria:'Aplicación',producto:'Portafolio de pinturas',descripcion:'Aprende a orientar según uso, ambiente y terminación esperada.',preguntas:[
+      {t:'¿Por qué no conviene recomendar automáticamente la misma pintura para interior y exterior?',o:['Porque los colores son distintos','Porque las exigencias de exposición y desempeño son diferentes','Porque exterior siempre debe ser brillante','Porque interior no necesita preparación'],c:1,e:'Cada ambiente enfrenta condiciones distintas. La recomendación debe responder al uso y exposición reales.'},
+      {t:'Un cliente quiere una habitación infantil fácil de mantener. ¿Qué deberías explorar?',o:['Solo el color','Lavabilidad, uso del espacio, superficie y terminación deseada','La cantidad de ventanas únicamente','El precio del rodillo'],c:1,e:'El uso cotidiano del espacio es clave para recomendar desempeño y terminación adecuados.'},
+      {t:'Para una superficie metálica exterior con óxido, ¿qué enfoque es correcto?',o:['Aplicar terminación directamente','Preparar la superficie, remover material suelto y considerar un sistema anticorrosivo adecuado','Mojarla antes de pintar','Cubrir el óxido con varias manos'],c:1,e:'En metal, la preparación y protección frente a corrosión son parte esencial del sistema.'},
+      {t:'En madera expuesta al exterior, ¿qué debes considerar?',o:['Solo el color','Estado de la madera, exposición y tipo de protección requerida','Únicamente el tamaño','Que siempre debe pintarse de blanco'],c:1,e:'La madera necesita una solución acorde a su estado y exposición. El diagnóstico guía la recomendación.'},
+      {t:'Si un cliente no sabe qué terminación quiere, ¿qué haces?',o:['Decides por él','Explicas diferencias de uso y apariencia y lo ayudas a elegir según su necesidad','Le entregas el producto más barato','Le dices que vuelva otro día'],c:1,e:'Asesorar es traducir características en beneficios comprensibles para que el cliente pueda decidir.'}
+    ]},
+    {id:'c3',area:'Venta',nombre:'Recomendación',categoria:'Asesoría',producto:'Experiencia cliente',descripcion:'Transforma conocimiento técnico en una recomendación clara y útil.',preguntas:[
+      {t:'¿Cuál es la mejor forma de explicar un producto al cliente?',o:['Leer toda la ficha técnica','Traducir sus características a beneficios relacionados con la necesidad del cliente','Hablar solo de precio','Compararlo negativamente con toda la competencia'],c:1,e:'El cliente necesita entender cómo la solución resuelve su proyecto, no memorizar una ficha técnica.'},
+      {t:'Si el cliente pregunta “¿por qué me recomiendas esto?”, ¿qué respuesta es más sólida?',o:['Porque es el que más vendo','Porque según la superficie y el uso que me comentaste, esta alternativa responde mejor a esas condiciones','Porque está adelante en la góndola','Porque sí'],c:1,e:'Una recomendación profesional se justifica con el diagnóstico realizado.'},
+      {t:'¿Qué haces si no conoces con certeza una especificación técnica?',o:['La inventas para no perder la venta','Lo reconoces y verificas la información antes de recomendar','Cambias de tema','Le dices al cliente que todas son iguales'],c:1,e:'La credibilidad vale más que improvisar. Verificar información protege al cliente y a la marca.'},
+      {t:'Un cliente prioriza duración y otro prioriza presupuesto. ¿La recomendación debe ser idéntica?',o:['Sí, siempre','No; se mantiene la solución técnicamente correcta, pero se adapta la propuesta a prioridades y alternativas','Solo cambia el color','Depende del vendedor'],c:1,e:'La asesoría debe considerar la necesidad técnica y las prioridades del cliente.'},
+      {t:'¿Cuál es una señal de que el vendedor entendió la necesidad?',o:['Habla más que el cliente','Puede resumir el proyecto y confirmar con el cliente antes de recomendar','Muestra cinco productos a la vez','Empieza por el precio'],c:1,e:'Resumir y confirmar evita errores y demuestra escucha activa.'}
+    ]},
+    {id:'c4',area:'Venta',nombre:'Venta complementaria',categoria:'Proyecto completo',producto:'Solución integral',descripcion:'No vendas un tarro: ayuda al cliente a completar correctamente su proyecto.',preguntas:[
+      {t:'¿Qué significa venta complementaria bien hecha?',o:['Agregar productos sin explicación','Identificar elementos que el proyecto realmente necesita para ejecutarse correctamente','Vender siempre dos pinturas','Subir el ticket a cualquier costo'],c:1,e:'La venta complementaria debe aportar valor al proyecto, no agregar productos irrelevantes.'},
+      {t:'Un cliente compra pintura para un muro que necesita reparación. ¿Qué oportunidad existe?',o:['Ninguna','Revisar si necesita preparación, reparación y herramientas de aplicación adecuadas','Ofrecer otro color','Vender una segunda tineta aunque no la necesite'],c:1,e:'Preparación y aplicación forman parte de una solución completa.'},
+      {t:'Si el cliente objeta por precio, ¿qué conviene hacer primero?',o:['Dar descuento inmediatamente','Entender qué está comparando y explicar valor, rendimiento esperado y solución según necesidad','Decir que la competencia es peor','Terminar la atención'],c:1,e:'Antes de responder una objeción, hay que entenderla. Luego se argumenta desde valor y necesidad.'},
+      {t:'¿Qué ayuda a aumentar el ticket promedio de forma saludable?',o:['Presionar al cliente','Mejorar la recomendación y detectar complementos útiles','Ocultar alternativas económicas','Ofrecer solo formatos grandes'],c:1,e:'Un mayor ticket sostenible nace de resolver mejor el proyecto del cliente.'},
+      {t:'¿Cuándo NO corresponde hacer venta complementaria?',o:['Nunca','Cuando el producto adicional no aporta a la necesidad o al proyecto del cliente','Cuando la tienda está llena','Cuando el cliente pregunta mucho'],c:1,e:'La recomendación debe ser pertinente. Vender por vender deteriora confianza y experiencia.'}
+    ]},
+    {id:'c5',area:'Trade Marketing',nombre:'Ejecución PDV',categoria:'Punto de venta',producto:'Gestión Tricolor',descripcion:'Convierte una buena estrategia en una ejecución visible y medible en sala.',preguntas:[
+      {t:'Una sala lleva tres semanas bajo meta. ¿Qué haces primero?',o:['Culpar al gestor','Analizar sell-out, stock, mix, ejecución, flujo y desempeño antes de definir la causa','Cambiar a todo el equipo','Esperar otra semana'],c:1,e:'Primero se diagnostica. Una caída puede venir de stock, tráfico, ejecución, producto o habilidades del equipo.'},
+      {t:'¿Por qué un quiebre de stock es crítico?',o:['Solo porque se ve mal','Porque puede transformar demanda real en una venta perdida','Porque baja el número de etiquetas','Porque aumenta el espacio disponible'],c:1,e:'Sin producto disponible, la mejor ejecución comercial no puede convertir la oportunidad en venta.'},
+      {t:'¿Qué indicador ayuda a evaluar presencia de marca en exhibición?',o:['Share of shelf o participación de exhibición','Edad promedio del equipo','Cantidad de estacionamientos','Número de cajas de la tienda'],c:0,e:'La participación de exhibición permite observar cuánto espacio visible tiene la marca frente al total relevante.'},
+      {t:'Una acción aprobada por el área comercial es rechazada por el jefe de sala. ¿Qué haces?',o:['La instalas igual','Entiendes el motivo, negocias alternativas y, si no hay acuerdo, escalas al KAM o área comercial sin imponerla','Discutes frente al equipo','Abandonas la cuenta'],c:1,e:'La ejecución debe respetar al cliente. Negociar y escalar correctamente protege la relación comercial.'},
+      {t:'¿Qué hace útil un reporte de Trade Marketing?',o:['Tener muchas páginas','Mostrar KPI, explicar causas, definir acciones, responsables y seguimiento','Usar muchos colores','Enviar solo fotografías'],c:1,e:'El reporte debe facilitar decisiones: qué pasa, por qué pasa, qué haremos y cómo mediremos el resultado.'}
+    ]}
+  ];
+
+  const paintSvg = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 800 560'%3E%3Crect width='800' height='560' fill='%2314171c'/%3E%3Crect x='110' y='360' width='580' height='22' rx='11' fill='%23333a45'/%3E%3Crect x='165' y='185' width='205' height='180' rx='18' fill='%23ede9e1'/%3E%3Cpath d='M165 225h205' stroke='%23d6ae60' stroke-width='18'/%3E%3Crect x='430' y='195' width='160' height='170' rx='14' fill='%23252a33' stroke='%23ede9e1' stroke-width='8'/%3E%3Cpath d='M505 155v40M475 155h60' stroke='%23d6ae60' stroke-width='14' stroke-linecap='round'/%3E%3Ccircle cx='270' cy='295' r='36' fill='%23b43b47'/%3E%3Cpath d='M610 330l65-135' stroke='%23ede9e1' stroke-width='14' stroke-linecap='round'/%3E%3Crect x='646' y='165' width='82' height='34' rx='17' fill='%23d6ae60' transform='rotate(-23 646 165)'/%3E%3C/svg%3E";
+
+  try{
+    let html = await fetch('quanty-master-roman.html?v=tricolor-pro-1',{cache:'no-store'}).then(r=>{if(!r.ok) throw new Error('base'); return r.text();});
+    html = html.replaceAll('master:','tricolor:');
+    html = html.replace('<title>QUANTY MASTER · El conocimiento es poder</title>','<title>QUANTY MASTER · Tricolor Edition</title>');
+    html = html.replace(/const SEED = \[[\s\S]*?\n\];\n\n\/\* ---------- equipo de demostración ----------/,
+      'const SEED = '+JSON.stringify(seed)+';\n\n/* ---------- equipo de demostración ----------');
+    html = html.replace(/<img class="scene-media" alt="Herramientas del catálogo" src="[^"]+">/,
+      '<img class="scene-media" alt="Soluciones de pintura y color" src="'+paintSvg+'">');
+    html = html.replace(/<img class="scene-media" alt="Vendedor demostrando una herramienta" src="[^"]+">/,
+      '<img class="scene-media" alt="Gestor asesorando a un cliente" src="'+paintSvg+'">');
+    html = html.replace('Cada producto tiene tres o cuatro datos que cierran una venta. El resto es relleno. QUANTY se queda con los que sirven en el piso.',
+      'Cada proyecto parte con un buen diagnóstico. QUANTY entrena al gestor para preguntar, recomendar y convertir conocimiento en una mejor experiencia de compra.');
+    html = html.replace('El cliente pregunta y hay diez segundos para responder. Entrenar en cinco preguntas es más rápido que leer un manual.',
+      'El cliente llega con una necesidad concreta. Entrenamos diagnóstico, recomendación, objeciones y venta complementaria para responder con seguridad.');
+    html = html.replace('QUANTY MASTER. Estatua de mármol, arquitectura romana y una mano robótica que sostiene el núcleo Q. El conocimiento es poder.',
+      'QUANTY MASTER Tricolor. Entrenamiento comercial gamificado para gestores y vendedores.');
+    html = html.replace('Demo: camila / 1234','Demo vendedor: camila / 1234');
+    html = html.replace('Los datos básicos que se usan todos los días en el piso.','Conocimiento aplicado al punto de venta.');
+    document.open(); document.write(html); document.close();
+  }catch(e){
+    document.getElementById('loading').innerHTML='<div><b>No se pudo cargar QUANTY</b><span>Recarga la página en unos segundos.</span></div>';
+  }
+})();
+</script>
+</body>
+</html>

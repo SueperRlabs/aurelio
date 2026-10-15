@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Supervisión Trade Marketing — SBD</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #EBF0F7;
+        }
+        .sidebar-grad {
+            background: linear-gradient(180deg, #6C38FF 0%, #511FE6 100%);
+        }
+        .card-custom {
+            background: #FFFFFF;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(241, 245, 249, 0.8);
+        }
+        .nav-active {
+            background: rgba(255, 255, 255, 0.18) !important;
+            font-weight: 700;
+            color: #FFFFFF !important;
+        }
+        .nav-item {
+            transition: all 0.2s ease;
+        }
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+        .glass-badge {
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 5px; height: 5px; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; border-radius: 999px; }
+    </style>
+</head>
+<body class="flex h-screen overflow-hidden text-slate-800 antialiased selection:bg-purple-500 selection:text-white">
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="w-72 sidebar-grad text-white flex flex-col justify-between p-6 shadow-2xl z-20 shrink-0 select-none">
+        <div>
+            <!-- Marca y Logo -->
+            <div class="mb-8 px-2">
+                <div class="flex items-center gap-2 mb-1.5">
+                    <span class="bg-amber-400 text-slate-950 font-black px-2 py-0.5 rounded text-[10px] tracking-wider">SBD</span>
+                    <span class="text-[10px] font-bold text-purple-200 uppercase tracking-widest">Chile</span>
+                </div>
+                <h1 class="text-2xl font-black tracking-tight text-white leading-none">STANLEY</h1>
+                <h2 class="text-xs font-semibold text-purple-200/80 tracking-wide mt-1">Black & Decker • Retail</h2>
+            </div>
+
+            <!-- Menú de Navegación -->
+            <nav class="space-y-1.5" id="sidebar-nav">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-item nav-active w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-semibold text-purple-100">
+                    <span class="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.9)]"></span>
+                    <i data-lucide="layout-dashboard" class="w-4 h-4"></i> DASHBOARD_EJECUTIVO
+                </button>
+                <button onclick="switchTab('ranking_vendedores')" id="nav-ranking_vendedores" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-medium text-purple-200">
+                    <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                    <i data-lucide="users" class="w-4 h-4"></i> RANKING_VENDEDORES
+                </button>
+                <button onclick="switchTab('ranking_tiendas')" id="nav-ranking_tiendas" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-medium text-purple-200">
+                    <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                    <i data-lucide="store" class="w-4 h-4"></i> RANKING_TIENDAS
+                </button>
+                <button onclick="switchTab('ventas')" id="nav-ventas" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-medium text-purple-200">
+                    <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                    <i data-lucide="trending-up" class="w-4 h-4"></i> VENTAS
+                </button>
+                <button onclick="switchTab('stock')" id="nav-stock" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-medium text-purple-200">
+                    <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                    <i data-lucide="boxes" class="w-4 h-4"></i> STOCK
+                </button>
+                <button onclick="switchTab('plan_accion')" id="nav-plan_accion" class="nav-item w-full flex items-center gap-3 px-4 py-3 rounded-2xl text-xs font-medium text-purple-200">
+                    <span class="w-2 h-2 rounded-full bg-transparent"></span>
+                    <i data-lucide="check-square" class="w-4 h-4"></i> PLAN_ACCION & VISITAS
+                </button>
+            </nav>
+        </div>
+
+        <!-- Usuario / Supervisor -->
+        <div class="glass-badge p-3.5 rounded-2xl flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-purple-400/30 flex items-center justify-center font-bold text-white text-sm border border-white/20">
+                JR
+            </div>
+            <div class="overflow-hidden">
+                <p class="text-xs font-bold text-white truncate">Jayson Rimmelin</p>
+                <p class="text-[10px] text-purple-200 truncate">Supervisor Trade Marketing</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
+    <main class="flex-1 flex flex-col overflow-hidden">
+        
+        <!-- HEADER TOPBAR -->
+        <header class="bg-white/80 backdrop-blur-md px-8 py-4 border-b border-slate-200/80 flex flex-wrap justify-between items-center gap-4 shrink-0 z-10 shadow-sm">
+            <div>
+                <h2 id="page-title" class="text-xl font-extrabold text-slate-900 tracking-tight">DASHBOARD EJECUTIVO</h2>
+                <div class="flex items-center gap-2 mt-0.5">
+                    <span id="sync-dot" class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="sync-status" class="text-xs text-slate-500 font-medium">Sincronizado con Google Sheets</span>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <!-- Botón Sincronizar -->
+                <button onclick="loadLiveData()" id="btn-sync" class="flex items-center gap-1.5 px-3.5 py-2 bg-purple-50 hover:bg-purple-100 text-purple-700 rounded-xl text-xs font-bold border border-purple-200/80 transition active:scale-95">
+                    <i data-lucide="refresh-cw" id="sync-icon" class="w-3.5 h-3.5"></i> Sincronizar Ahora
+                </button>
+
+                <!-- Botón Conectar Planilla -->
+                <button onclick="promptApiUrl()" class="flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold border border-slate-200 transition active:scale-95">
+                    <i data-lucide="link-2" class="w-3.5 h-3.5"></i> Conectar Planilla
+                </button>
+
+                <!-- Filtro Tienda -->
+                <div class="flex items-center bg-slate-100/90 rounded-xl px-3 py-2 border border-slate-200">
+                    <i data-lucide="filter" class="w-3.5 h-3.5 text-slate-500 mr-2"></i>
+                    <select id="filter-tienda" onchange="applyFilters()" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none cursor-pointer">
+                        <option value="ALL">Todas las Tiendas (3 PDV)</option>
+                        <option value="Sodimac Plaza Norte">Sodimac Plaza Norte</option>
+                        <option value="Easy Costanera">Easy Costanera</option>
+                        <option value="Construmart Estación Central">Construmart Estación Central</option>
+                    </select>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENEDOR CON SCROLL -->
+        <div class="flex-1 overflow-y-auto p-8 space-y-6">
+
+            <!-- ================= TAB 1: DASHBOARD EJECUTIVO ================= -->
+            <div id="tab-dashboard" class="tab-content space-y-6">
+                <!-- 4 TARJETAS SUPERIORES -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <!-- VENTA TOTAL -->
+                    <div class="card-custom p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">VENTA TOTAL</span>
+                            <span class="w-8 h-8 rounded-xl bg-orange-50 text-orange-500 flex items-center justify-center font-black text-xs">$</span>
+                        </div>
+                        <div class="my-3">
+                            <h3 id="kpi-sellout" class="text-3xl font-extrabold text-orange-500 leading-none">$77.163.000</h3>
+                            <p id="kpi-sellout-meta" class="text-xs font-medium text-slate-500 mt-2">META TOTAL: $82.150.000 (<span id="kpi-sellout-pct" class="text-orange-600 font-bold">93.9%</span>)</p>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div id="bar-sellout" class="bg-gradient-to-r from-orange-400 to-orange-500 h-full rounded-full transition-all duration-700" style="width: 93.9%"></div>
+                        </div>
+                    </div>
+
+                    <!-- TICKET PROMEDIO -->
+                    <div class="card-custom p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">TICKET PROMEDIO</span>
+                            <span class="w-8 h-8 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center"><i data-lucide="receipt" class="w-4 h-4"></i></span>
+                        </div>
+                        <div class="my-3">
+                            <h3 id="kpi-ticket" class="text-3xl font-extrabold text-purple-600 leading-none">$117.269</h3>
+                            <p class="text-xs font-medium text-emerald-600 mt-2 flex items-center gap-1">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> Meta Ref: $115.000 (+2.0%)
+                            </p>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-purple-500 to-indigo-600 h-full rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+
+                    <!-- UPT -->
+                    <div class="card-custom p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">UPT (UNIDADES / TKT)</span>
+                            <span class="w-8 h-8 rounded-xl bg-pink-50 text-pink-500 flex items-center justify-center"><i data-lucide="shopping-bag" class="w-4 h-4"></i></span>
+                        </div>
+                        <div class="my-3">
+                            <h3 id="kpi-upt" class="text-3xl font-extrabold text-pink-500 leading-none">2.04</h3>
+                            <p class="text-xs font-medium text-slate-500 mt-2">Meta Objetivo: 2.10 (<span class="text-pink-600 font-bold">97.1%</span>)</p>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div id="bar-upt" class="bg-gradient-to-r from-pink-400 to-pink-500 h-full rounded-full" style="width: 97.1%"></div>
+                        </div>
+                    </div>
+
+                    <!-- STOCK CRÍTICO & COBERTURA -->
+                    <div class="card-custom p-6 flex flex-col justify-between">
+                        <div class="flex justify-between items-start">
+                            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">STOCK & PDV</span>
+                            <span class="w-8 h-8 rounded-xl bg-blue-50 text-blue-500 flex items-center justify-center"><i data-lucide="shield-alert" class="w-4 h-4"></i></span>
+                        </div>
+                        <div class="my-3">
+                            <div class="flex items-baseline gap-2">
+                                <h3 id="kpi-stock-critico" class="text-3xl font-extrabold text-blue-600 leading-none">1 Alerta</h3>
+                                <span class="text-[11px] font-bold text-slate-400">(Cinta métrica)</span>
+                            </div>
+                            <p class="text-xs font-medium text-emerald-600 mt-2">3 PDV Visitados (100%)</p>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                            <div class="bg-gradient-to-r from-blue-400 to-blue-500 h-full rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOQUE CENTRAL (GRÁFICO FLUIDO + RANKING TOP SELLERS) -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Gráfico Fluido Exacto al Mockup -->
+                    <div class="card-custom p-6 lg:col-span-2 flex flex-col">
+                        <div class="flex flex-wrap justify-between items-center mb-4 gap-2">
+                            <div>
+                                <h3 class="text-base font-bold text-slate-900">EVOLUCIÓN DE VENTAS ($CLP)</h3>
+                                <p class="text-xs text-slate-400 font-medium">Historial acumulado y picos de venta en retail</p>
+                            </div>
+                            <div class="flex items-center gap-1.5 bg-slate-100 p-1 rounded-xl">
+                                <button onclick="setChartMode('diario')" id="btn-chart-diario" class="px-3 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm transition">Diario</button>
+                                <button onclick="setChartMode('semanal')" id="btn-chart-semanal" class="px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition">Semanal</button>
+                            </div>
+                        </div>
+                        <div class="flex-1 min-h-[220px] relative">
+                            <canvas id="mainSalesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Ranking Top Vendedores -->
+                    <div class="card-custom p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900">TOP VENDEDORES</h3>
+                                    <p class="text-[11px] text-slate-400 font-medium">Mayor volumen y cumplimiento</p>
+                                </div>
+                                <span class="text-xs font-bold text-purple-600 cursor-pointer hover:underline" onclick="switchTab('ranking_vendedores')">Ver todos →</span>
+                            </div>
+                            <div class="space-y-3" id="top-sellers-container"></div>
+                        </div>
+                        <div class="mt-4 pt-3.5 border-t border-slate-100 flex justify-between items-center text-xs text-slate-500">
+                            <span class="font-medium">Promedio Equipo:</span>
+                            <span id="promedio-equipo" class="font-extrabold text-slate-900">$9.645.375 (93.9%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- BLOQUE INFERIOR (MEDIDORES GAUGE + MIX POR CATEGORÍA) -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Medidores Circulares -->
+                    <div class="card-custom p-6">
+                        <div class="mb-5">
+                            <h3 class="text-base font-bold text-slate-900">CUMPLIMIENTO POR TIENDA</h3>
+                            <p class="text-xs text-slate-400 font-medium">Desempeño mensual en cada sala de venta</p>
+                        </div>
+                        
+                        <div class="grid grid-cols-3 gap-4 text-center">
+                            <!-- Sodimac -->
+                            <div class="flex flex-col items-center">
+                                <div class="relative w-20 h-20">
+                                    <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-100" stroke-width="3.5"></circle>
+                                        <circle id="gauge-sodimac" cx="18" cy="18" r="16" fill="none" class="stroke-purple-600 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="7.9"></circle>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <span id="txt-sodimac" class="text-base font-black text-purple-700">92.1%</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 mt-2">Sodimac</span>
+                                <span id="sub-sodimac" class="text-[10px] font-semibold text-slate-400">P. Norte ($28.5M)</span>
+                            </div>
+
+                            <!-- Easy -->
+                            <div class="flex flex-col items-center">
+                                <div class="relative w-20 h-20">
+                                    <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-100" stroke-width="3.5"></circle>
+                                        <circle id="gauge-easy" cx="18" cy="18" r="16" fill="none" class="stroke-pink-500 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="4.9"></circle>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <span id="txt-easy" class="text-base font-black text-pink-600">95.1%</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 mt-2">Easy</span>
+                                <span id="sub-easy" class="text-[10px] font-semibold text-slate-400">Costanera ($29.4M)</span>
+                            </div>
+
+                            <!-- Construmart -->
+                            <div class="flex flex-col items-center">
+                                <div class="relative w-20 h-20">
+                                    <svg class="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                                        <circle cx="18" cy="18" r="16" fill="none" class="stroke-slate-100" stroke-width="3.5"></circle>
+                                        <circle id="gauge-construmart" cx="18" cy="18" r="16" fill="none" class="stroke-emerald-500 transition-all duration-1000" stroke-width="3.5" stroke-linecap="round" stroke-dasharray="100" stroke-dashoffset="5.0"></circle>
+                                    </svg>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <span id="txt-construmart" class="text-base font-black text-emerald-600">95.0%</span>
+                                    </div>
+                                </div>
+                                <span class="text-xs font-bold text-slate-800 mt-2">Construmart</span>
+                                <span id="sub-construmart" class="text-[10px] font-semibold text-slate-400">Est. Central ($19.0M)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mix de Ventas por Categoría -->
+                    <div class="card-custom p-6 flex flex-col justify-between">
+                        <div>
+                            <div class="mb-4">
+                                <h3 class="text-base font-bold text-slate-900">VENTAS POR CATEGORÍA</h3>
+                                <p class="text-xs text-slate-400 font-medium">Distribución y volumen por familia de producto</p>
+                            </div>
+                            <div class="space-y-4" id="categories-progress-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 2: RANKING_VENDEDORES ================= -->
+            <div id="tab-ranking_vendedores" class="tab-content hidden space-y-6">
+                <div class="card-custom p-6">
+                    <div class="flex flex-wrap justify-between items-center mb-6 gap-3">
+                        <div>
+                            <h3 class="text-base font-bold text-slate-900">HOJA: RANKING_VENDEDORES / KPI_RESUMEN</h3>
+                            <p class="text-xs text-slate-400 font-medium">Control de metas, UPT y ticket promedio individual</p>
+                        </div>
+                        <div class="relative">
+                            <i data-lucide="search" class="w-3.5 h-3.5 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="search-promotor" onkeyup="filterRankingTable()" placeholder="Buscar por nombre o tienda..." class="pl-9 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium w-72 focus:outline-none focus:border-purple-500">
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto rounded-xl border border-slate-100">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-50/80 text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-slate-100">
+                                <tr>
+                                    <th class="p-3.5">Ranking</th>
+                                    <th class="p-3.5">Vendedor</th>
+                                    <th class="p-3.5">Tienda</th>
+                                    <th class="p-3.5">Venta</th>
+                                    <th class="p-3.5">Meta</th>
+                                    <th class="p-3.5">Cumplimiento</th>
+                                    <th class="p-3.5">UPT</th>
+                                    <th class="p-3.5">Ticket Promedio</th>
+                                    <th class="p-3.5">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ranking-table-body" class="divide-y divide-slate-100 text-slate-700 font-medium"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 3: RANKING_TIENDAS ================= -->
+            <div id="tab-ranking_tiendas" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6" id="pdv-cards-container"></div>
+            </div>
+
+            <!-- ================= TAB 4: VENTAS ================= -->
+            <div id="tab-ventas" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card-custom p-6">
+                        <h3 class="text-base font-bold text-slate-900 mb-4">MIX DE CATEGORÍAS</h3>
+                        <div class="h-64 relative"><canvas id="chartCategoriesPie"></canvas></div>
+                    </div>
+                    <div class="card-custom p-6">
+                        <h3 class="text-base font-bold text-slate-900 mb-4">CROSS-SELLING VS UP-SELLING</h3>
+                        <div class="h-64 relative"><canvas id="chartSellingTactics"></canvas></div>
+                    </div>
+                </div>
+                <div class="card-custom p-6">
+                    <h3 class="text-base font-bold text-slate-900 mb-4">HISTORIAL DE VENTAS (Hoja: VENTAS)</h3>
+                    <div class="overflow-x-auto max-h-96 rounded-xl border border-slate-100">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-50 text-slate-400 sticky top-0 uppercase font-bold text-[10px] tracking-wider border-b border-slate-100">
+                                <tr>
+                                    <th class="p-3">Fecha</th>
+                                    <th class="p-3">Tienda</th>
+                                    <th class="p-3">Vendedor</th>
+                                    <th class="p-3">Producto</th>
+                                    <th class="p-3">Categoría</th>
+                                    <th class="p-3">Venta</th>
+                                    <th class="p-3">Meta_Diaria</th>
+                                    <th class="p-3">Unidades</th>
+                                    <th class="p-3">UPT_Referencia</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ventas-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 5: STOCK ================= -->
+            <div id="tab-stock" class="tab-content hidden space-y-6">
+                <div class="card-custom p-6">
+                    <h3 class="text-base font-bold text-slate-900 mb-4">CONTROL DE INVENTARIO (Hoja: STOCK)</h3>
+                    <div class="overflow-x-auto rounded-xl border border-slate-100">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-50 text-slate-400 uppercase font-bold text-[10px] tracking-wider border-b border-slate-100">
+                                <tr>
+                                    <th class="p-3.5">Tienda</th>
+                                    <th class="p-3.5">Producto</th>
+                                    <th class="p-3.5">Categoría</th>
+                                    <th class="p-3.5">Stock</th>
+                                    <th class="p-3.5">Stock_Mínimo</th>
+                                    <th class="p-3.5">Quiebre</th>
+                                    <th class="p-3.5">Reposición</th>
+                                    <th class="p-3.5">Empuje</th>
+                                    <th class="p-3.5">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="stock-table-body" class="divide-y divide-slate-100 text-slate-700"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= TAB 6: PLAN_ACCION & VISITAS ================= -->
+            <div id="tab-plan_accion" class="tab-content hidden space-y-6">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="card-custom p-6">
+                        <h3 class="text-base font-bold text-slate-900 mb-4">HOJA: PLAN_ACCION</h3>
+                        <div class="space-y-3.5" id="plan-accion-container"></div>
+                    </div>
+                    <div class="card-custom p-6">
+                        <h3 class="text-base font-bold text-slate-900 mb-4">HOJA: VISITAS</h3>
+                        <div class="space-y-3.5" id="visitas-container"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ==================== SCRIPT ==================== -->
+    <script>
+        // DATOS BASE PRECARGADOS (Para que nunca aparezca vacío ni con $0)
+        let DATA_VENDEDORES = [
+            { ranking: 1, vendedor: "Matías González", tienda: "Easy Costanera", venta: 10273000, meta: 10400000, cumplimiento: 98.8, upt: 1.80, ticket_prom: 111663, estado: "EN META" },
+            { ranking: 2, vendedor: "Fernanda Silva", tienda: "Construmart Estación Central", venta: 9459000, meta: 9900000, cumplimiento: 95.5, upt: 2.26, ticket_prom: 118238, estado: "EN META" },
+            { ranking: 3, vendedor: "Diego Pérez", tienda: "Sodimac Plaza Norte", venta: 9878000, meta: 10400000, cumplimiento: 95.0, upt: 2.09, ticket_prom: 125038, estado: "SEGUIMIENTO" },
+            { ranking: 4, vendedor: "Nicolás Muñoz", tienda: "Construmart Estación Central", venta: 9633000, meta: 10200000, cumplimiento: 94.4, upt: 1.40, ticket_prom: 104707, estado: "SEGUIMIENTO" },
+            { ranking: 5, vendedor: "Valentina Soto", tienda: "Easy Costanera", venta: 9606000, meta: 10300000, cumplimiento: 93.3, upt: 2.10, ticket_prom: 117146, estado: "SEGUIMIENTO" },
+            { ranking: 6, vendedor: "Sebastián Torres", tienda: "Easy Costanera", venta: 9599000, meta: 10300000, cumplimiento: 93.2, upt: 2.58, ticket_prom: 124662, estado: "SEGUIMIENTO" },
+            { ranking: 7, vendedor: "Paula Contreras", tienda: "Sodimac Plaza Norte", venta: 9482000, meta: 10300000, cumplimiento: 92.1, upt: 1.98, ticket_prom: 112881, estado: "SEGUIMIENTO" },
+            { ranking: 8, vendedor: "Camila Rojas", tienda: "Sodimac Plaza Norte", venta: 9233000, meta: 10350000, cumplimiento: 89.2, upt: 2.25, ticket_prom: 128236, estado: "SEGUIMIENTO" }
+        ];
+
+        let DATA_TIENDAS = [
+            { tienda: "Sodimac Plaza Norte", venta: 28593000, meta: 31050000, cumplimiento: 92.1, unidades: 493, vendedores: 3, stock_critico: 1 },
+            { tienda: "Easy Costanera", venta: 29478000, meta: 31000000, cumplimiento: 95.1, unidades: 537, vendedores: 3, stock_critico: 0 },
+            { tienda: "Construmart Estación Central", venta: 19092000, meta: 20100000, cumplimiento: 95.0, unidades: 310, vendedores: 2, stock_critico: 0 }
+        ];
+
+        let DATA_STOCK = [
+            { Tienda: "Sodimac Plaza Norte", Producto: "Taladro inalámbrico", Categoría: "Herramientas eléctricas", Stock: 24, Stock_Mínimo: 8, Quiebre: "NO", Reposición: 0, Empuje: "NO", Estado: "OK" },
+            { Tienda: "Sodimac Plaza Norte", Producto: "Esmeril angular", Categoría: "Herramientas eléctricas", Stock: 24, Stock_Mínimo: 8, Quiebre: "NO", Reposición: 0, Empuje: "NO", Estado: "OK" },
+            { Tienda: "Sodimac Plaza Norte", Producto: "Set destornilladores", Categoría: "Herramientas manuales", Stock: 1, Stock_Mínimo: 8, Quiebre: "NO", Reposición: 7, Empuje: "SI", Estado: "BAJO" },
+            { Tienda: "Sodimac Plaza Norte", Producto: "Cinta métrica", Categoría: "Medición", Stock: 0, Stock_Mínimo: 8, Quiebre: "SI", Reposición: 8, Empuje: "SI", Estado: "CRÍTICO" },
+            { Tienda: "Easy Costanera", Producto: "Taladro inalámbrico", Categoría: "Herramientas eléctricas", Stock: 3, Stock_Mínimo: 8, Quiebre: "NO", Reposición: 5, Empuje: "SI", Estado: "BAJO" },
+            { Tienda: "Easy Costanera", Producto: "Cinta métrica", Categoría: "Medición", Stock: 25, Stock_Mínimo: 8, Quiebre: "NO", Reposición: 0, Empuje: "NO", Estado: "OK" },
+            { Tienda: "Construmart Estación Central", Producto: "Taladro inalámbrico", Categoría: "Herramientas eléctricas", Stock: 18, Stock_Mínimo: 8, Quiebre: "NO", Reposición: 0, Empuje: "NO", Estado: "OK" }
+        ];
+
+        let DATA_PLAN = [
+            { Problema: "Bajo cumplimiento de meta", Tienda: "Easy Costanera", Acción: "Coaching comercial y seguimiento diario", Prioridad: "Alta", Fecha_Compromiso: "2026-08-30" },
+            { Problema: "Stock bajo", Tienda: "Sodimac Plaza Norte", Acción: "Solicitar reposición y revisar empuje", Prioridad: "Alta", Fecha_Compromiso: "2026-08-30" },
+            { Problema: "Oportunidad de cross selling", Tienda: "Construmart Estación Central", Acción: "Capacitación en venta complementaria", Prioridad: "Media", Fecha_Compromiso: "2026-08-30" }
+        ];
+
+        let DATA_VISITAS = [
+            { Tienda: "Sodimac Plaza Norte", Hallazgos: "Revisar ejecución y stock en flejes", Fecha: "2026-08-26", Estado: "Abierto" },
+            { Tienda: "Easy Costanera", Hallazgos: "Refuerzo en señalética de accesorios", Fecha: "2026-08-26", Estado: "Abierto" },
+            { Tienda: "Construmart Estación Central", Hallazgos: "Excelente implementación en cabeceras", Fecha: "2026-08-26", Estado: "Abierto" }
+        ];
+
+        let DATA_VENTAS = [];
+        let salesChart = null;
+        let pieChart = null;
+        let tacticsChart = null;
+        let currentChartMode = 'diario';
+        let API_URL = localStorage.getItem('sbd_api_url') || "";
+
+        function parseNum(val) {
+            if (typeof val === 'number') return val;
+            if (!val) return 0;
+            const cleaned = String(val).replace(/[^0-9.-]/g, '');
+            return parseFloat(cleaned) || 0;
+        }
+
+        function promptApiUrl() {
+            const url = prompt("Pega la URL de tu Google Apps Script (terminada en /exec):", API_URL);
+            if (url && url.trim() !== "") {
+                API_URL = url.trim();
+                localStorage.setItem('sbd_api_url', API_URL);
+                loadLiveData();
+            }
+        }
+
+        async function loadLiveData() {
+            const syncIcon = document.getElementById('sync-icon');
+            const syncStatus = document.getElementById('sync-status');
+            const syncDot = document.getElementById('sync-dot');
+            if (syncIcon) syncIcon.classList.add('animate-spin');
+
+            if (!API_URL) {
+                if (syncStatus) syncStatus.innerText = "Planilla no conectada (haz clic en Conectar Planilla)";
+                if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-amber-500 animate-pulse";
+                if (syncIcon) syncIcon.classList.remove('animate-spin');
+                recalculateAll();
+                return;
+            }
+
+            try {
+                if (syncStatus) syncStatus.innerText = "Consultando datos a Google Sheets...";
+                const res = await fetch(API_URL);
+                const data = await res.json();
+
+                if (data.ventas && data.ventas.length > 0) {
+                    DATA_VENTAS = data.ventas.map(v => ({
+                        ...v,
+                        venta: parseNum(v.Venta || v.VENTA || v.venta),
+                        meta_diaria: parseNum(v.Meta_Diaria || v.META_DIARIA || v.meta_diaria),
+                        unidades: parseNum(v.Unidades || v.UNIDADES || v.unidades),
+                        tickets: parseNum(v.Tickets || v.TICKETS || v.tickets) || 1,
+                        upt: parseNum(v.UPT_Referencia || v.UPT || v.upt),
+                        fecha: v.Fecha ? String(v.Fecha).slice(0, 10) : '',
+                        tienda: v.Tienda || v.TIENDA || '',
+                        vendedor: v.Vendedor || v.VENDEDOR || '',
+                        producto: v.Producto || v.PRODUCTO || '',
+                        categoria: v.Categoría || v.Categoria || v.CATEGORIA || 'General'
+                    }));
+                }
+
+                const vendSource = data.vendedores || data.ranking_vendedores || data.kpi_resumen || [];
+                if (vendSource && vendSource.length > 0) {
+                    DATA_VENDEDORES = vendSource.map((v, i) => {
+                        const venta = parseNum(v.Venta_Total || v.Venta || v.VENTA || v.venta);
+                        const meta = parseNum(v.Meta_Total || v.Meta || v.META || v.meta) || 1;
+                        let cumpl = parseNum(v.Cumplimiento || v.CUMPLIMIENTO || v.cumplimiento);
+                        if (cumpl <= 1 && cumpl > 0) cumpl = cumpl * 100;
+                        if (!cumpl && meta > 0) cumpl = (venta / meta) * 100;
+
+                        return {
+                            ranking: parseNum(v.Ranking) || (i + 1),
+                            vendedor: v.Vendedor || v.VENDEDOR || v.Nombre || 'Vendedor',
+                            tienda: v.Tienda || v.TIENDA || '',
+                            venta: venta,
+                            meta: meta,
+                            cumplimiento: Math.round(cumpl * 10) / 10,
+                            upt: Math.round((parseNum(v.UPT || v.upt) || 2.0) * 100) / 100,
+                            ticket_prom: parseNum(v.Ticket_Promedio || v.Ticket_Prom || v.TICKET_PROM) || (venta > 0 ? Math.round(venta / (parseNum(v.Tickets)||75)) : 115000),
+                            estado: v.Estado || v.Estado_Alerta || (cumpl >= 95 ? 'EN META' : 'SEGUIMIENTO')
+                        };
+                    });
+                }
+
+                if (data.tiendas && data.tiendas.length > 0) {
+                    DATA_TIENDAS = data.tiendas.map(t => {
+                        const venta = parseNum(t.Venta || t.VENTA || t.venta);
+                        const meta = parseNum(t.Meta || t.META || t.meta) || 1;
+                        let cumpl = parseNum(t.Cumplimiento || t.CUMPLIMIENTO);
+                        if (cumpl <= 1 && cumpl > 0) cumpl = cumpl * 100;
+                        if (!cumpl) cumpl = (venta / meta) * 100;
+                        return {
+                            tienda: t.Tienda || t.TIENDA || '',
+                            venta: venta,
+                            meta: meta,
+                            cumplimiento: Math.round(cumpl * 10) / 10,
+                            unidades: parseNum(t.Unidades || 0),
+                            vendedores: parseNum(t.Vendedores || 3),
+                            stock_critico: parseNum(t.Stock_Crítico || t.Stock_Critico || 0)
+                        };
+                    });
+                }
+
+                if (data.stock && data.stock.length > 0) DATA_STOCK = data.stock;
+                if (data.plan && data.plan.length > 0) DATA_PLAN = data.plan;
+                if (data.visitas && data.visitas.length > 0) DATA_VISITAS = data.visitas;
+
+                recalculateAll();
+
+                if (syncStatus) syncStatus.innerText = "Sincronizado a las " + (data.actualizado || new Date().toLocaleTimeString('es-CL'));
+                if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-emerald-500 animate-pulse";
+            } catch (err) {
+                console.error("Error al cargar datos:", err);
+                if (syncStatus) syncStatus.innerText = "Error de conexión. Mostrando datos locales.";
+                if (syncDot) syncDot.className = "w-2 h-2 rounded-full bg-amber-500";
+            } finally {
+                if (syncIcon) syncIcon.classList.remove('animate-spin');
+            }
+        }
+
+        function recalculateAll() {
+            let totalVenta = DATA_VENDEDORES.reduce((acc, v) => acc + v.venta, 0) || 77163000;
+            let totalMeta = DATA_VENDEDORES.reduce((acc, v) => acc + v.meta, 0) || 82150000;
+            const pctCumpl = (totalVenta / totalMeta) * 100;
+
+            document.getElementById('kpi-sellout').innerText = '$' + totalVenta.toLocaleString('es-CL');
+            document.getElementById('kpi-sellout-meta').innerHTML = `META TOTAL: $${totalMeta.toLocaleString('es-CL')} (<span class="text-orange-600 font-bold">${pctCumpl.toFixed(1)}%</span>)`;
+            document.getElementById('bar-sellout').style.width = Math.min(pctCumpl, 100) + '%';
+
+            let avgUpt = (DATA_VENDEDORES.reduce((acc, v) => acc + v.upt, 0) / DATA_VENDEDORES.length).toFixed(2);
+            let avgTicket = Math.round(DATA_VENDEDORES.reduce((acc, v) => acc + v.ticket_prom, 0) / DATA_VENDEDORES.length);
+
+            document.getElementById('kpi-ticket').innerText = '$' + avgTicket.toLocaleString('es-CL');
+            document.getElementById('kpi-upt').innerText = avgUpt;
+            document.getElementById('bar-upt').style.width = Math.min((avgUpt / 2.10) * 100, 100) + '%';
+
+            const promEquip = Math.round(totalVenta / DATA_VENDEDORES.length);
+            document.getElementById('promedio-equipo').innerText = '$' + promEquip.toLocaleString('es-CL') + ` (${pctCumpl.toFixed(1)}%)`;
+
+            // Top Vendedores Widget
+            const topCont = document.getElementById('top-sellers-container');
+            topCont.innerHTML = '';
+            const sorted = [...DATA_VENDEDORES].sort((a, b) => b.venta - a.venta);
+            sorted.slice(0, 4).forEach((v, idx) => {
+                const badge = v.cumplimiento >= 95 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+                topCont.innerHTML += `
+                    <div class="flex items-center justify-between p-3 rounded-2xl bg-slate-50 border border-slate-100 hover:bg-slate-100/80 transition">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-purple-100 text-purple-700 font-black flex items-center justify-center text-xs shadow-sm">
+                                ${idx + 1}
+                            </div>
+                            <div>
+                                <p class="font-bold text-xs text-slate-900">${v.vendedor}</p>
+                                <p class="text-[10px] text-slate-400 font-medium">${v.tienda} • $${(v.venta/1000000).toFixed(1)}M</p>
+                            </div>
+                        </div>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-black ${badge}">${v.cumplimiento}%</span>
+                    </div>
+                `;
+            });
+
+            // Tiendas Gauges
+            const s = DATA_TIENDAS.find(t => t.tienda.includes('Sodimac'));
+            const e = DATA_TIENDAS.find(t => t.tienda.includes('Easy'));
+            const c = DATA_TIENDAS.find(t => t.tienda.includes('Construmart'));
+
+            if (s) {
+                document.getElementById('txt-sodimac').innerText = s.cumplimiento + '%';
+                document.getElementById('gauge-sodimac').setAttribute('stroke-dashoffset', Math.max(0, 100 - s.cumplimiento));
+                document.getElementById('sub-sodimac').innerText = 'P. Norte ($' + (s.venta/1000000).toFixed(1) + 'M)';
+            }
+            if (e) {
+                document.getElementById('txt-easy').innerText = e.cumplimiento + '%';
+                document.getElementById('gauge-easy').setAttribute('stroke-dashoffset', Math.max(0, 100 - e.cumplimiento));
+                document.getElementById('sub-easy').innerText = 'Costanera ($' + (e.venta/1000000).toFixed(1) + 'M)';
+            }
+            if (c) {
+                document.getElementById('txt-construmart').innerText = c.cumplimiento + '%';
+                document.getElementById('gauge-construmart').setAttribute('stroke-dashoffset', Math.max(0, 100 - c.cumplimiento));
+                document.getElementById('sub-construmart').innerText = 'Est. Central ($' + (c.venta/1000000).toFixed(1) + 'M)';
+            }
+
+            renderDashboardMix(totalVenta);
+            initSalesChart();
+            renderRankingVendedores();
+            renderRankingTiendas();
+            renderStock();
+            renderPlanVisitas();
+            renderVentasAnalytics();
+        }
+
+        function renderDashboardMix(total) {
+            const catCont = document.getElementById('categories-progress-container');
+            catCont.innerHTML = '';
+            const t = total || 77163000;
+            const cats = [
+                { name: 'Herramientas eléctricas', pct: 58, color: 'bg-purple-600' },
+                { name: 'Accesorios', pct: 27, color: 'bg-orange-500' },
+                { name: 'Medición y Manuales', pct: 15, color: 'bg-emerald-500' }
+            ];
+            cats.forEach(c => {
+                const val = Math.round(t * (c.pct / 100));
+                catCont.innerHTML += `
+                    <div>
+                        <div class="flex justify-between text-xs mb-1.5">
+                            <span class="font-bold text-slate-700">${c.name}</span>
+                            <span class="font-extrabold text-slate-900">${c.pct}% <span class="text-slate-400 font-normal ml-1">($${val.toLocaleString('es-CL')})</span></span>
+                        </div>
+                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
+                            <div class="${c.color} h-full rounded-full transition-all duration-700" style="width: ${c.pct}%"></div>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function initSalesChart() {
+            const ctx = document.getElementById('mainSalesChart')?.getContext('2d');
+            if (!ctx) return;
+
+            const labelsWeekly = ['Semana 1', 'Semana 2', 'Semana 3', 'Semana 4'];
+            let dataWeekly = [16500000, 18900000, 22400000, 19363000];
+
+            let labelsDaily = ['03-Aug', '04-Aug', '05-Aug', '06-Aug', '07-Aug', '08-Aug', '09-Aug', '10-Aug', '11-Aug', '12-Aug', '13-Aug', '14-Aug', '15-Aug', '16-Aug'];
+            let dataDaily = [3487000, 3195000, 3178000, 2975000, 3170000, 2775000, 3488000, 3351000, 3566000, 3286000, 2883000, 3617000, 3043000, 3317000];
+
+            if (salesChart) salesChart.destroy();
+
+            const isDaily = currentChartMode === 'diario';
+            const labels = isDaily ? labelsDaily : labelsWeekly;
+            const data = isDaily ? dataDaily : dataWeekly;
+
+            const gradient = ctx.createLinearGradient(0, 0, 0, 220);
+            gradient.addColorStop(0, 'rgba(255, 83, 118, 0.45)');
+            gradient.addColorStop(0.6, 'rgba(255, 125, 84, 0.2)');
+            gradient.addColorStop(1, 'rgba(255, 168, 74, 0.0)');
+
+            salesChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Venta ($)',
+                        data: data,
+                        borderColor: '#FF5376',
+                        borderWidth: 3.5,
+                        fill: true,
+                        backgroundColor: gradient,
+                        tension: 0.4,
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: '#FF5376',
+                        pointBorderWidth: 2.5,
+                        pointRadius: 4.5,
+                        pointHoverRadius: 7
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => ' $' + ctx.parsed.y.toLocaleString('es-CL')
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            grid: { color: '#F1F5F9' },
+                            ticks: {
+                                font: { family: 'Plus Jakarta Sans', size: 10, weight: 600 },
+                                callback: val => '$' + (val/1000000).toFixed(1) + 'M'
+                            }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { font: { family: 'Plus Jakarta Sans', size: 10, weight: 600 } }
+                        }
+                    }
+                }
+            });
+        }
+
+        function setChartMode(mode) {
+            currentChartMode = mode;
+            document.getElementById('btn-chart-diario').className = mode === 'diario' ? 'px-3 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm transition' : 'px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+            document.getElementById('btn-chart-semanal').className = mode === 'semanal' ? 'px-3 py-1 rounded-lg text-xs font-bold bg-purple-600 text-white shadow-sm transition' : 'px-3 py-1 rounded-lg text-xs font-bold text-slate-600 hover:text-slate-900 transition';
+            initSalesChart();
+        }
+
+        function renderRankingVendedores() {
+            const tbody = document.getElementById('ranking-table-body');
+            if (tbody) {
+                tbody.innerHTML = '';
+                [...DATA_VENDEDORES].sort((a, b) => b.venta - a.venta).forEach((v, idx) => {
+                    const badge = v.cumplimiento >= 95 ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700';
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-3.5 font-black text-slate-400">#${idx + 1}</td>
+                            <td class="p-3.5 font-extrabold text-slate-900">${v.vendedor}</td>
+                            <td class="p-3.5 text-slate-500">${v.tienda}</td>
+                            <td class="p-3.5 font-extrabold text-slate-900">$${v.venta.toLocaleString('es-CL')}</td>
+                            <td class="p-3.5 text-slate-400 font-normal">$${v.meta.toLocaleString('es-CL')}</td>
+                            <td class="p-3.5 font-black text-purple-700">${v.cumplimiento}%</td>
+                            <td class="p-3.5 font-bold text-pink-600">${v.upt}</td>
+                            <td class="p-3.5 font-semibold text-slate-800">$${v.ticket_prom.toLocaleString('es-CL')}</td>
+                            <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg text-[10px] font-black ${badge}">${v.estado}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function renderRankingTiendas() {
+            const container = document.getElementById('pdv-cards-container');
+            if (container) {
+                container.innerHTML = '';
+                DATA_TIENDAS.forEach(t => {
+                    container.innerHTML += `
+                        <div class="card-custom p-6 flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-3">
+                                    <h4 class="text-base font-extrabold text-slate-900">${t.tienda}</h4>
+                                    <span class="px-2.5 py-1 rounded-lg text-xs font-black ${t.cumplimiento >= 95 ? 'bg-emerald-100 text-emerald-700' : 'bg-purple-100 text-purple-700'}">${t.cumplimiento}%</span>
+                                </div>
+                                <div class="grid grid-cols-2 gap-2.5 my-4 bg-slate-50 p-3.5 rounded-2xl border border-slate-100">
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase">VENTA TOTAL</span>
+                                        <p class="text-sm font-black text-slate-900 mt-0.5">$${t.venta.toLocaleString('es-CL')}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase">META SALA</span>
+                                        <p class="text-sm font-semibold text-slate-500 mt-0.5">$${t.meta.toLocaleString('es-CL')}</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase">PROMOTORES</span>
+                                        <p class="text-sm font-bold text-purple-700 mt-0.5">${t.vendedores} Asesores</p>
+                                    </div>
+                                    <div>
+                                        <span class="text-[10px] text-slate-400 font-bold uppercase">UNIDADES</span>
+                                        <p class="text-sm font-bold text-slate-900 mt-0.5">${t.unidades} un.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="pt-3 border-t border-slate-100 flex justify-between text-xs font-medium">
+                                <span class="text-slate-500">Alertas de Stock:</span>
+                                <span class="font-bold ${t.stock_critico > 0 ? 'text-red-500' : 'text-emerald-600'}">${t.stock_critico > 0 ? t.stock_critico + ' Quiebre Crítico' : 'Inventario OK'}</span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderStock() {
+            const tbody = document.getElementById('stock-table-body');
+            if (tbody) {
+                tbody.innerHTML = '';
+                DATA_STOCK.forEach(s => {
+                    let badge = 'bg-emerald-100 text-emerald-700';
+                    if (s.Estado === 'CRÍTICO') badge = 'bg-red-100 text-red-700 font-bold';
+                    else if (s.Estado === 'BAJO') badge = 'bg-amber-100 text-amber-700 font-bold';
+
+                    tbody.innerHTML += `
+                        <tr class="hover:bg-slate-50 transition">
+                            <td class="p-3.5 font-bold text-slate-900">${s.Tienda}</td>
+                            <td class="p-3.5">${s.Producto}</td>
+                            <td class="p-3.5"><span class="px-2 py-0.5 rounded bg-slate-100 text-[10px] font-bold text-slate-600">${s.Categoría}</span></td>
+                            <td class="p-3.5 font-black text-slate-900">${s.Stock}</td>
+                            <td class="p-3.5 text-slate-400">${s.Stock_Mínimo}</td>
+                            <td class="p-3.5 font-bold ${s.Quiebre === 'SI' ? 'text-red-500' : 'text-slate-400'}">${s.Quiebre}</td>
+                            <td class="p-3.5 font-semibold text-blue-600">${s.Reposición > 0 ? s.Reposición + ' un.' : '-'}</td>
+                            <td class="p-3.5 font-bold ${s.Empuje === 'SI' ? 'text-amber-600' : 'text-slate-400'}">${s.Empuje}</td>
+                            <td class="p-3.5"><span class="px-2.5 py-1 rounded-lg text-[10px] ${badge}">${s.Estado}</span></td>
+                        </tr>
+                    `;
+                });
+            }
+        }
+
+        function renderPlanVisitas() {
+            const planCont = document.getElementById('plan-accion-container');
+            if (planCont) {
+                planCont.innerHTML = '';
+                DATA_PLAN.forEach(p => {
+                    planCont.innerHTML += `
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-extrabold text-xs text-slate-900">${p.Problema}</span>
+                                <span class="px-2 py-0.5 rounded bg-red-100 text-red-700 font-bold text-[10px]">${p.Prioridad}</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">${p.Acción}</p>
+                            <div class="flex justify-between text-[10px] text-slate-400 font-medium mt-3 pt-2 border-t border-slate-200/60">
+                                <span>Tienda: <b class="text-slate-700">${p.Tienda}</b></span>
+                                <span>Compromiso: <b class="text-purple-700">${p.Fecha_Compromiso}</b></span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            const visCont = document.getElementById('visitas-container');
+            if (visCont) {
+                visCont.innerHTML = '';
+                DATA_VISITAS.forEach(v => {
+                    visCont.innerHTML += `
+                        <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-extrabold text-xs text-slate-900">${v.Tienda}</span>
+                                <span class="px-2 py-0.5 rounded bg-purple-100 text-purple-700 font-bold text-[10px]">${v.Estado}</span>
+                            </div>
+                            <p class="text-xs text-slate-600 mt-1">${v.Hallazgos}</p>
+                            <div class="flex justify-between text-[10px] text-slate-400 font-medium mt-3 pt-2 border-t border-slate-200/60">
+                                <span>Supervisor: <b class="text-slate-700">Jayson</b></span>
+                                <span>Fecha: <b class="text-slate-700">${v.Fecha}</b></span>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+        }
+
+        function renderVentasAnalytics() {
+            // Doughnut
+            const ctxPie = document.getElementById('chartCategoriesPie')?.getContext('2d');
+            if (ctxPie && !pieChart) {
+                pieChart = new Chart(ctxPie, {
+                    type: 'doughnut',
+                    data: {
+                        labels: ['Herramientas eléctricas', 'Accesorios', 'Medición', 'Almacenamiento', 'Manuales'],
+                        datasets: [{
+                            data: [44754540, 20834010, 6200000, 3174450, 2200000],
+                            backgroundColor: ['#6C38FF', '#FF6B35', '#00C49F', '#3B82F6', '#EC4899']
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { font: { family: 'Plus Jakarta Sans', size: 11, weight: 600 } } } }
+                    }
+                });
+            }
+
+            // Tactics
+            const ctxTactics = document.getElementById('chartSellingTactics')?.getContext('2d');
+            if (ctxTactics && !tacticsChart) {
+                tacticsChart = new Chart(ctxTactics, {
+                    type: 'bar',
+                    data: {
+                        labels: DATA_VENDEDORES.map(v => v.vendedor.split(' ')[0]),
+                        datasets: [
+                            { label: 'Cross-Selling (Unid)', data: [80, 81, 70, 44, 97, 94, 72, 62], backgroundColor: '#6C38FF', borderRadius: 6 },
+                            { label: 'Up-Selling (Eventos)', data: [55, 33, 42, 44, 49, 39, 40, 28], backgroundColor: '#FF6B35', borderRadius: 6 }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { position: 'bottom', labels: { font: { family: 'Plus Jakarta Sans', size: 11, weight: 600 } } } },
+                        scales: {
+                            y: { grid: { color: '#F1F5F9' }, ticks: { font: { family: 'Plus Jakarta Sans', size: 10 } } },
+                            x: { grid: { display: false }, ticks: { font: { family: 'Plus Jakarta Sans', size: 10 } } }
+                        }
+                    }
+                });
+            }
+        }
+
+        function filterRankingTable() {
+            const val = document.getElementById('search-promotor').value.toLowerCase();
+            document.querySelectorAll('#ranking-table-body tr').forEach(r => {
+                r.style.display = r.innerText.toLowerCase().includes(val) ? '' : 'none';
+            });
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('tab-' + tabId).classList.remove('hidden');
+
+            document.querySelectorAll('#sidebar-nav button').forEach(btn => {
+                btn.classList.remove('nav-active');
+                btn.querySelector('span').classList.add('bg-transparent');
+                btn.querySelector('span').classList.remove('bg-amber-400', 'shadow-[0_0_10px_rgba(251,191,36,0.9)]');
+            });
+
+            const activeBtn = document.getElementById('nav-' + tabId);
+            activeBtn.classList.add('nav-active');
+            activeBtn.querySelector('span').classList.remove('bg-transparent');
+            activeBtn.querySelector('span').classList.add('bg-amber-400', 'shadow-[0_0_10px_rgba(251,191,36,0.9)]');
+            
+            const titles = {
+                'dashboard': 'DASHBOARD EJECUTIVO',
+                'ventas': 'VENTAS',
+                'ranking_vendedores': 'RANKING_VENDEDORES',
+                'ranking_tiendas': 'RANKING_TIENDAS',
+                'stock': 'STOCK',
+                'plan_accion': 'PLAN_ACCION & VISITAS'
+            };
+            document.getElementById('page-title').innerText = titles[tabId] || tabId.toUpperCase();
+            lucide.createIcons();
+        }
+
+        function applyFilters() {
+            const store = document.getElementById('filter-tienda').value;
+            if (store === 'ALL') {
+                recalculateAll();
+            } else {
+                const filteredVends = DATA_VENDEDORES.filter(v => v.tienda.includes(store));
+                if (filteredVends.length > 0) {
+                    const venta = filteredVends.reduce((a, b) => a + b.venta, 0);
+                    const meta = filteredVends.reduce((a, b) => a + b.meta, 0);
+                    const pct = meta > 0 ? (venta / meta) * 100 : 0;
+                    document.getElementById('kpi-sellout').innerText = '$' + venta.toLocaleString('es-CL');
+                    document.getElementById('kpi-sellout-meta').innerHTML = `META TOTAL: $${meta.toLocaleString('es-CL')} (<span class="text-orange-600 font-bold">${pct.toFixed(1)}%</span>)`;
+                    document.getElementById('bar-sellout').style.width = Math.min(pct, 100) + '%';
+                }
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
+            recalculateAll();
+            if (API_URL) loadLiveData();
+            setInterval(loadLiveData, 60000);
+        });
+    </script>
+</body>
+</html>

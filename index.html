@@ -6,105 +6,21 @@
 <title>QUANTY OS</title>
 <meta name="theme-color" content="#08090c">
 <style>
-:root{
-  --bg:#07090d;
-  --panel:rgba(12,16,23,.86);
-  --panel-2:rgba(18,23,32,.9);
-  --ivory:#f3eee4;
-  --muted:#99a5b4;
-  --gold:#d6ae60;
-  --gold-soft:#8f6b32;
-  --cyan:#65e5ff;
-  --blue:#258cff;
-  --red:#a43d4d;
-  --edge:rgba(214,174,96,.24);
-  --shadow:0 30px 80px rgba(0,0,0,.48);
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ivory);font-family:Inter,Segoe UI,Arial,sans-serif}
-body{overflow-x:hidden;background:
-  linear-gradient(180deg,rgba(5,7,11,.42),rgba(5,7,11,.86)),
-  url('quanty-master-assets/temple.webp') center 30%/cover fixed no-repeat,
-  #07090d}
-body:before{content:"";position:fixed;inset:0;pointer-events:none;background:
-  radial-gradient(circle at 50% 16%,rgba(37,140,255,.18),transparent 28%),
-  radial-gradient(circle at 50% 78%,rgba(214,174,96,.10),transparent 33%),
-  linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),
-  linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px);background-size:auto,auto,64px 64px,64px 64px;z-index:0}
-a{color:inherit}
-.shell{position:relative;z-index:2;width:min(1180px,calc(100% - 32px));margin:auto;padding:28px 0 56px}
-.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:12px 0 24px;border-bottom:1px solid rgba(214,174,96,.16)}
-.brand{font-family:Georgia,'Times New Roman',serif;font-weight:700;letter-spacing:.08em;font-size:22px}.brand span{color:var(--cyan)}
-.status{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
-.status b{color:#7cf0c9;font-weight:600}
-.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center;min-height:52vh;padding:56px 0 34px}
-.hero-copy{max-width:700px}.kicker{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
-h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(58px,9.2vw,124px);line-height:.8;letter-spacing:-.055em;margin:0;text-transform:uppercase;text-shadow:0 18px 40px rgba(0,0,0,.4)}
-h1 small{display:block;font-size:.26em;letter-spacing:.43em;margin:22px 0 0 6px;color:var(--cyan);font-family:Inter,Segoe UI,Arial,sans-serif;font-weight:600}
-.lead{font-family:Georgia,'Times New Roman',serif;font-size:clamp(18px,2.2vw,27px);letter-spacing:.04em;color:#e7dcc5;margin:28px 0 9px}.sublead{color:var(--muted);font-size:14px;line-height:1.65;max-width:55ch;margin:0}
-.core{position:relative;min-height:390px;display:grid;place-items:center}.cover{width:min(100%,470px);aspect-ratio:4/5;object-fit:cover;object-position:center;border-radius:28px;border:1px solid rgba(214,174,96,.28);box-shadow:var(--shadow),0 0 65px rgba(37,140,255,.14)}
-.core:after{content:"";position:absolute;width:54%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(101,229,255,.28);box-shadow:0 0 55px rgba(101,229,255,.12);animation:breathe 4.6s ease-in-out infinite;pointer-events:none}
-.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:28px 0 18px}.section-head p{margin:0;color:var(--muted);font-size:12px;letter-spacing:.16em;text-transform:uppercase}.section-head h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(28px,4vw,46px);margin:4px 0 0;letter-spacing:-.02em}
-.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{position:relative;display:flex;flex-direction:column;min-height:285px;padding:24px;text-decoration:none;border:1px solid var(--edge);border-radius:20px;background:linear-gradient(145deg,rgba(16,21,30,.93),rgba(7,10,15,.94));box-shadow:0 18px 55px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035);overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.02),transparent 45%),radial-gradient(circle at 88% 8%,rgba(101,229,255,.10),transparent 28%);pointer-events:none}.card:hover{transform:translateY(-5px);border-color:rgba(101,229,255,.44);box-shadow:0 26px 70px rgba(0,0,0,.48),0 0 36px rgba(37,140,255,.09)}
-.card.gold:hover{border-color:rgba(214,174,96,.52)}.icon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-family:Georgia,serif;font-size:22px;color:white;border:1px solid rgba(101,229,255,.38);background:radial-gradient(circle at 35% 28%,#dffaff,#5ad9ff 8%,#256eb6 34%,#11182a 64%,#080a0f 78%);box-shadow:0 0 24px rgba(101,229,255,.18);margin-bottom:26px}.card.gold .icon{border-color:rgba(214,174,96,.45);background:radial-gradient(circle at 35% 28%,#fff5d8,#d6ae60 14%,#6e4e25 49%,#16120d 79%);box-shadow:0 0 24px rgba(214,174,96,.14)}
-.card .overline{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}.card h3{font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:1.03;margin:0 0 12px;letter-spacing:-.02em}.card p{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 24px;max-width:34ch}.go{margin-top:auto;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}.gold .go{color:var(--gold)}
-.foot{display:flex;justify-content:space-between;gap:20px;margin-top:34px;padding-top:18px;border-top:1px solid rgba(214,174,96,.13);color:#73808e;font-size:10px;letter-spacing:.15em;text-transform:uppercase}.petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}.petal{position:absolute;top:-8vh;width:8px;height:16px;border-radius:70% 18% 70% 18%;background:linear-gradient(145deg,#84243b,#cd666d);opacity:.22;animation:fall linear infinite}.petal:nth-child(1){left:10%;animation-duration:16s}.petal:nth-child(2){left:27%;animation-duration:19s;animation-delay:-7s}.petal:nth-child(3){left:44%;animation-duration:21s;animation-delay:-14s}.petal:nth-child(4){left:61%;animation-duration:17s;animation-delay:-5s}.petal:nth-child(5){left:78%;animation-duration:20s;animation-delay:-11s}.petal:nth-child(6){left:92%;animation-duration:18s;animation-delay:-8s}
-@keyframes fall{to{transform:translate3d(95px,115vh,0) rotate(620deg)}}@keyframes breathe{0%,100%{transform:scale(.98);opacity:.65}50%{transform:scale(1.03);opacity:1}}
-@media(max-width:900px){body{background-attachment:scroll}.hero{grid-template-columns:1fr;gap:24px;min-height:0;padding-top:44px}.hero-copy{text-align:center;margin:auto}.sublead{margin-inline:auto}.core{min-height:330px}.cover{max-height:430px;width:auto}.grid{grid-template-columns:1fr}.card{min-height:220px}.section-head{align-items:start;flex-direction:column}.foot{flex-direction:column;gap:7px}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+:root{--bg:#07090d;--panel:rgba(12,16,23,.86);--panel-2:rgba(18,23,32,.9);--ivory:#f3eee4;--muted:#99a5b4;--gold:#d6ae60;--gold-soft:#8f6b32;--cyan:#65e5ff;--blue:#258cff;--red:#a43d4d;--edge:rgba(214,174,96,.24);--shadow:0 30px 80px rgba(0,0,0,.48)}
+*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ivory);font-family:Inter,Segoe UI,Arial,sans-serif}body{overflow-x:hidden;background:linear-gradient(180deg,rgba(5,7,11,.42),rgba(5,7,11,.86)),url('quanty-master-assets/temple.webp') center 30%/cover fixed no-repeat,#07090d}body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 16%,rgba(37,140,255,.18),transparent 28%),radial-gradient(circle at 50% 78%,rgba(214,174,96,.10),transparent 33%),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(rgba(255,255,255,.014) 1px,transparent 1px);background-size:auto,auto,64px 64px,64px 64px;z-index:0}a{color:inherit}.shell{position:relative;z-index:2;width:min(1180px,calc(100% - 32px));margin:auto;padding:28px 0 56px}.topbar{display:flex;justify-content:space-between;align-items:center;gap:20px;padding:12px 0 24px;border-bottom:1px solid rgba(214,174,96,.16)}.brand{font-family:Georgia,'Times New Roman',serif;font-weight:700;letter-spacing:.08em;font-size:22px}.brand span{color:var(--cyan)}.status{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}.status b{color:#7cf0c9;font-weight:600}.hero{display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center;min-height:52vh;padding:56px 0 34px}.hero-copy{max-width:700px}.kicker{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(58px,9.2vw,124px);line-height:.8;letter-spacing:-.055em;margin:0;text-transform:uppercase;text-shadow:0 18px 40px rgba(0,0,0,.4)}h1 small{display:block;font-size:.26em;letter-spacing:.43em;margin:22px 0 0 6px;color:var(--cyan);font-family:Inter,Segoe UI,Arial,sans-serif;font-weight:600}.lead{font-family:Georgia,'Times New Roman',serif;font-size:clamp(18px,2.2vw,27px);letter-spacing:.04em;color:#e7dcc5;margin:28px 0 9px}.sublead{color:var(--muted);font-size:14px;line-height:1.65;max-width:55ch;margin:0}.core{position:relative;min-height:390px;display:grid;place-items:center}.cover{width:min(100%,470px);aspect-ratio:4/5;object-fit:cover;object-position:center;border-radius:28px;border:1px solid rgba(214,174,96,.28);box-shadow:var(--shadow),0 0 65px rgba(37,140,255,.14)}.core:after{content:"";position:absolute;width:54%;aspect-ratio:1;border-radius:50%;border:1px solid rgba(101,229,255,.28);box-shadow:0 0 55px rgba(101,229,255,.12);animation:breathe 4.6s ease-in-out infinite;pointer-events:none}.section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin:28px 0 18px}.section-head p{margin:0;color:var(--muted);font-size:12px;letter-spacing:.16em;text-transform:uppercase}.section-head h2{font-family:Georgia,'Times New Roman',serif;font-size:clamp(28px,4vw,46px);margin:4px 0 0;letter-spacing:-.02em}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.card{position:relative;display:flex;flex-direction:column;min-height:285px;padding:24px;text-decoration:none;border:1px solid var(--edge);border-radius:20px;background:linear-gradient(145deg,rgba(16,21,30,.93),rgba(7,10,15,.94));box-shadow:0 18px 55px rgba(0,0,0,.34),inset 0 1px rgba(255,255,255,.035);overflow:hidden;transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}.card:before{content:"";position:absolute;inset:0;background:linear-gradient(120deg,rgba(255,255,255,.02),transparent 45%),radial-gradient(circle at 88% 8%,rgba(101,229,255,.10),transparent 28%);pointer-events:none}.card:hover{transform:translateY(-5px);border-color:rgba(101,229,255,.44);box-shadow:0 26px 70px rgba(0,0,0,.48),0 0 36px rgba(37,140,255,.09)}.card.gold:hover{border-color:rgba(214,174,96,.52)}.icon{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-family:Georgia,serif;font-size:22px;color:white;border:1px solid rgba(101,229,255,.38);background:radial-gradient(circle at 35% 28%,#dffaff,#5ad9ff 8%,#256eb6 34%,#11182a 64%,#080a0f 78%);box-shadow:0 0 24px rgba(101,229,255,.18);margin-bottom:26px}.card.gold .icon{border-color:rgba(214,174,96,.45);background:radial-gradient(circle at 35% 28%,#fff5d8,#d6ae60 14%,#6e4e25 49%,#16120d 79%);box-shadow:0 0 24px rgba(214,174,96,.14)}.card .overline{font-size:9px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:7px}.card h3{font-family:Georgia,'Times New Roman',serif;font-size:27px;line-height:1.03;margin:0 0 12px;letter-spacing:-.02em}.card p{color:var(--muted);font-size:14px;line-height:1.6;margin:0 0 24px;max-width:34ch}.go{margin-top:auto;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--cyan)}.gold .go{color:var(--gold)}.foot{display:flex;justify-content:space-between;gap:20px;margin-top:34px;padding-top:18px;border-top:1px solid rgba(214,174,96,.13);color:#73808e;font-size:10px;letter-spacing:.15em;text-transform:uppercase}.petals{position:fixed;inset:0;pointer-events:none;z-index:1;overflow:hidden}.petal{position:absolute;top:-8vh;width:8px;height:16px;border-radius:70% 18% 70% 18%;background:linear-gradient(145deg,#84243b,#cd666d);opacity:.22;animation:fall linear infinite}.petal:nth-child(1){left:10%;animation-duration:16s}.petal:nth-child(2){left:27%;animation-duration:19s;animation-delay:-7s}.petal:nth-child(3){left:44%;animation-duration:21s;animation-delay:-14s}.petal:nth-child(4){left:61%;animation-duration:17s;animation-delay:-5s}.petal:nth-child(5){left:78%;animation-duration:20s;animation-delay:-11s}.petal:nth-child(6){left:92%;animation-duration:18s;animation-delay:-8s}@keyframes fall{to{transform:translate3d(95px,115vh,0) rotate(620deg)}}@keyframes breathe{0%,100%{transform:scale(.98);opacity:.65}50%{transform:scale(1.03);opacity:1}}@media(max-width:900px){body{background-attachment:scroll}.hero{grid-template-columns:1fr;gap:24px;min-height:0;padding-top:44px}.hero-copy{text-align:center;margin:auto}.sublead{margin-inline:auto}.core{min-height:330px}.cover{max-height:430px;width:auto}.grid{grid-template-columns:1fr}.card{min-height:220px}.section-head{align-items:start;flex-direction:column}.foot{flex-direction:column;gap:7px}}@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
 <div class="petals" aria-hidden="true"><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i><i class="petal"></i></div>
 <main class="shell">
-  <header class="topbar">
-    <div class="brand">QUANTY <span>OS</span></div>
-    <div class="status">Core <b>online</b></div>
-  </header>
-
-  <section class="hero">
-    <div class="hero-copy">
-      <div class="kicker">Centro de operaciones · Trade Marketing</div>
-      <h1>QUANTY<small>OS</small></h1>
-      <div class="lead">Personas · Herramientas · Oportunidades · Resultados</div>
-      <p class="sublead">Un único punto de entrada para capacitación, planificación de mallas y control operativo del equipo.</p>
-    </div>
-    <div class="core"><img class="cover" src="quanty-master-assets/cover.webp" alt="QUANTY MASTER"></div>
-  </section>
-
-  <section>
-    <div class="section-head">
-      <div><p>Protocolos disponibles</p><h2>Elige dónde entrar</h2></div>
-      <p>3 módulos activos</p>
-    </div>
-    <div class="grid">
-      <a class="card" href="quanty-master-roman.html">
-        <div class="icon">Q</div>
-        <div class="overline">Capacitación</div>
-        <h3>QUANTY MASTER</h3>
-        <p>Entrenamiento gamificado, conocimiento de producto, ventas, XP, insignias y Salón de Honor.</p>
-        <div class="go">Entrar a QUANTY MASTER →</div>
-      </a>
-
-      <a class="card gold" href="mallas.html">
-        <div class="icon">M</div>
-        <div class="overline">Planificación</div>
-        <h3>Motor de Mallas</h3>
-        <p>Genera y valida horarios, cobertura, turnos y reglas operativas para la planificación semanal.</p>
-        <div class="go">Abrir Motor de Mallas →</div>
-      </a>
-
-      <a class="card" href="asistencia.html">
-        <div class="icon">C</div>
-        <div class="overline">Operación</div>
-        <h3>Control de Equipo</h3>
-        <p>Asistencia, horarios, cambios y seguimiento diario para vendedores y supervisión en terreno.</p>
-        <div class="go">Abrir Control de Equipo →</div>
-      </a>
-    </div>
-  </section>
-
-  <footer class="foot"><span>QUANTY OS · HUMAN POTENTIAL AMPLIFIED</span><span>DISCIPLINA · CONOCIMIENTO · RESULTADOS</span></footer>
+<header class="topbar"><div class="brand">QUANTY <span>OS</span></div><div class="status">Core <b>online</b></div></header>
+<section class="hero"><div class="hero-copy"><div class="kicker">Centro de operaciones · Trade Marketing</div><h1>QUANTY<small>OS</small></h1><div class="lead">Personas · Herramientas · Oportunidades · Resultados</div><p class="sublead">Un único punto de entrada para capacitación, planificación de mallas y control operativo del equipo.</p></div><div class="core"><img class="cover" src="quanty-master-assets/cover.webp" alt="QUANTY MASTER"></div></section>
+<section><div class="section-head"><div><p>Protocolos disponibles</p><h2>Elige dónde entrar</h2></div><p>3 módulos activos</p></div><div class="grid">
+<a class="card" href="quanty-tricolor.html"><div class="icon">Q</div><div class="overline">Capacitación · Tricolor</div><h3>QUANTY MASTER</h3><p>Entrenamiento gamificado para gestores y vendedores: diagnóstico del cliente, recomendación, objeciones, venta complementaria, XP, ranking y coaching.</p><div class="go">Entrar a QUANTY MASTER →</div></a>
+<a class="card gold" href="mallas.html"><div class="icon">M</div><div class="overline">Planificación</div><h3>Motor de Mallas</h3><p>Genera y valida horarios, cobertura, turnos y reglas operativas para la planificación semanal.</p><div class="go">Abrir Motor de Mallas →</div></a>
+<a class="card" href="asistencia.html"><div class="icon">C</div><div class="overline">Operación</div><h3>Control de Equipo</h3><p>Asistencia, horarios, cambios y seguimiento diario para vendedores y supervisión en terreno.</p><div class="go">Abrir Control de Equipo →</div></a>
+</div></section>
+<footer class="foot"><span>QUANTY OS · HUMAN POTENTIAL AMPLIFIED</span><span>DISCIPLINA · CONOCIMIENTO · RESULTADOS</span></footer>
 </main>
 </body>
 </html>

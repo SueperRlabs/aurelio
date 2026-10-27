@@ -21,6 +21,8 @@
     html = html.replace('<title>QUANTY MASTER · El conocimiento es poder</title>','<title>QUANTY MASTER · Tricolor Edition</title>');
     html = html.replace(/const SEED = \[[\s\S]*?\n\];\n\n\/\* ---------- equipo de demostración ----------/,
       'const SEED = '+JSON.stringify(seed)+';\n\n/* ---------- equipo de demostración ----------');
+    html = html.replace("$('#r-title').textContent=Q.ch.nombre;", "$('#r-title').textContent=Q.ch.nombre; const statusOld=document.getElementById('tricolor-attempt-status');if(statusOld)statusOld.remove();const statusNode=document.createElement('p');statusNode.id='tricolor-attempt-status';statusNode.className='tricolor-pending';statusNode.textContent='✅ COMPLETADO · PENDIENTE DE APROBACIÓN DEL SUPERVISOR';$('#r-title').insertAdjacentElement('afterend',statusNode);");
+    html = html.replace("if(e.target.closest('#tricolor-roulette')){const all=", "if(e.target.closest('#tricolor-roulette')){try{const AC=window.AudioContext||window.webkitAudioContext;if(AC){const c=new AC(),o=c.createOscillator(),g=c.createGain();o.type='sine';o.frequency.setValueAtTime(520,c.currentTime);o.frequency.exponentialRampToValueAtTime(880,c.currentTime+.16);g.gain.setValueAtTime(.08,c.currentTime);g.gain.exponentialRampToValueAtTime(.001,c.currentTime+.22);o.connect(g);g.connect(c.destination);o.start();o.stop(c.currentTime+.23);o.onended=()=>c.close();}}catch(_){}const all=");
     html = html.replace(/<img class="scene-media" alt="Herramientas del catálogo" src="[^"]+">/,
       '<img class="scene-media" alt="Soluciones de pintura y color" src="'+paintSvg+'">');
     html = html.replace(/<img class="scene-media" alt="Vendedor demostrando una herramienta" src="[^"]+">/,

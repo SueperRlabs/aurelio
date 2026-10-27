@@ -584,13 +584,13 @@ textarea.f{min-height:76px;resize:vertical}
 
     <div class="master-row" style="margin:18px 0 0">
       <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
-      <div class="bubble"><span class="who">QUANTY</span><span id="master-pieza">Toca las piezas verdes. Cuando las veas todas, te tomo la prueba.</span></div>
+      <div class="bubble"><span class="who">QUANTY</span><span id="master-pieza">Explora el contenido del producto y luego responde el desafío.</span></div>
     </div>
 
     <div class="pz-tablero" id="pz-tablero">
-      <div class="pz-escenario" id="pz-escenario">
-        <img class="pz-cuadro" src="portada/fijo.webp" alt="Taladro atornillador Reviva">
-        <video class="pz-cuadro pz-video" id="pz-video" src="portada/video.mp4" muted playsinline preload="none"></video>
+      <div class="pz-escenario" id="pz-escenario" aria-label="Espacio de contenido de producto">
+        <div class="pz-cuadro" aria-hidden="true"></div>
+        <div class="pz-cuadro pz-video" id="pz-video" aria-hidden="true"></div>
       </div>
       <div class="pz-ficha" id="pz-ficha">
         <h4 id="pz-ficha-t"></h4>
@@ -599,9 +599,9 @@ textarea.f{min-height:76px;resize:vertical}
     </div>
 
     <div class="pz-fila">
-      <span class="pz-cuenta" id="pz-pista">Toca los puntos verdes</span>
+      <span class="pz-cuenta" id="pz-pista">Explora el contenido</span>
       <span style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="btn ghost small" id="pz-cerrar" style="display:none">← Volver al taladro</button>
+        <button class="btn ghost small" id="pz-cerrar" style="display:none">← Volver</button>
         <button class="btn ghost small" id="pz-despiece">Ver despiece</button>
         <button class="btn small" id="pz-ir" style="display:none">Ir al quiz →</button>
       </span>

@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>QUANTY MASTER · El conocimiento es poder</title>
+<title>QUANTY MASTER · Experiencia comercial Tricolor</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Barlow+Condensed:wght@500;600;700&family=Barlow:wght@400;500;600&family=IBM+Plex+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -435,11 +435,11 @@ textarea.f{min-height:76px;resize:vertical}
 <section id="view-intro" class="view active">
   <div class="opening"><img class="approved-cover" src="quanty-master-assets/cover.webp" alt="QUANTY MASTER. Estatua de mármol, arquitectura romana y una mano robótica que sostiene el núcleo Q. El conocimiento es poder." fetchpriority="high">
     <div class="wrap">
-      <p class="corp" id="corp">DISCIPLINA · CONOCIMIENTO · RESULTADOS</p>
+      <p class="corp" id="corp">TRICOLOR · REVOR · FAST · RESULTADOS</p>
       <div class="screw-stage"><svg class="screw" id="screw"><use href="#ico-screw"/></svg></div>
       <h1 class="wordmark" id="wordmark"><span>QUANTY</span> MASTER</h1>
-      <p class="tagline" id="tagline">EL CONOCIMIENTO ES PODER</p>
-      <p class="roman-motto">TRAIN · LEARN · EVOLVE</p><button class="btn" id="btn-start">Comenzar entrenamiento</button>
+      <p class="tagline" id="tagline">ENTRENA EN SALA · VENDE CON CRITERIO</p>
+      <p class="roman-motto">TRIVIA SEMANAL · VALIDACIÓN PRESENCIAL</p><button class="btn" id="btn-start">Comenzar entrenamiento</button>
       <p class="scroll-hint" id="hint">Explora el conocimiento ↓</p>
     </div>
   </div>
@@ -452,8 +452,8 @@ textarea.f{min-height:76px;resize:vertical}
       </div>
       <div class="scene-copy">
         <p class="scene-num">ESCENA 01</p>
-        <h2 class="h-sec">El catálogo</h2>
-        <p>Cada producto tiene tres o cuatro datos que cierran una venta. El resto es relleno. QUANTY se queda con los que sirven en el piso.</p>
+        <h2 class="h-sec">Las marcas</h2>
+        <p>Tricolor, Revor y FAST: conoce el portafolio y convierte las preguntas del cliente en recomendaciones responsables.</p>
       </div>
     </div>
   </section>
@@ -466,7 +466,7 @@ textarea.f{min-height:76px;resize:vertical}
       <div class="scene-copy">
         <p class="scene-num">ESCENA 02</p>
         <h2 class="h-sec">El piso de venta</h2>
-        <p>El cliente pregunta y hay diez segundos para responder. Entrenar en cinco preguntas es más rápido que leer un manual.</p>
+        <p>La trivia tiene diez preguntas y se realiza una vez por semana con el supervisor presente en la tienda.</p>
       </div>
     </div>
   </section>
@@ -479,7 +479,7 @@ textarea.f{min-height:76px;resize:vertical}
       <div class="scene-copy">
         <p class="scene-num">ESCENA 03</p>
         <h2 class="h-sec">QUANTY contigo</h2>
-        <p>Te corrige, te explica el porqué y te dice qué reforzar. Tu supervisor ve dónde falla el equipo completo.</p>
+        <p>El resultado queda pendiente hasta que el supervisor apruebe la participación presencial. El ranking solo suma resultados aprobados.</p>
         <button class="btn" style="margin-top:24px" data-go="login">Entrar</button>
       </div>
     </div>
@@ -550,10 +550,10 @@ textarea.f{min-height:76px;resize:vertical}
         <p class="eyebrow">Ruta de entrenamiento · <b id="map-progress">0 de 3</b></p>
         <h2 class="h-sec">Entrenamiento</h2>
       </div>
-      <p class="sub">5 preguntas por desafío</p>
+      <p class="sub">10 preguntas · 1 participación semanal</p>
     </div>
 
-    <div class="track" id="track"></div>
+    <div class="plate card-pad" id="weekly-setup" style="margin:18px 0 24px"><p class="eyebrow">ANTES DE JUGAR · IDENTIFICA TU SALA</p><div class="cols"><label class="f"><span>Cadena</span><select class="f" id="trivia-chain"><option value="">Selecciona cadena</option><option>Easy</option><option>Sodimac</option><option>Punto Maestro</option></select></label><label class="f"><span>Tienda específica</span><input class="f" id="trivia-store" list="trivia-stores" placeholder="Ej. Easy Mall Arauco Maipú"><datalist id="trivia-stores"><option value="Easy Mall Arauco Maipú"><option value="Easy Costanera"><option value="Easy Maipú"><option value="Sodimac Maipú"><option value="Sodimac Cerrillos"><option value="Punto Maestro Quilicura"></datalist></label></div><p class="hint-line">Escribe el nombre real del local. Se guardará con el resultado para crear el ranking por tienda.</p><div id="weekly-status" class="alert" style="display:none;margin:14px 0"></div><button class="btn" id="btn-weekly-start">Comenzar trivia semanal · 10 preguntas</button></div><div class="track" id="track" style="display:none"></div>
 
     <div class="cols">
       <div class="plate card-pad">
@@ -680,11 +680,13 @@ textarea.f{min-height:76px;resize:vertical}
   <div class="wrap section">
     <div class="tabs">
       <button class="tab on" data-tab="crear">Crear desafío</button>
+      <button class="tab" data-tab="weekly">Trivia semanal</button>
       <button class="tab" data-tab="vend">Vendedores</button>
       <button class="tab" data-tab="datos">Analítica</button>
       <button class="tab" data-tab="resp">Datos</button>
     </div>
 
+    <div id="tab-weekly" style="display:none"><div class="plate card-pad"><p class="eyebrow">RESULTADOS · PENDIENTES DE VALIDACIÓN</p><p class="hint-line">Aprueba solo si presenciaste la trivia en sala. Los puntos se liberan únicamente al aprobar.</p><div id="trivia-pending">Cargando resultados…</div></div><div class="plate card-pad" style="margin-top:16px"><p class="eyebrow">RANKING SEMANAL · SOLO APROBADOS</p><div id="trivia-ranking">Cargando ranking…</div></div></div>
     <div id="tab-crear">
       <div class="plate card-pad">
         <p class="eyebrow">Nuevo desafío</p>
@@ -772,6 +774,7 @@ textarea.f{min-height:76px;resize:vertical}
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 /* ============================================================
    1 · CAPA DE DATOS
@@ -819,108 +822,41 @@ const API = {
   saveStats: async (st) => Store.set('master:stats', st)
 };
 const SUP_PIN = '6060';   /* clave del modo supervisor */
+const SUPABASE_URL='https://kasmvouglukwhbptieib.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY='sb_publishable_bHzbR3RbWVfNKP5fBXs-bw_81Nmxgf3';
+const quantyDb=window.supabase.createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
+let TRIVIA_ATTEMPT=null;
+function quantyWeekStart(){const d=new Date();d.setHours(12,0,0,0);d.setDate(d.getDate()-((d.getDay()+6)%7));return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function currentStore(){return {chain:$('#trivia-chain')?.value||'',store:$('#trivia-store')?.value.trim()||''};}
+function weeklyStatus(msg){const el=$('#weekly-status');if(!el)return;el.style.display='block';el.textContent=msg;}
+async function refreshWeeklyStatus(){if(!ME)return;const {data,error}=await quantyDb.rpc('quanty_my_week_status',{p_user_key:String(ME.id)});const row=Array.isArray(data)?data[0]:null;const btn=$('#btn-weekly-start');if(!btn)return;if(error){btn.disabled=false;weeklyStatus('No se pudo consultar el estado semanal. Comprueba la conexión.');return;}if(row){btn.disabled=true;btn.textContent='Trivia semanal ya enviada';const msg=row.status==='pendiente'?'Tu trivia quedó pendiente. El supervisor debe aprobarla.':row.status==='aprobado'?'Trivia aprobada. Tu resultado ya cuenta para el ranking semanal.':'Trivia rechazada. Esta participación ya fue revisada.';weeklyStatus(msg+(row.review_note?' Motivo: '+row.review_note:''));}else{btn.disabled=false;btn.textContent='Comenzar trivia semanal · 10 preguntas';weeklyStatus('Una sola participación por semana. El resultado no suma al ranking hasta la aprobación presencial.');}}
+async function startWeeklyTrivia(){if(!ME){nav('login');return;}const {chain,store}=currentStore();if(!chain||!store){weeklyStatus('Selecciona la cadena y escribe la tienda específica antes de comenzar.');return;}localStorage.setItem('quanty:store:'+ME.id,JSON.stringify({chain,store}));const {data,error}=await quantyDb.rpc('quanty_my_week_status',{p_user_key:String(ME.id)});if(error){weeklyStatus('No se pudo verificar la participación semanal. No iniciaré una trivia que no pueda registrar.');return;}if(Array.isArray(data)&&data.length){await refreshWeeklyStatus();return;}TRIVIA_ATTEMPT={chain,store};startQuiz(CH[0]);}
+function escapeHtml(v){return String(v??'').replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[ch]));}
+async function loadTriviaSupervisor(){const p=$('#trivia-pending'),r=$('#trivia-ranking');if(!p||!r)return;p.textContent='Consultando resultados…';r.textContent='Consultando ranking…';const pin=sessionStorage.getItem('quanty_supervisor_pin')||'';const {data,error}=await quantyDb.rpc('quanty_list_trivia',{p_pin:pin,p_status:'pendiente'});if(error){p.textContent='No se pudieron cargar las trivias. Vuelve a ingresar al panel de supervisor.';r.textContent='Ranking no disponible.';return;}if(!data?.length){p.innerHTML='<p class="hint-line">No hay resultados pendientes.</p>';}else p.innerHTML=data.map(a=>'<article class="plate card-pad" style="margin-top:12px"><p class="eyebrow">'+escapeHtml(a.chain)+' · '+escapeHtml(a.store_name)+'</p><h3>'+escapeHtml(a.seller_name)+'</h3><p><b>'+a.correct_count+'/10 correctas</b> · '+a.xp_requested+' XP solicitados</p><p class="hint-line">'+new Date(a.created_at).toLocaleString('es-CL')+'</p><div class="plan-foot"><button class="btn" data-trivia-review="aprobado" data-id="'+a.id+'">Aprobar</button><button class="btn ghost" data-trivia-review="rechazado" data-id="'+a.id+'">Rechazar</button></div></article>').join('');const {data:rank,error:rankErr}=await quantyDb.rpc('quanty_weekly_ranking',{p_pin:pin,p_week_start:quantyWeekStart()});if(rankErr){r.textContent='Ranking no disponible.';return;}if(!rank?.length){r.innerHTML='<p class="hint-line">El ranking aparecerá cuando haya trivias aprobadas esta semana.</p>';return;}const grouped={};rank.forEach(a=>{const key=a.chain+' · '+a.store_name;(grouped[key] ||= []).push(a);});r.innerHTML=Object.entries(grouped).map(([store,items])=>'<div style="margin:18px 0"><p class="eyebrow">'+escapeHtml(store)+'</p>'+items.map((a,i)=>'<div class="rank-row"><span class="rank-pos">'+(i+1)+'</span><span class="rank-name">'+escapeHtml(a.seller_name)+'</span><span class="rank-xp">'+a.approved_points+' XP · '+a.best_score+'/10</span></div>').join('')+'</div>').join('');}
+document.addEventListener('click',async e=>{const b=e.target.closest('[data-trivia-review]');if(!b)return;const decision=b.dataset.triviaReview;const note=decision==='rechazado'?prompt('Motivo del rechazo (obligatorio):'):'';if(decision==='rechazado'&&!note?.trim())return;b.disabled=true;const pin=sessionStorage.getItem('quanty_supervisor_pin')||'';const {error}=await quantyDb.rpc('quanty_review_trivia',{p_pin:pin,p_attempt_id:b.dataset.id,p_decision:decision,p_note:note||null});if(error){b.disabled=false;toast(error.message||'No se pudo revisar el resultado');return;}toast(decision==='aprobado'?'Trivia aprobada · puntos liberados':'Trivia rechazada');await loadTriviaSupervisor();});
+document.addEventListener('DOMContentLoaded',()=>{const b=$('#btn-weekly-start');if(b)b.addEventListener('click',startWeeklyTrivia);});
 const EMPTY_PROGRESS = () => ({xp:0, done:{}, badges:[], bestStreak:0, repasar:[]});
 
 /* ============================================================
    2 · CONTENIDO SEMILLA (editable desde Modo supervisor)
    ============================================================ */
-const SEED = [
- {id:'p1', area:'Producto', nombre:'Conóceme por dentro', categoria:'Taladro Reviva', producto:'Taladro atornillador Reviva',
-  descripcion:'Explora las cinco piezas del taladro y después demuestra que te quedó.',
-  piezas:[
-   {x:62, y:27, t:'Mandril sin llave',
-    d:'Cambia la broca con una mano, sin herramientas. Es lo primero que conviene hacerle probar al cliente en el mesón: se convence solo.'},
-   {x:43, y:26, t:'Motor y electrónica',
-    d:'Motor de alta eficiencia con control electrónico. Entrega más fuerza sin exigir de más la batería, y calienta menos en jornada larga.'},
-   {x:51, y:39, t:'Gatillo de velocidad variable',
-    d:'Mientras más lo presionas, más revoluciones. Deja partir lento para no pasarse de fuerza en material delgado ni arruinar la cabeza del tornillo.'},
-   {x:46, y:54, t:'Mango con goma antideslizante',
-    d:'Baja la vibración y el cansancio. Es el argumento para el cliente que la usa todo el día, que no compra por ficha técnica sino por comodidad.'},
-   {x:48, y:79, t:'Batería de litio 20V',
-    d:'Intercambiable con el resto de la línea. Aquí está la venta cruzada: si ya tiene otra herramienta, la batería le sirve y la próxima le sale más barata.'}
-  ],
+const SEED = [{
+  id:'tricolor-weekly', area:'Ventas', nombre:'Trivia semanal Tricolor', categoria:'Tricolor · Revor · FAST',
+  producto:'Esmalte al agua · venta consultiva',
+  descripcion:'Diez preguntas semanales. El resultado queda pendiente hasta que el supervisor valide que se realizó presencialmente en tienda.',
   preguntas:[
-   {t:'Un cliente pregunta por qué le conviene el mandril sin llave. ¿Qué le dices?', o:['Que aprieta la broca con más fuerza que uno normal','Que cambia la broca con una mano y sin herramientas','Que sirve para brocas más largas','Que dura más porque es de metal'], c:1,
-    e:'La gracia es la rapidez: cambia la broca con una mano, sin andar buscando la llave. Hazlo delante del cliente y se vende solo.'},
-   {t:'¿Para qué sirve el gatillo de velocidad variable?', o:['Para que la batería dure más','Para cambiar el sentido de giro','Para partir lento y no pasarse de fuerza en material delgado','Para bloquear la herramienta cuando no se usa'], c:2,
-    e:'Mientras más lo presionas, más revoluciones. Eso permite empezar suave y no arruinar el material ni la cabeza del tornillo.'},
-   {t:'Te toca subir el ticket promedio con este taladro. ¿Cuál es el mejor gancho?', o:['Que la batería le sirve para el resto de la línea','Que viene con maletín','Que tiene garantía','Que es la más liviana'], c:0,
-    e:'Si el cliente ya tiene o piensa comprar otra herramienta de la línea, la batería compartida arrastra la segunda venta. Ese es el argumento que vuelve a traerlo a la tienda.'},
-   {t:'Entra un maestro que trabaja jornada completa. ¿Qué le destacas primero?', o:['El color de la carcasa','El mango antideslizante, que baja vibración y cansancio','Que es de una marca conocida','Que tiene luz LED'], c:1,
-    e:'A quien la usa todo el día le pesa el cansancio antes que la ficha técnica. Ahí el mango y la vibración valen más que cualquier número.'},
-   {t:'¿Qué le aporta al usuario el control electrónico del motor?', o:['Que la herramienta pese menos','Más fuerza sin exigir de más la batería','Que perfore concreto sin percutor','Que no necesite carga'], c:1,
-    e:'El control electrónico administra la entrega de potencia: rinde más por carga y calienta menos. Es el argumento para el usuario intensivo.'}
-  ]},
- {id:'c1', area:'Producto', nombre:'Herramientas', categoria:'Fundamentos', producto:'Línea general',
-  descripcion:'Los datos básicos que se usan todos los días en el piso.',
-  preguntas:[
-   {t:'¿Qué indica el torque de una herramienta de atornillado?', o:['La velocidad de giro','La fuerza de rotación que entrega','El consumo de batería','El diámetro del mandril'], c:1,
-    e:'El torque es fuerza de giro y se mide en Nm o in-lbs. Más torque significa tornillos más largos o materiales más duros, no más velocidad.'},
-   {t:'Un cliente compara dos baterías de 20V: una de 2.0Ah y otra de 5.0Ah. ¿Qué cambia?', o:['La potencia entregada','La autonomía de trabajo','La velocidad máxima','El tipo de motor'], c:1,
-    e:'El voltaje define la potencia; los amperios-hora definen cuánto dura la carga. La de 5.0Ah trabaja más tiempo, no pega más fuerte.'},
-   {t:'¿Cuál es la ventaja real de un motor sin escobillas (brushless)?', o:['Pesa siempre menos','Más autonomía y menos mantención','Sirve para perforar concreto','No necesita carga'], c:1,
-    e:'Sin escobillas hay menos fricción: mejor aprovechamiento de la batería, menos calor y menos piezas de desgaste. Es el argumento para el usuario intensivo.'},
-   {t:'Un mandril de 13 mm frente a uno de 10 mm permite…', o:['Girar más rápido','Usar brocas de mayor diámetro','Trabajar sin cable','Duplicar el torque'], c:1,
-    e:'El mandril es la capacidad máxima de vástago que puede sujetar. 13 mm abre el rango de brocas y de trabajos posibles.'},
-   {t:'Un usuario ocasional duda entre dos marcas. ¿Qué argumento cierra mejor?', o:['Que la caja es más grande','Que la batería sirve para toda la plataforma de herramientas','Que tiene más accesorios de regalo','Que es la más vendida'], c:1,
-    e:'La plataforma de batería compartida es valor a futuro: la próxima herramienta le sale más barata. Ese es el gancho para volver a la tienda.'}
-  ]},
- {id:'c2', area:'Producto', nombre:'Taladros', categoria:'Herramienta eléctrica', producto:'Taladros percutores',
-  descripcion:'Diferencias, embrague, brocas y recomendación al cliente.',
-  preguntas:[
-   {t:'¿Qué diferencia a un taladro percutor de un atornillador/taladro común?', o:['Gira más rápido','Suma un golpeteo frontal para albañilería','Usa puntas hexagonales','No necesita mandril'], c:1,
-    e:'La percusión agrega miles de golpes por minuto en el eje de la broca. Es lo que permite entrar en ladrillo y concreto.'},
-   {t:'El collar numerado (embrague) del taladro sirve para…', o:['Elegir la velocidad','Limitar el torque y no pasar el tornillo','Bloquear el gatillo','Cambiar el giro'], c:1,
-    e:'El embrague corta la fuerza al llegar al número elegido. Evita hundir el tornillo en madera blanda o romper la cabeza.'},
-   {t:'Para perforar una muralla de concreto, la broca correcta es…', o:['HSS para metal','Con punta de widia (metal duro)','De pala para madera','Broca escalonada'], c:1,
-    e:'El concreto se pulveriza, no se corta: necesita punta de widia. Una broca de acero rápido se quema en los primeros centímetros.'},
-   {t:'La velocidad 1 del selector mecánico entrega…', o:['Más RPM y menos torque','Más torque y menos RPM','Lo mismo que la 2','Solo giro inverso'], c:1,
-    e:'Velocidad 1: torque para atornillar y brocas grandes. Velocidad 2: RPM para perforar rápido en diámetros chicos.'},
-   {t:'Un cliente quiere colgar repisas en concreto. ¿Qué le llevas?', o:['Solo el taladro','Percutor, broca de widia y tarugos','Atornillador y puntas','Taladro de banco'], c:1,
-    e:'Vender la solución completa evita que vuelva frustrado y sube las unidades por boleta. La broca y el tarugo son el complemento natural.'}
-  ]},
- {id:'c3', area:'Producto', nombre:'Impact drivers', categoria:'Herramienta eléctrica', producto:'Atornilladores de impacto',
-  descripcion:'Cuándo sí, cuándo no y cómo argumentarlo.',
-  preguntas:[
-   {t:'¿Cuál es la diferencia principal de un impact driver?', o:['Percute hacia adelante como el percutor','Entrega impactos rotacionales y mucho más torque','Solo funciona con cable','Sirve para perforar concreto'], c:1,
-    e:'El impacto es rotacional, no frontal. Por eso entrega torque muy alto sin que la muñeca reciba el contragolpe.'},
-   {t:'¿Qué encastre usa?', o:['Mandril de 13 mm','Hexagonal de 1/4"','SDS Plus','Rosca 1/2"'], c:1,
-    e:'Encastre hexagonal de 1/4" de cambio rápido. Por eso siempre se vende junto a un set de puntas compatibles.'},
-   {t:'¿En qué caso NO conviene recomendarlo?', o:['Tornillos largos en madera','Terrazas y estructuras','Trabajos de precisión o tornillos delicados','Montaje de tabiquería'], c:2,
-    e:'El impacto no tiene embrague fino: en herrajes o tornillos pequeños puede pasarse. Ahí conviene un atornillador con collar de torque.'},
-   {t:'El beneficio que más se nota para el usuario es…', o:['Que suena más fuerte','Menos esfuerzo de muñeca y tornillos largos sin pretaladrar','Que pesa más','Que reemplaza al percutor'], c:1,
-    e:'Es el argumento de venta que funciona: menos cansancio y más rendimiento en jornadas largas.'},
-   {t:'¿Cuál es el mejor combo para subir el ticket?', o:['Impact solo','Impact + set de puntas + segunda batería','Dos impacts','Impact + broca de widia'], c:1,
-    e:'Puntas y batería extra son consumo real e inmediato. Es el combo con mejor tasa de aceptación.'}
-  ]},
- {id:'c4', area:'Ventas', nombre:'Indicadores', categoria:'KPI de piso', producto:'Gestión comercial',
-  descripcion:'Los números con los que te miden y cómo moverlos.',
-  preguntas:[
-   {t:'¿Qué es el UPT?', o:['Utilidad por tienda','Unidades por transacción','Unidades por turno','Precio unitario promedio'], c:1,
-    e:'UPT = unidades vendidas ÷ número de boletas. Mide si estás vendiendo el complemento o solo lo que el cliente vino a buscar.'},
-   {t:'¿Cómo se calcula el ticket promedio?', o:['Venta total ÷ número de boletas','Venta total ÷ unidades','Boletas ÷ visitas','Meta ÷ días del mes'], c:0,
-    e:'Sube de dos formas: más unidades por boleta (UPT) o productos de mayor valor. Son dos conversaciones distintas con el cliente.'},
-   {t:'Tu tienda tiene mucho tráfico y pocas boletas. ¿Qué indicador está bajo?', o:['El UPT','La conversión','El ticket promedio','El margen'], c:1,
-    e:'Conversión = boletas ÷ visitas. Cuando está baja, el problema es el abordaje y la atención, no el precio.'},
-   {t:'Vendiste 40 unidades en 25 boletas. ¿Cuál es tu UPT?', o:['0,6','1,6','2,5','15'], c:1,
-    e:'40 ÷ 25 = 1,6 unidades por boleta. Es el número que más rápido se mueve ofreciendo un complemento en cada venta.'},
-   {t:'Tienes un producto estancado hace tres meses. ¿Qué haces primero?', o:['Pedir descuento de inmediato','Moverlo a un punto de alto tráfico y ofrecerlo como complemento','Devolverlo a bodega','Esperar a la campaña'], c:1,
-    e:'Primero exhibición y ofrecimiento activo: la mayoría de los estancados no se venden porque nadie los muestra. El descuento quema margen y es el último recurso.'}
-  ]},
- {id:'c5', area:'Ventas', nombre:'Técnica de venta', categoria:'Atención al cliente', producto:'Piso de venta',
-  descripcion:'Cómo se pregunta, se argumenta y se cierra.',
-  preguntas:[
-   {t:'¿Para qué sirve hablar de beneficios y no solo de características?', o:['Para hacer la explicación más larga','Para traducir el dato técnico en lo que el cliente gana','Para justificar el precio de lista','Para evitar preguntas'], c:1,
-    e:'"Motor brushless" es característica. "Te dura más la batería y no le haces mantención" es beneficio. El cliente compra el resultado, no la ficha técnica.'},
-   {t:'¿Qué es el parafraseo?', o:['Repetir el precio dos veces','Decir con tus palabras lo que el cliente te dijo para confirmar que entendiste','Recitar la ficha del producto','Cerrar con una pregunta de sí o no'], c:1,
-    e:'"Entonces necesitas perforar concreto y hoy no tienes taladro, ¿es así?" Confirma la necesidad, el cliente se siente escuchado y te deja el pie para recomendar.'},
-   {t:'El cliente dice "está muy caro". ¿Qué haces primero?', o:['Ofrecer descuento','Preguntar con qué lo está comparando','Mostrar el más barato','Repetir las características'], c:1,
-    e:'Casi siempre es percepción de valor, no de precio. Si no indagas, terminas bajando el precio en vez de subir el valor.'},
-   {t:'¿Cuál de estas es una pregunta abierta?', o:['¿Se lo envuelvo?','¿Para qué trabajo lo necesita?','¿Lo lleva hoy?','¿Tiene taladro?'], c:1,
-    e:'Las abiertas entregan información para recomendar. Las cerradas sirven al final, para confirmar y cerrar.'},
-   {t:'¿Cuándo conviene ofrecer el complemento?', o:['Al saludar','Cuando el cliente ya decidió el producto principal','Solo si lo pide','Al pasar por caja, sin explicar'], c:1,
-    e:'Antes de la decisión distrae; después se percibe como parte de la solución. Ahí es donde sube el UPT sin presionar.'}
-  ]}
+    {t:'¿Cuál es el foco comercial porcentual que debemos impulsar?',o:['50% de la venta en esmalte sintético','50% de la venta en esmalte al agua','50% de la venta en accesorios'],c:1,e:'El foco de trabajo comunicado es lograr que el 50% de la venta corresponda a esmalte al agua.'},
+    {t:'Antes de recomendar una pintura, ¿qué conviene averiguar?',o:['Superficie, uso y resultado que necesita el cliente','Solo el color que quiere','Qué envase es más grande'],c:0,e:'Diagnosticar superficie, uso y resultado ayuda a recomendar la solución correcta.'},
+    {t:'Si no recuerdas rendimiento o tiempo de secado, ¿qué haces?',o:['Das una cifra aproximada','Usas lo que recuerdas de otra marca','Confirmas la etiqueta o ficha técnica vigente'],c:2,e:'No inventes especificaciones. Confirma siempre la etiqueta o ficha técnica vigente.'},
+    {t:'¿Qué familia aparece en la estrategia de Easy?',o:['EA SB Pintamax Revor','Esmalte Sintético Brillante Revor','Solo Látex Extracubriente'],c:0,e:'EA SB Pintamax Revor aparece en la estrategia indicada para Easy.'},
+    {t:'¿Qué esmalte sintético de Revor figura en la estrategia de Sodimac/Homecenter?',o:['Esmalte Sintético Brillante Revor','EA SB Pintamax Revor','Látex Extracubriente Revor'],c:0,e:'La familia indicada para Sodimac/Homecenter es Esmalte Sintético Brillante Revor.'},
+    {t:'¿Cuándo es mejor presentar un producto complementario?',o:['Antes de entender el proyecto','Cuando aporta a la solución principal y puedes explicar por qué','Siempre, aunque no lo necesite'],c:1,e:'La venta complementaria debe resolver una necesidad real y aportar al resultado.'},
+    {t:'Si el cliente llega con prisa y pide “una pintura para la casa”, ¿qué pregunta ayuda más?',o:['¿Qué superficie va a pintar y dónde se encuentra?','¿Quiere el tarro más caro?','¿Le agrego cualquier accesorio?'],c:0,e:'Una pregunta concreta permite descubrir la superficie y el contexto antes de recomendar.'},
+    {t:'¿Qué haces si no estás seguro de que una familia corresponda a tu tienda?',o:['Recomiendas la que más recuerdas','Confirmas la estrategia vigente de esa cadena','Recomiendas la más conocida'],c:1,e:'La recomendación debe respetar la estrategia y el portafolio asignado a cada cadena.'},
+    {t:'¿Qué significa vender de manera consultiva?',o:['Hablar más que el cliente','Ofrecer siempre el mismo producto','Preguntar, escuchar y recomendar según la necesidad'],c:2,e:'La venta consultiva parte por escuchar y conectar la recomendación con el proyecto.'},
+    {t:'¿Cómo comprobamos el foco de 50% de esmalte al agua?',o:['Por intuición al mirar la sala','Midiendo la participación real en las ventas','Contando solo los envases exhibidos'],c:1,e:'El foco se valida con datos de venta, no solo con la percepción de la sala.'}
+  ]
+}];
 ];
 
 /* ---------- equipo de demostración ----------
@@ -1318,6 +1254,8 @@ $$('[data-tab]').forEach(t=>t.onclick=()=>{
   $$('[data-tab]').forEach(x=>x.classList.remove('on')); t.classList.add('on');
   const k=t.dataset.tab;
   $('#tab-crear').style.display = k==='crear'?'block':'none';
+  $('#tab-weekly').style.display = k==='weekly'?'block':'none';
+  if(k==='weekly') loadTriviaSupervisor();
   $('#tab-vend').style.display  = k==='vend' ?'block':'none';
   $('#tab-datos').style.display = k==='datos'?'block':'none';
   $('#tab-resp').style.display  = k==='resp' ?'block':'none';

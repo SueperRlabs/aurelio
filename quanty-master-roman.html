@@ -601,7 +601,7 @@ textarea.f{min-height:76px;resize:vertical}
     <div class="ticks" id="ticks"></div>
     <div class="master-row" style="margin-bottom:22px">
       <div class="master-pic"><svg class="avatar"><use href="#ico-master"/></svg></div>
-      <div class="bubble"><span class="who">QUANTY</span><span id="master-quiz">Son solo 5 preguntas.</span></div>
+      <div class="bubble"><span class="who">QUANTY</span><span id="master-quiz">Son 10 preguntas por semana. La trivia se valida con tu supervisor en sala.</span></div>
     </div>
     <p class="eyebrow" id="q-count">Pregunta 1 / 5</p>
     <p class="q-text" id="q-text"></p>
@@ -666,13 +666,13 @@ textarea.f{min-height:76px;resize:vertical}
     <div id="tab-crear">
       <div class="plate card-pad">
         <p class="eyebrow">Nuevo desafío</p>
-        <label class="f"><span>Nombre</span><input class="f" id="c-name" placeholder="Taladros percutores"></label>
+        <label class="f"><span>Nombre</span><input class="f" id="c-name" placeholder="Trivia semanal Tricolor"></label>
         <label class="f"><span>Área de la ruta</span>
           <select class="f" id="c-area">
             <option value="Producto">Conocimiento de producto</option>
             <option value="Ventas">Conocimiento de ventas</option>
           </select></label>
-        <label class="f"><span>Categoría</span><input class="f" id="c-cat" placeholder="Herramienta eléctrica · KPI de piso · Atención al cliente"></label>
+        <label class="f"><span>Categoría</span><input class="f" id="c-cat" placeholder="Esmalte al agua · portafolio Tricolor · venta consultiva"></label>
         <label class="f"><span>Producto</span><input class="f" id="c-prod" placeholder="Línea 20V MAX"></label>
         <label class="f"><span>Descripción</span><textarea class="f" id="c-desc" placeholder="Qué debe saber el vendedor al terminar este desafío."></textarea></label>
       </div>
@@ -888,12 +888,12 @@ const BADGES=[
   {id:'streak5', i:'🔥', t:'Racha de 5'},
   {id:'speed', i:'⚡', t:'Velocidad'},
   {id:'perfect', i:'🎯', t:'100%'},
-  {id:'tools', i:'🧠', t:'Experto en herramientas'},
+  {id:'tools', i:'🧠', t:'Experto en portafolio'},
   {id:'sales', i:'💬', t:'Piso de venta'},
   {id:'master', i:'👑', t:'Master'}
 ];
 const SAY={
-  intro:['Veamos cuánto sabes. Son solo 5 preguntas.','Sin apuro. Lee la pregunta completa antes de elegir.','Esta ronda vale XP. Concéntrate.'],
+  intro:['Veamos cuánto sabes. Son 10 preguntas y una sola participación semanal.','Sin apuro. Lee la pregunta completa antes de elegir.','Esta ronda vale XP. Concéntrate.'],
   ok:['Exacto. Esa es la característica que hay que explicarle al cliente.','Bien. Con ese dato ya puedes rebatir una objeción.','Correcto, y esa pregunta no es fácil.','Vas fino. Sigue así.'],
   bad:['Casi. Lee la explicación, esa se pregunta mucho en el piso.','No era esa. Pasa seguido, quédate con el porqué.','Falló, pero ahora te la sabes.'],
   tip:['Si un cliente pregunta por potencia, habla de torque; si pregunta por duración, habla de amperios-hora.','La segunda batería es el accesorio que menos se ofrece y más se necesita.','Cuando dudes, pregunta para qué material lo va a usar. Ahí está la venta.']
@@ -1056,7 +1056,7 @@ function renderPlan(){
     box.innerHTML=`<div class="fix"><span class="n" style="color:var(--ok)">✓</span><div>
       <span class="tag">${Q.ch.nombre}</span>
       <b>Respondiste las 5 correctas.</b>
-      <p>Este contenido ya lo puedes usar frente a un cliente. El siguiente desafío quedó desbloqueado.</p></div></div>`;
+      <p>Este contenido ya lo puedes aplicar frente al cliente. Sigue reforzando el foco comercial de la semana.</p></div></div>`;
     return;
   }
   $('#r-plan-title').textContent=`Qué reforzar · ${falladas.length} de 5`;

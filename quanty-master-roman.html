@@ -1530,6 +1530,53 @@ $('#pz-video').addEventListener('error', () => {
   toast('No se pudo cargar el despiece');
 });
 
+
+/* QUANTY · Ruleta rápida comercial */
+(function setupQuantyRoulette(){
+  const wheel=document.getElementById('roulette-wheel');
+  const spin=document.getElementById('btn-roulette-spin');
+  const again=document.getElementById('btn-roulette-reset');
+  const result=document.getElementById('roulette-result');
+  if(!wheel||!spin||!again||!result)return;
+  const challenges=[
+    {title:'Impulsa esmalte al agua',text:'Haz una pregunta para descubrir el uso y la superficie. Explica un beneficio relevante y busca que el esmalte al agua represente el foco del 50% de la venta.'},
+    {title:'Diagnostica antes de recomendar',text:'Pregunta dónde se aplicará, qué material es y qué resultado busca el cliente. Resume su necesidad antes de recomendar.'},
+    {title:'Resuelve una objeción',text:'Un cliente dice “está muy caro”. Pregunta qué está comparando y conecta la recomendación con el resultado que necesita, sin inventar atributos.'},
+    {title:'Conecta con Revor',text:'Identifica una necesidad compatible con el portafolio Revor. Confirma el producto y sus especificaciones en la ficha técnica vigente.'},
+    {title:'Activa FAST',text:'Practica una recomendación breve: necesidad del cliente, solución disponible y confirmación de la información técnica.'},
+    {title:'Sugiere una venta complementaria',text:'Después de entender el proyecto, identifica si necesita una preparación o complemento compatible. No agregues productos que no aporten al trabajo.'},
+    {title:'Asesora sobre color',text:'Pregunta dónde estará el color, qué ambiente busca y qué superficie pintará. Confirma disponibilidad y sistema de color antes de prometer.'},
+    {title:'Reto sorpresa',text:'En 30 segundos, simula la atención: saluda, haz dos preguntas de diagnóstico, recomienda una alternativa y confirma el siguiente paso.'}
+  ];
+  let rotation=0,busy=false;
+  spin.addEventListener('click',()=>{
+    if(busy)return;
+    busy=true;spin.disabled=true;again.disabled=true;
+    result.innerHTML='<strong>¡Girando…!</strong><p>Prepárate para tu próximo reto comercial.</p>';
+    const idx=Math.floor(Math.random()*challenges.length);
+    rotation+=360*5+(360-idx*45-22.5);
+    wheel.classList.add('spinning');
+    wheel.style.transform='rotate('+rotation+'deg)';
+    let completed=false;
+    const finish=()=>{
+      if(completed)return;
+      completed=true;
+      wheel.removeEventListener('transitionend',finish);
+      const item=challenges[idx];
+      result.innerHTML='<strong>'+item.title+'</strong><p>'+item.text+'</p>';
+      spin.disabled=false;again.disabled=false;busy=false;
+      if(typeof toast==='function')toast('Reto elegido: '+item.title);
+    };
+    wheel.addEventListener('transitionend',finish);
+    window.setTimeout(finish,4700);
+  });
+  again.addEventListener('click',()=>{
+    if(busy)return;
+    result.innerHTML='<strong>¿Listo para otro reto?</strong><p>Gira de nuevo para practicar otra situación de venta.</p>';
+    again.disabled=true;
+  });
+})();
+
 (async function init(){
   CH=SEED;
   await API.saveChallenges(CH);

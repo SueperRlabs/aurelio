@@ -422,6 +422,29 @@ textarea.f{min-height:76px;resize:vertical}
 .roulette-note{font-size:12px;color:var(--muted,#a6adb6);line-height:1.5;margin-top:13px}
 @media(max-width:700px){.roulette-layout{grid-template-columns:1fr}.roulette-stage{width:min(82vw,310px)}.roulette-side{text-align:center}.roulette-controls{justify-content:center}.roulette-result{text-align:left}}
 
+
+/* QUANTY · Liga de tiendas y duelos (prototipo presentable) */
+.league-grid{display:grid;grid-template-columns:1fr;gap:14px;margin:22px 0}
+@media(min-width:820px){.league-grid{grid-template-columns:1fr 1fr}}
+.league-card{padding:20px;background:linear-gradient(160deg,#20252d,#12151a);border:1px solid var(--edge);border-radius:14px}
+.league-card h3{font-size:22px;line-height:1.1;margin:7px 0}
+.league-card p{color:var(--muted);margin:7px 0}
+.league-card .f{display:block;width:100%;margin-top:8px;background:#101419;border:1px solid var(--edge);color:var(--paper);border-radius:9px;padding:11px;font:inherit}
+.league-card input[type=file]{font-size:13px}
+.league-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:12px}
+.league-kpi{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.league-kpi span{border:1px solid var(--edge);border-radius:8px;padding:7px 9px;font:11px var(--mono);color:var(--muted)}
+.league-kpi b{color:var(--amber)}
+.league-list-row{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid #2a3038}
+.league-list-row:last-child{border-bottom:0}
+.league-place{font:22px var(--display);width:30px;color:var(--amber)}
+.league-list-row .league-name{font-weight:700;flex:1}
+.league-list-row small{display:block;color:var(--muted);font-size:12px}
+.league-points{font:12px var(--mono);text-align:right;color:var(--blueprint)}
+.league-status{margin-top:10px;color:var(--blueprint);font-size:13px;min-height:20px}
+.duel-badge{display:inline-block;border:1px solid #8c6bd8;color:#c4adff;border-radius:20px;padding:4px 9px;font:10px var(--mono);letter-spacing:.1em}
+#league-photo-preview{max-height:180px;object-fit:contain;border-radius:10px;margin-top:10px;display:none;border:1px solid var(--edge)}
+
 </style>
 <link rel="stylesheet" href="quanty-master-assets/roman.css">
 </head>
@@ -573,6 +596,49 @@ textarea.f{min-height:76px;resize:vertical}
   </div>
 </section>
 
+    
+<section class="league-grid" aria-label="Liga comercial Quanty">
+  <article class="league-card">
+    <p class="eyebrow">01 · EJECUCIÓN EN SALA <b>+ PUNTOS TIENDA</b></p>
+    <h3>Foto de la semana</h3>
+    <p>Una evidencia por punto de venta, aunque trabajen varios vendedores. El supervisor valida antes de asignar puntos.</p>
+    <label class="f">Cadena
+      <select class="f" id="league-chain"><option value="">Selecciona cadena</option><option>Easy</option><option>Sodimac</option><option>Punto Maestro</option></select>
+    </label>
+    <label class="f">Punto de venta
+      <input class="f" id="league-store" placeholder="Ej. Easy Mall Arauco Maipú">
+    </label>
+    <label class="f">Foto del local ordenado
+      <input class="f" id="league-photo" type="file" accept="image/*" capture="environment">
+    </label>
+    <img id="league-photo-preview" alt="Vista previa de evidencia del punto de venta">
+    <div class="league-kpi"><span>ORDEN + EXHIBICIÓN</span><span>PRECIOS VISIBLES</span><span>1 ENVÍO / SEMANA</span></div>
+    <div class="league-actions"><button class="btn small" id="league-submit-photo" type="button">Enviar evidencia</button></div>
+    <div class="league-status" id="league-photo-status" aria-live="polite"></div>
+  </article>
+  <article class="league-card">
+    <p class="eyebrow">02 · COMPETENCIA <b>VENDEDOR VS VENDEDOR</b></p>
+    <h3>Desafía a un compañero</h3>
+    <p>Duelo relámpago de 5 preguntas de producto y venta. Más aciertos gana; el tiempo válido desempata. Sin castigos a ventas ni a la tienda.</p>
+    <label class="f">Tu vendedor
+      <input class="f" id="duel-player" placeholder="Tu nombre">
+    </label>
+    <label class="f">Rival
+      <input class="f" id="duel-opponent" placeholder="Nombre del rival">
+    </label>
+    <div class="league-actions"><button class="btn small" id="duel-start" type="button">Iniciar duelo demo</button></div>
+    <div id="duel-play" style="display:none;margin-top:14px"></div>
+    <div class="league-status" id="duel-status" aria-live="polite">El duelo de presentación simula ambos resultados para mostrar la dinámica.</div>
+  </article>
+</section>
+<section class="plate card-pad" style="margin:20px 0 26px">
+  <div class="map-head" style="margin-bottom:10px"><div><p class="eyebrow">LIGA QUANTY · SEMANA ACTUAL</p><h2 class="h-sec">Ranking de tiendas</h2></div><span class="chip">Ejecución + crecimiento</span></div>
+  <p class="sub" style="font-size:15px">La clasificación de demostración combina ejecución en sala y crecimiento de ventas. Los porcentajes de ventas deben cargarse con datos comparables.</p>
+  <div class="league-kpi"><span>VENTAS <b>40%</b></span><span>ORDEN <b>25%</b></span><span>PRECIOS <b>20%</b></span><span>QUIZ EQUIPO <b>15%</b></span></div>
+  <div id="league-store-ranking" style="margin-top:12px"></div>
+  <p class="hint-line">Demo visual: las cifras de tiendas marcadas como ejemplo no son ventas reales ni resultados oficiales.</p>
+</section>
+
     <div class="cols">
       <div class="plate card-pad">
         <p class="eyebrow">INSIGNIAS · <b id="badge-count">0/6</b></p>
@@ -698,13 +764,39 @@ textarea.f{min-height:76px;resize:vertical}
   <div class="wrap section">
     <div class="tabs">
       <button class="tab on" data-tab="crear">Crear desafío</button>
-      <button class="tab" data-tab="weekly">Trivia semanal</button>
+      <button class="tab" data-tab="weekly">Trivia semanal</button><button class="tab" data-tab="tiendas">Liga de tiendas</button>
       <button class="tab" data-tab="vend">Vendedores</button>
       <button class="tab" data-tab="datos">Analítica</button>
       <button class="tab" data-tab="resp">Datos</button>
     </div>
 
     <div id="tab-weekly" style="display:none"><div class="plate card-pad"><p class="eyebrow">RESULTADOS · PENDIENTES DE VALIDACIÓN</p><p class="hint-line">Aprueba solo si presenciaste la trivia en sala. Los puntos se liberan únicamente al aprobar.</p><div id="trivia-pending">Cargando resultados…</div></div><div class="plate card-pad" style="margin-top:16px"><p class="eyebrow">RANKING SEMANAL · SOLO APROBADOS</p><div id="trivia-ranking">Cargando ranking…</div></div></div>
+    
+<div id="tab-tiendas" style="display:none">
+  <div class="plate card-pad">
+    <p class="eyebrow">CONFIGURACIÓN DE LA LIGA · SUPERVISOR</p>
+    <h2 class="h-sec" style="font-size:30px;margin:8px 0">Ventas y ejecución</h2>
+    <p class="hint-line">Carga la variación porcentual de ventas contra un período comparable y revisa las evidencias. Este panel guarda datos en este navegador para la presentación; aún no sincroniza estos módulos entre dispositivos.</p>
+    <div class="cols">
+      <label class="f"><span>Cadena</span><select class="f" id="sup-store-chain"><option>Easy</option><option>Sodimac</option><option>Punto Maestro</option></select></label>
+      <label class="f"><span>Tienda</span><input class="f" id="sup-store-name" placeholder="Ej. Easy Maipú"></label>
+      <label class="f"><span>Crecimiento de ventas (%)</span><input class="f" id="sup-sales-growth" type="number" step="0.1" placeholder="Ej. 8.5"></label>
+      <label class="f"><span>Precios correctos y visibles (%)</span><input class="f" id="sup-price-score" type="number" min="0" max="100" step="1" placeholder="Ej. 95"></label>
+      <label class="f"><span>Conocimiento del equipo (%)</span><input class="f" id="sup-quiz-score" type="number" min="0" max="100" step="1" placeholder="Ej. 80"></label>
+      <label class="f"><span>Nota de supervisión</span><input class="f" id="sup-store-note" placeholder="Acción acordada / observación"></label>
+    </div>
+    <div class="league-actions"><button class="btn" id="sup-save-store" type="button">Guardar evaluación</button></div>
+    <div class="league-status" id="sup-store-status"></div>
+  </div>
+  <div class="plate card-pad" style="margin-top:16px">
+    <p class="eyebrow">EVIDENCIAS FOTOGRÁFICAS</p>
+    <div id="sup-photo-queue"><p class="hint-line">Todavía no hay evidencias enviadas en este navegador.</p></div>
+  </div>
+  <div class="plate card-pad" style="margin-top:16px">
+    <p class="eyebrow">TOP 3 · CRECIMIENTO DE VENTAS</p>
+    <div id="sup-top-sales"></div>
+  </div>
+</div>
     <div id="tab-crear">
       <div class="plate card-pad">
         <p class="eyebrow">Nuevo desafío</p>
@@ -1530,6 +1622,47 @@ $('#pz-video').addEventListener('error', () => {
   toast('No se pudo cargar el despiece');
 });
 
+
+
+/* QUANTY · Liga de tiendas, evidencia semanal y duelo demostrativo */
+(function quantyLeague(){
+ const $q=s=>document.querySelector(s);
+ const read=(k,fallback)=>{try{return JSON.parse(localStorage.getItem(k))??fallback}catch(e){return fallback}};
+ const write=(k,v)=>{try{localStorage.setItem(k,JSON.stringify(v));return true}catch(e){return false}};
+ let stores=read('quanty:league:stores',[
+  {chain:'Easy',name:'Easy Maipú',growth:8.4,prices:94,quiz:86,order:90,example:true},
+  {chain:'Sodimac',name:'Sodimac Cerrillos',growth:5.7,prices:98,quiz:82,order:95,example:true},
+  {chain:'Punto Maestro',name:'Punto Maestro Quilicura',growth:11.2,prices:88,quiz:78,order:82,example:true}
+ ]);
+ let photos=read('quanty:league:photos',[]);
+ const weights={growth:.4,order:.25,prices:.2,quiz:.15};
+ function score(s){const growthScore=Math.max(0,Math.min(100,50+(Number(s.growth)||0)*5));return Math.round(growthScore*weights.growth+(Number(s.order??0))*weights.order+(Number(s.prices??0))*weights.prices+(Number(s.quiz??0))*weights.quiz)}
+ function esc(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
+ function renderRanking(){
+  const list=$q('#league-store-ranking');if(!list)return;
+  list.innerHTML=[...stores].sort((a,b)=>score(b)-score(a)).map((s,i)=>'<div class="league-list-row"><span class="league-place">'+(['🥇','🥈','🥉'][i]||String(i+1))+'</span><span class="league-name">'+esc(s.name)+'<small>'+esc(s.chain)+(s.example?' · DATOS DE EJEMPLO':'')+'</small></span><span class="league-points">'+score(s)+' pts<small>'+((Number(s.growth)||0)>0?'+':'')+(Number(s.growth)||0).toFixed(1)+'% ventas</small></span></div>').join('')||'<p class="hint-line">Aún no hay tiendas evaluadas.</p>';
+  const top=$q('#sup-top-sales');if(top)top.innerHTML=[...stores].sort((a,b)=>(Number(b.growth)||0)-(Number(a.growth)||0)).slice(0,3).map((s,i)=>'<div class="league-list-row"><span class="league-place">'+(i+1)+'</span><span class="league-name">'+esc(s.name)+'<small>'+esc(s.chain)+'</small></span><span class="league-points">'+((Number(s.growth)||0)>0?'+':'')+(Number(s.growth)||0).toFixed(1)+'%</span></div>').join('')||'<p class="hint-line">Carga resultados para mostrar el Top 3.</p>';
+  const queue=$q('#sup-photo-queue');if(queue)queue.innerHTML=photos.length?photos.map((p,i)=>'<div class="league-list-row"><span class="league-place">📷</span><span class="league-name">'+esc(p.store)+'<small>'+esc(p.chain)+' · '+esc(p.date)+' · '+esc(p.seller)+'</small><small>Estado: '+esc(p.status)+'</small></span><span class="league-actions"><button class="btn small" data-photo-review="approved" data-photo-id="'+i+'">Aprobar</button><button class="btn ghost small" data-photo-review="rejected" data-photo-id="'+i+'">Rechazar</button></span></div>').join(''):'<p class="hint-line">Todavía no hay evidencias enviadas en este navegador.</p>';
+ }
+ const photo=$q('#league-photo'),preview=$q('#league-photo-preview');
+ if(photo)photo.addEventListener('change',()=>{const f=photo.files?.[0];if(!f)return;if(!f.type.startsWith('image/')){photo.value='';return}if(f.size>8*1024*1024){$q('#league-photo-status').textContent='La foto supera 8 MB. Elige una imagen más liviana.';photo.value='';return}const rd=new FileReader();rd.onload=()=>{preview.src=rd.result;preview.style.display='block'};rd.readAsDataURL(f)});
+ const submit=$q('#league-submit-photo');
+ if(submit)submit.addEventListener('click',()=>{const chain=$q('#league-chain').value,store=$q('#league-store').value.trim(),f=photo?.files?.[0];const out=$q('#league-photo-status');if(!chain||!store||!f){out.textContent='Completa cadena, punto de venta y adjunta una foto.';return}const week=new Date();const key=week.getFullYear()+'-W'+Math.ceil((((week-new Date(week.getFullYear(),0,1))/86400000)+new Date(week.getFullYear(),0,1).getDay()+1)/7);if(photos.some(p=>p.store.toLowerCase()===store.toLowerCase()&&p.chain===chain&&p.week===key)){out.textContent='Este punto de venta ya envió una evidencia esta semana.';return}photos.push({chain,store,week,date:new Date().toLocaleDateString('es-CL'),seller:window.ME?.nombre||$q('#duel-player')?.value.trim()||'Vendedor/a',status:'Pendiente de revisión',fileName:f.name});write('quanty:league:photos',photos);out.textContent='Evidencia registrada para revisión del supervisor. No suma puntos hasta ser aprobada.';photo.value='';preview.style.display='none';renderRanking()});
+ const save=$q('#sup-save-store');
+ if(save)save.addEventListener('click',()=>{const chain=$q('#sup-store-chain').value,name=$q('#sup-store-name').value.trim(),growth=Number($q('#sup-sales-growth').value),prices=Number($q('#sup-price-score').value),quiz=Number($q('#sup-quiz-score').value);const out=$q('#sup-store-status');if(!name||$q('#sup-sales-growth').value===''||$q('#sup-price-score').value===''||$q('#sup-quiz-score').value===''){out.textContent='Completa tienda, crecimiento de ventas, precios y conocimiento.';return}if(prices<0||prices>100||quiz<0||quiz>100){out.textContent='Precios y quiz deben estar entre 0 y 100.';return}const old=stores.findIndex(s=>s.name.toLowerCase()===name.toLowerCase()&&s.chain===chain);const entry={chain,name,growth,prices,quiz,order:old>=0?stores[old].order:0,example:false,note:$q('#sup-store-note').value.trim()};if(old>=0)stores[old]=entry;else stores.push(entry);write('quanty:league:stores',stores);out.textContent='Evaluación guardada. Ranking y Top 3 actualizados.';renderRanking()});
+ document.addEventListener('click',e=>{const b=e.target.closest('[data-photo-review]');if(!b)return;const p=photos[Number(b.dataset.photoId)];if(!p)return;p.status=b.dataset.photoReview==='approved'?'Aprobada · puntos de ejecución habilitados':'Rechazada · requiere nueva evidencia';write('quanty:league:photos',photos);if(p.status.startsWith('Aprobada')){const s=stores.find(x=>x.chain===p.chain&&x.name.toLowerCase()===p.store.toLowerCase());if(s){s.order=Math.min(100,(Number(s.order)||0)+5);write('quanty:league:stores',stores)}}renderRanking()});
+ const duelStart=$q('#duel-start'),play=$q('#duel-play');
+ const qs=[
+  {q:'¿Cuál es el foco comercial comunicado para esmalte al agua?',a:['50% de la venta','Solo venta de accesorios','No hay foco'],ok:0},
+  {q:'Antes de recomendar pintura, ¿qué debes diagnosticar?',a:['Solo el precio','Superficie, uso y resultado esperado','Solo el color'],ok:1},
+  {q:'Si no recuerdas el rendimiento, ¿qué haces?',a:['Lo estimas','Prometes lo que recuerdas','Revisas la ficha técnica vigente'],ok:2},
+  {q:'¿Cómo abordas una objeción de precio?',a:['Escuchas qué compara y conectas con su necesidad','Desacreditas otra marca','Bajas precio sin preguntar'],ok:0},
+  {q:'¿Qué debe respaldar una recomendación de producto?',a:['Una suposición','La necesidad del cliente y la información técnica','Solo la promoción'],ok:1}
+ ];
+ if(duelStart)duelStart.addEventListener('click',()=>{const a=$q('#duel-player').value.trim(),b=$q('#duel-opponent').value.trim();if(!a||!b||a.toLowerCase()===b.toLowerCase()){$q('#duel-status').textContent='Escribe dos nombres distintos para iniciar el duelo.';return}let i=0,answers=[];const began=performance.now();play.style.display='block';duelStart.disabled=true;function show(){if(i>=qs.length){const time=((performance.now()-began)/1000).toFixed(1);const correct=answers.filter(Boolean).length;const opponentCorrect=Math.max(0,Math.min(5,correct+(Math.random()>.5?1:-1)));const win=correct===opponentCorrect?'Empate':correct>opponentCorrect?a:b;$q('#duel-status').textContent='Resultado de demostración: '+a+' '+correct+'/5 · '+time+' s | '+b+' '+opponentCorrect+'/5. '+(win==='Empate'?'¡Empate!':'Ganador simulado: '+win)+'.';play.innerHTML='<div class="league-kpi"><span>'+esc(a)+': <b>'+correct+'/5</b></span><span>'+esc(b)+': <b>'+opponentCorrect+'/5</b></span></div><p class="hint-line">Modo demostración: el segundo marcador es simulado. Para competencia oficial, ambos deben responder individualmente y con el mismo cronómetro.</p><button class="btn ghost small" id="duel-again" type="button">Nuevo duelo</button>';$q('#duel-again').onclick=()=>{duelStart.disabled=false;play.style.display='none';$q('#duel-status').textContent='Listo para un nuevo reto.'};return}const q=qs[i];play.innerHTML='<p class="eyebrow">PREGUNTA '+(i+1)+' / '+qs.length+'</p><h3 style="font-size:22px;margin:8px 0 12px">'+q.q+'</h3><div class="opts">'+q.a.map((v,j)=>'<button class="opt" data-duel-answer="'+j+'"><span class="key">'+String.fromCharCode(65+j)+'</span>'+v+'</button>').join('')+'</div>';play.querySelectorAll('[data-duel-answer]').forEach(btn=>btn.onclick=()=>{answers.push(Number(btn.dataset.duelAnswer)===q.ok);i++;show()})}show()});
+ renderRanking();
+ document.querySelectorAll('[data-tab]').forEach(t=>{if(t.dataset.tab==='tiendas')t.addEventListener('click',renderRanking)});
+})();
 
 /* QUANTY · Ruleta rápida comercial */
 (function setupQuantyRoulette(){

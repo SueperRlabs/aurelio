@@ -831,7 +831,7 @@ function currentStore(){return {chain:$('#trivia-chain')?.value||'',store:$('#tr
 function weeklyStatus(msg){const el=$('#weekly-status');if(!el)return;el.style.display='block';el.textContent=msg;}
 async function refreshWeeklyStatus(){if(!ME)return;const {data,error}=await quantyDb.rpc('quanty_my_week_status',{p_user_key:String(ME.id)});const row=Array.isArray(data)?data[0]:null;const btn=$('#btn-weekly-start');if(!btn)return;if(error){btn.disabled=false;weeklyStatus('No se pudo consultar el estado semanal. Comprueba la conexión.');return;}if(row){btn.disabled=true;btn.textContent='Trivia semanal ya enviada';const msg=row.status==='pendiente'?'Tu trivia quedó pendiente. El supervisor debe aprobarla.':row.status==='aprobado'?'Trivia aprobada. Tu resultado ya cuenta para el ranking semanal.':'Trivia rechazada. Esta participación ya fue revisada.';weeklyStatus(msg+(row.review_note?' Motivo: '+row.review_note:''));}else{btn.disabled=false;btn.textContent='Comenzar trivia semanal · 10 preguntas';weeklyStatus('Una sola participación por semana. El resultado no suma al ranking hasta la aprobación presencial.');}}
 async function startWeeklyTrivia(){if(!ME){nav('login');return;}const {chain,store}=currentStore();if(!chain||!store){weeklyStatus('Selecciona la cadena y escribe la tienda específica antes de comenzar.');return;}localStorage.setItem('quanty:store:'+ME.id,JSON.stringify({chain,store}));const {data,error}=await quantyDb.rpc('quanty_my_week_status',{p_user_key:String(ME.id)});if(error){weeklyStatus('No se pudo verificar la participación semanal. No iniciaré una trivia que no pueda registrar.');return;}if(Array.isArray(data)&&data.length){await refreshWeeklyStatus();return;}TRIVIA_ATTEMPT={chain,store};startQuiz(CH[0]);}
-function escapeHtml(v){return String(v??'').replace(/[&<>\"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#39;'}[ch]));}
+function escapeHtml(v){return String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\"/g,'&quot;').replace(/'/g,'&#39;');}
 async function loadTriviaSupervisor(){const p=$('#trivia-pending'),r=$('#trivia-ranking');if(!p||!r)return;p.textContent='Consultando resultados…';r.textContent='Consultando ranking…';const pin=sessionStorage.getItem('quanty_supervisor_pin')||'';const {data,error}=await quantyDb.rpc('quanty_list_trivia',{p_pin:pin,p_status:'pendiente'});if(error){p.textContent='No se pudieron cargar las trivias. Vuelve a ingresar al panel de supervisor.';r.textContent='Ranking no disponible.';return;}if(!data?.length){p.innerHTML='<p class="hint-line">No hay resultados pendientes.</p>';}else p.innerHTML=data.map(a=>'<article class="plate card-pad" style="margin-top:12px"><p class="eyebrow">'+escapeHtml(a.chain)+' · '+escapeHtml(a.store_name)+'</p><h3>'+escapeHtml(a.seller_name)+'</h3><p><b>'+a.correct_count+'/10 correctas</b> · '+a.xp_requested+' XP solicitados</p><p class="hint-line">'+new Date(a.created_at).toLocaleString('es-CL')+'</p><div class="plan-foot"><button class="btn" data-trivia-review="aprobado" data-id="'+a.id+'">Aprobar</button><button class="btn ghost" data-trivia-review="rechazado" data-id="'+a.id+'">Rechazar</button></div></article>').join('');const {data:rank,error:rankErr}=await quantyDb.rpc('quanty_weekly_ranking',{p_pin:pin,p_week_start:quantyWeekStart()});if(rankErr){r.textContent='Ranking no disponible.';return;}if(!rank?.length){r.innerHTML='<p class="hint-line">El ranking aparecerá cuando haya trivias aprobadas esta semana.</p>';return;}const grouped={};rank.forEach(a=>{const key=a.chain+' · '+a.store_name;(grouped[key] ||= []).push(a);});r.innerHTML=Object.entries(grouped).map(([store,items])=>'<div style="margin:18px 0"><p class="eyebrow">'+escapeHtml(store)+'</p>'+items.map((a,i)=>'<div class="rank-row"><span class="rank-pos">'+(i+1)+'</span><span class="rank-name">'+escapeHtml(a.seller_name)+'</span><span class="rank-xp">'+a.approved_points+' XP · '+a.best_score+'/10</span></div>').join('')+'</div>').join('');}
 document.addEventListener('click',async e=>{const b=e.target.closest('[data-trivia-review]');if(!b)return;const decision=b.dataset.triviaReview;const note=decision==='rechazado'?prompt('Motivo del rechazo (obligatorio):'):'';if(decision==='rechazado'&&!note?.trim())return;b.disabled=true;const pin=sessionStorage.getItem('quanty_supervisor_pin')||'';const {error}=await quantyDb.rpc('quanty_review_trivia',{p_pin:pin,p_attempt_id:b.dataset.id,p_decision:decision,p_note:note||null});if(error){b.disabled=false;toast(error.message||'No se pudo revisar el resultado');return;}toast(decision==='aprobado'?'Trivia aprobada · puntos liberados':'Trivia rechazada');await loadTriviaSupervisor();});
 document.addEventListener('DOMContentLoaded',()=>{const b=$('#btn-weekly-start');if(b)b.addEventListener('click',startWeeklyTrivia);});
@@ -946,7 +946,7 @@ function nav(id){
   window.scrollTo(0,0);
   if(window.ScrollTrigger) ScrollTrigger.refresh();
   if(id==='map') renderMap();
-  if(id==='sup'){ renderUsers(); renderAnalytics(); }
+  if(id==='sup'){ renderUsers(); renderAnalytics(); loadTriviaSupervisor(); }
 }
 function renderHUD(){
   const lv=levelOf(P.xp), cur=LEVELS[lv-1], next=LEVELS[lv]||{xp:cur.xp};
@@ -960,60 +960,15 @@ function renderHUD(){
 }
 function renderMap(){
   renderHUD();
-  const track=$('#track'); track.innerHTML='';
-  const areas=[...new Set(CH.map(c=>c.area||'Producto'))];
-  areas.forEach(area=>{
-    const list=CH.filter(c=>(c.area||'Producto')===area);
-    track.insertAdjacentHTML('beforeend',
-      `<div class="area-head"><h3>${area==='Ventas'?'Conocimiento de ventas':'Conocimiento de producto'}</h3><span class="rule"></span></div>`);
-    list.forEach((c,i)=>{
-      const done=!!P.done[c.id];
-      /* los capítulos con piezas quedan siempre abiertos; la cadena la siguen formando los demás */
-      const cadena=list.slice(0,i).filter(x=>!x.piezas);
-      const previo=cadena[cadena.length-1];
-      const open = !!c.piezas || !previo || !!P.done[previo.id];
-      if(i>0){ const l=document.createElement('div'); l.className='node-link'+((list[i-1].piezas||P.done[list[i-1].id])?' done':''); track.appendChild(l); }
-      const b=document.createElement('button');
-      b.className='node'+(done?' done':'')+(!open?' locked':(done?'':' open'));
-      b.disabled=!open;
-      b.innerHTML=`<span class="bolt">${done?'✓':(open?'▶':'🔒')}</span>
-        <span class="node-body">
-          <span class="node-title">${c.nombre}</span>
-          <span class="node-meta">${c.categoria} · ${c.piezas ? c.piezas.length+' piezas + 5 preguntas' : '5 preguntas'}</span>
-        </span>
-        ${done?`<span class="node-score">${P.done[c.id].correctas}/5</span>`:''}`;
-      b.onclick=()=>{ if(open) (c.piezas ? startPiezas(c) : startQuiz(c)); };
-      track.appendChild(b);
-    });
-  });
-  $('#map-progress').textContent=`${Object.keys(P.done).length} de ${CH.length}`;
-
-  const bg=$('#badges'); bg.innerHTML='';
-  BADGES.forEach(b=>{
-    const on=P.badges.includes(b.id);
-    bg.insertAdjacentHTML('beforeend',`<div class="badge${on?' on':''}"><i>${b.i}</i><span>${b.t}</span></div>`);
-  });
-  $('#badge-count').textContent=`${P.badges.length}/${BADGES.length}`;
-  renderReview();
-
-  const list=USERS.filter(u=>u.rol==='vendedor')
-    .map(u=>({n:u.nombre, xp:u.progreso.xp, me:ME && u.id===ME.id}))
-    .sort((a,b)=>b.xp-a.xp);
-  $('#rank').innerHTML=list.map((r,i)=>`
-    <div class="rank-row${r.me?' me':''}">
-      <span class="rank-pos">${i+1}</span>
-      <span class="rank-name">${r.me?'Tú · '+r.n.split(' ')[0]:r.n}</span>
-      <span class="stars">${i<3?'★'.repeat(3-i):''}</span>
-      <span class="rank-xp">${r.xp} XP</span>
-    </div>`).join('');
-
-  const pend=CH.length-Object.keys(P.done).length;
-  const nombre=ME?ME.nombre.split(' ')[0]:'';
-  $('#master-map').textContent = pend===0
-    ? 'Completaste toda la ruta. Pídele a tu supervisor que publique un desafío nuevo.'
-    : (Object.keys(P.done).length===0
-        ? `¡Hola ${nombre}! Soy Master. ¿Listo para poner a prueba tus conocimientos?`
-        : `Te quedan ${pend} desafío${pend>1?'s':''}. El siguiente ya está desbloqueado.`);
+  const saved=ME?JSON.parse(localStorage.getItem('quanty:store:'+ME.id)||'null'):null;
+  if(saved){$('#trivia-chain').value=saved.chain||'';$('#trivia-store').value=saved.store||'';}
+  $('#track').innerHTML='';
+  $('#map-progress').textContent='Trivia semanal';
+  $('#badges').innerHTML='<div class="badge on"><i>🎨</i><span>Tricolor · Revor · FAST</span></div>';
+  $('#badge-count').textContent='Semanal';
+  $('#rank').innerHTML='<p class="hint-line">El ranking se calcula por tienda y solo con trivias aprobadas por el supervisor.</p>';
+  $('#master-map').textContent='Elige tu cadena y tienda. La trivia se realiza una vez por semana en presencia del supervisor.';
+  refreshWeeklyStatus();
 }
 const pick = a => a[Math.floor(Math.random()*a.length)];
 
@@ -1022,7 +977,7 @@ const pick = a => a[Math.floor(Math.random()*a.length)];
    ============================================================ */
 let Q={ch:null,i:0,ok:0,streak:0,best:0,xp:0,t0:0,answered:false};
 function startQuiz(ch){
-  Q={ch,i:0,ok:0,streak:0,best:0,xp:0,t0:Date.now(),answered:false};
+  Q={ch,i:0,ok:0,streak:0,best:0,xp:0,t0:Date.now(),answered:false,marks:{},answers:[]};
   $('#q-cat').textContent=ch.categoria;
   $('#q-title').textContent=ch.nombre;
   $('#master-quiz').textContent=pick(SAY.intro);
@@ -1032,7 +987,7 @@ function renderQ(){
   const q=Q.ch.preguntas[Q.i];
   $('#ticks').innerHTML=Q.ch.preguntas.map((_,i)=>
     `<span class="tick${i<Q.i?(Q.marks&&Q.marks[i]?'ok':'bad'):(i===Q.i?' now':'')}"></span>`).join('');
-  $('#q-count').textContent=`Pregunta ${Q.i+1} / 5`;
+  $('#q-count').textContent=`Pregunta ${Q.i+1} / ${Q.ch.preguntas.length}`;
   $('#q-text').textContent=q.t;
   $('#q-streak').textContent='x'+Q.streak;
   $('#q-xp').textContent=Q.xp;
@@ -1050,7 +1005,7 @@ function renderQ(){
 function answer(i,btn){
   if(Q.answered) return; Q.answered=true;
   const q=Q.ch.preguntas[Q.i], good=i===q.c;
-  Q.marks=Q.marks||{}; Q.marks[Q.i]=good;
+  Q.marks=Q.marks||{}; Q.marks[Q.i]=good; Q.answers=Q.answers||[]; Q.answers[Q.i]={question:q.t,selected:i,selected_text:q.o[i],correct_index:q.c,correct:good};
   $$('#opts .opt').forEach((b,k)=>{
     b.disabled=true;
     if(k===q.c) b.classList.add('correct');
@@ -1073,63 +1028,50 @@ function answer(i,btn){
   $('#explain').textContent=q.e;
   $('#q-streak').textContent='x'+Q.streak;
   $('#q-xp').textContent=Q.xp;
-  $('#btn-next').textContent = Q.i===4 ? 'Ver resultado' : 'Siguiente';
+  $('#btn-next').textContent = Q.i===Q.ch.preguntas.length-1 ? 'Enviar para aprobación' : 'Siguiente';
   const fb=$('#feedback'); fb.style.display='block';
   if(window.gsap) gsap.fromTo(fb,{opacity:0,y:10},{opacity:1,y:0,duration:.3});
   fb.scrollIntoView({behavior:'smooth',block:'nearest'});
 }
 $('#btn-next').onclick=()=>{
   Q.answered=false;
-  if(Q.i===4) return finish();
+  if(Q.i===Q.ch.preguntas.length-1) return finish();
   Q.i++;
-  if(Q.i===4 && Q.ok===4) $('#master-quiz').textContent='Te falta una para una racha perfecta.';
+  if(Q.i===Q.ch.preguntas.length-1) $('#master-quiz').textContent='Última pregunta. Al terminar, tu supervisor validará la participación.';
   renderQ();
 };
 async function finish(){
+  if(!TRIVIA_ATTEMPT){toast('Falta seleccionar la tienda.');nav('map');return;}
   const secs=Math.round((Date.now()-Q.t0)/1000);
-  const bonus=500 + (Q.ok===5?200:0);
-  const total=Q.xp+bonus;
-  const prevLevel=levelOf(P.xp);
-  P.xp+=total;
-  P.bestStreak=Math.max(P.bestStreak,Q.best);
-  /* memoria de errores: se suman los fallos de esta ronda y se limpian los ya corregidos */
-  P.repasar = (P.repasar||[]).filter(r => !(r.c===Q.ch.id && Q.marks[r.q]===true));
-  Q.ch.preguntas.forEach((q,i)=>{
-    if(Q.marks[i]===false && !P.repasar.some(r=>r.c===Q.ch.id && r.q===i)) P.repasar.push({c:Q.ch.id,q:i});
+  $('#btn-next').disabled=true;
+  const {data,error}=await quantyDb.rpc('quanty_submit_trivia',{
+    p_user_key:String(ME.id),p_seller_name:ME.nombre,
+    p_chain:TRIVIA_ATTEMPT.chain,p_store_name:TRIVIA_ATTEMPT.store,
+    p_week_start:quantyWeekStart(),p_correct_count:Q.ok,
+    p_duration_seconds:secs,p_answers:Q.answers||[]
   });
-
-  const prev=P.done[Q.ch.id];
-  if(!prev || prev.correctas<Q.ok) P.done[Q.ch.id]={correctas:Q.ok,pct:Q.ok*20,segundos:secs};
-  const win=[];
-  const add=id=>{ if(!P.badges.includes(id)){ P.badges.push(id); win.push(BADGES.find(b=>b.id===id).t); } };
-  add('first');
-  if(Q.best>=5) add('streak5');
-  if(secs<=75) add('speed');
-  if(Q.ok===5) add('perfect');
-  if(CH.filter(c=>(c.area||'Producto')==='Producto').every(c=>P.done[c.id])) add('tools');
-  if(CH.filter(c=>c.area==='Ventas').length && CH.filter(c=>c.area==='Ventas').every(c=>P.done[c.id])) add('sales');
-  if(levelOf(P.xp)>=5) add('master');
-  if(ME){ ME.progreso=P; await API.saveUsers(USERS); }
-  await API.saveStats(STATS);
-
-  $('#r-title').textContent=Q.ch.nombre;
-  $('#r-score').textContent=`${Q.ok} / 5`;
-  $('#r-pct').textContent=`${Q.ok*20}%`;
-  $('#r-xp').textContent=`+${total}`;
+  $('#btn-next').disabled=false;
+  if(error){
+    $('#r-title').textContent='No se pudo registrar';
+    $('#r-score').textContent=Q.ok+' / 10';
+    $('#r-pct').textContent=Math.round(Q.ok*10)+'%';
+    $('#r-xp').textContent='No enviado';
+    $('#master-result').textContent=error.message||'Error al registrar. Consulta al supervisor.';
+    $('#btn-retry').style.display='none';nav('result');return;
+  }
+  TRIVIA_ATTEMPT.id=data?.id||null;
+  $('#r-title').textContent='Trivia semanal Tricolor';
+  $('#r-score').textContent=Q.ok+' / 10';
+  $('#r-pct').textContent=Math.round(Q.ok*10)+'%';
+  $('#r-xp').textContent=(Q.ok*100)+' XP pendientes';
   $('#r-streak').textContent='x'+Q.best;
   $('#r-level').textContent=levelOf(P.xp);
+  $('#r-plan-title').textContent='Repaso de la trivia';
   renderPlan();
-  $('#master-result').textContent = Q.ok===5
-    ? '¡Ronda perfecta! Ese nivel es el que quiero ver en el piso de venta.'
-    : Q.ok>=3 ? `Buen resultado. Te quedaron ${5-Q.ok} punto${5-Q.ok>1?'s':''} por afirmar, están abajo.`
-              : 'Vamos de nuevo. Abajo te dejo exactamente qué repasar antes de repetir.';
+  $('#master-result').textContent='Resultado enviado para aprobación. No suma al ranking hasta que el supervisor confirme que la trivia se realizó presencialmente en '+TRIVIA_ATTEMPT.store+'.';
+  $('#btn-retry').style.display='none';
   nav('result');
-  if(window.gsap) gsap.fromTo('#view-result .result > *',{opacity:0,y:18},{opacity:1,y:0,stagger:.07,duration:.5,ease:'power2.out'});
-  if(levelOf(P.xp)>prevLevel) setTimeout(()=>toast(`Nivel ${levelOf(P.xp)} · ${LEVELS[levelOf(P.xp)-1].n}`),700);
-  win.forEach((t,k)=>setTimeout(()=>toast('Logro desbloqueado · '+t),1400+k*1600));
-  if(Q.ok===5) fireworks();
 }
-
 /* ---- qué mejorar: se arma con las preguntas falladas de la ronda ---- */
 function renderPlan(){
   const falladas=Q.ch.preguntas.map((q,i)=>({q,i})).filter(x=>Q.marks[x.i]===false);
@@ -1254,6 +1196,8 @@ $$('[data-tab]').forEach(t=>t.onclick=()=>{
   $$('[data-tab]').forEach(x=>x.classList.remove('on')); t.classList.add('on');
   const k=t.dataset.tab;
   $('#tab-crear').style.display = k==='crear'?'block':'none';
+  $('#tab-weekly').style.display = k==='weekly'?'block':'none';
+  if(k==='weekly') loadTriviaSupervisor();
   $('#tab-weekly').style.display = k==='weekly'?'block':'none';
   if(k==='weekly') loadTriviaSupervisor();
   $('#tab-vend').style.display  = k==='vend' ?'block':'none';
@@ -1429,6 +1373,7 @@ $('#l-pass').addEventListener('keydown',e=>{ if(e.key==='Enter') loginVendedor()
 function loginSupervisor(){
   const err=$('#s-err'); err.textContent='';
   if($('#s-pass').value.trim()!==SUP_PIN) return err.textContent='Clave incorrecta.';
+  sessionStorage.setItem('quanty_supervisor_pin',$('#s-pass').value.trim());
   $('#s-pass').value='';
   nav('sup');
 }
@@ -1571,18 +1516,8 @@ $('#pz-video').addEventListener('error', () => {
 });
 
 (async function init(){
-  CH    = await API.getChallenges();
-  /* migración: incorpora capítulos nuevos del código sin borrar el progreso guardado */
-  if(Array.isArray(CH)){
-    const faltan = SEED.filter(s => !CH.some(c => c.id === s.id));
-    if(faltan.length){
-      faltan.forEach(s => {
-        const pos = CH.findIndex(c => (c.area||'Producto') === (s.area||'Producto'));
-        if(s.piezas && pos >= 0) CH.splice(pos, 0, s); else CH.push(s);
-      });
-      await API.saveChallenges(CH);
-    }
-  }
+  CH=SEED;
+  await API.saveChallenges(CH);
   USERS = await API.getUsers();
   STATS = await API.getStats();
   const sembrado = await Store.get('master:seeded');

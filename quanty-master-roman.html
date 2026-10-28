@@ -551,6 +551,28 @@ textarea.f{min-height:76px;resize:vertical}
     <div class="plate card-pad" id="weekly-setup" style="margin:18px 0 24px"><p class="eyebrow">ANTES DE JUGAR · IDENTIFICA TU SALA</p><div class="cols"><label class="f"><span>Cadena</span><select class="f" id="trivia-chain"><option value="">Selecciona cadena</option><option>Easy</option><option>Sodimac</option><option>Punto Maestro</option></select></label><label class="f"><span>Tienda específica</span><input class="f" id="trivia-store" list="trivia-stores" placeholder="Ej. Easy Mall Arauco Maipú"><datalist id="trivia-stores"><option value="Easy Mall Arauco Maipú"><option value="Easy Costanera"><option value="Easy Maipú"><option value="Sodimac Maipú"><option value="Sodimac Cerrillos"><option value="Punto Maestro Quilicura"></datalist></label></div><p class="hint-line">Escribe el nombre real del local. Se guardará con el resultado para crear el ranking por tienda.</p><div id="weekly-status" class="alert" style="display:none;margin:14px 0"></div><button class="btn" id="btn-weekly-start">Comenzar trivia semanal · 10 preguntas</button>
 </div><div class="track" id="track" style="display:none"></div>
 
+<section class="plate card-pad roulette-card" id="quanty-roulette" aria-labelledby="roulette-title">
+  <p class="eyebrow">JUEGO RÁPIDO · 30 SEGUNDOS</p>
+  <div class="map-head" style="margin-bottom:0"><div><h2 class="h-sec" id="roulette-title">Ruleta de sala</h2><p class="sub">Gira, descubre tu reto y ponlo en práctica con un cliente.</p></div><span class="chip">Giro rápido</span></div>
+  <div class="roulette-layout">
+    <div class="roulette-stage" aria-label="Ruleta circular de retos comerciales">
+      <div class="roulette-pointer" aria-hidden="true"></div>
+      <div class="roulette-wheel" id="roulette-wheel" role="img" aria-label="Ruleta con ocho retos comerciales">
+        <span class="roulette-label">Esmalte</span><span class="roulette-label">Diagnóstico</span><span class="roulette-label">Objeción</span><span class="roulette-label">Revor</span><span class="roulette-label">FAST</span><span class="roulette-label">Venta cruzada</span><span class="roulette-label">Color</span><span class="roulette-label">Sorpresa</span>
+        <span class="roulette-hub">QUANTY</span>
+      </div>
+    </div>
+    <div class="roulette-side">
+      <p class="eyebrow">TU MISIÓN</p>
+      <h3>¿Qué reto te tocará?</h3>
+      <p class="sub">Ideal para activar una conversación comercial cuando estás en sala con tu supervisor.</p>
+      <div class="roulette-result" id="roulette-result" aria-live="polite"><strong>Todo listo para girar</strong><p>Pulsa el botón y deja que la ruleta elija un reto al azar.</p></div>
+      <div class="roulette-controls"><button class="btn" id="btn-roulette-spin" type="button">⟳ Girar ruleta</button><button class="btn ghost small" id="btn-roulette-reset" type="button" disabled>Otra vez</button></div>
+      <p class="roulette-note">La ruleta es una dinámica de práctica: no entrega XP ni altera la trivia semanal, el ranking o las aprobaciones.</p>
+    </div>
+  </div>
+</section>
+
     <div class="cols">
       <div class="plate card-pad">
         <p class="eyebrow">INSIGNIAS · <b id="badge-count">0/6</b></p>

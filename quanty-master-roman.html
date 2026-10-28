@@ -921,7 +921,7 @@ function nav(id){
   window.scrollTo(0,0);
   if(window.ScrollTrigger) ScrollTrigger.refresh();
   if(id==='map') renderMap();
-  if(id==='sup'){ renderUsers(); renderAnalytics(); loadTriviaSupervisor(); }
+  if(id==='sup'){ renderUsers(); renderAnalytics(); loadTriviaSupervisor(); const weeklyTab=document.querySelector('[data-tab="weekly"]'); if(weeklyTab) weeklyTab.click(); }
 }
 function renderHUD(){
   const lv=levelOf(P.xp), cur=LEVELS[lv-1], next=LEVELS[lv]||{xp:cur.xp};
